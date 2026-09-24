@@ -5,6 +5,7 @@
     <string name="cfg_base">Numeral base</string>
     <string name="opt_binary">Binary</string>
     <string name="opt_quinary">Quinary (base 5)</string>
+    <string name="opt_hexagon">Hexagon (base 7)</string>
 
     <string name="cfg_palette">Color scheme</string>
     <string name="palette_rainbow">Rainbow</string>

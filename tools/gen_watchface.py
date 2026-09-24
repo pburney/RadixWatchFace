@@ -251,6 +251,100 @@ def wff_decimal_readout():
     return "\n".join(out)
 
 
+# ---- Hexagon (base 7) -- confirmed via this session's geometry spike that
+# Quinary's wedge-split-circle technique (Arc + WeightedStroke) generalizes
+# to any position count with zero special-casing except n=1 (see the n=1
+# degenerate-arc fix in the spike notes / RADIX ticket). Reuses Quinary's
+# exact layout positions (full_layout()): base-5 and base-7 both happen to
+# need 2 places for H (0-23) and 3 places for M/S (0-59) -- 5^1=5<=23<25=5^2
+# and 7^1=7<=23<49=7^2 give the same place count, likewise 5^2=25<=59<125
+# and 7^2=49<=59<343 -- so the SAME x/y positions work, only the digit math
+# (base 7 instead of 5) and the rendering (6-wedge circle instead of a
+# 4-cell quad with per-row bar/rounded/pie shapes) differ. There's no
+# 2x2-grid equivalent for 6 positions, so every row renders as a wedge
+# circle -- no per-row shape variety the way Quinary has H/M/S look
+# different at a glance; row identity here is label + position only, same
+# as Binary already relies on.
+HEX_POSITIONS = ["P0", "P1", "P2", "P3", "P4", "P5"]
+HEX_ANGLES = {f"P{i}": (i * 60, (i + 1) * 60) for i in range(6)}
+
+
+def hex_digit_expr(value_expr: str, place: int) -> str:
+    return f"round(floor(({value_expr}) / {7 ** place}) % 7)"
+
+
+def wff_hex_outlines(layout, outline_color):
+    out = []
+    for c in layout:
+        r = c["w"] / 2
+        x, y = round(c["x"] - r), round(c["y"] - r)
+        out.append(
+            f'      <PartDraw x="{x}" y="{y}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+            f'        <Ellipse x="0" y="0" width="{round(r * 2)}" height="{round(r * 2)}">'
+            f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/></Ellipse>\n'
+            f'      </PartDraw>')
+    return "\n".join(out)
+
+
+def wff_hex_groups(layout, colors):
+    out = []
+    for c in layout:
+        digit_expr = hex_digit_expr(c["expr"], c["place"])
+        r = c["w"] / 2
+        bx, by = round(c["x"] - r), round(c["y"] - r)
+        for k, pos in enumerate(HEX_POSITIONS):
+            start, end = HEX_ANGLES[pos]
+            name = f"h{c['place']}_{round(c['x'])}_{round(c['y'])}_{k}"
+            out.append(
+                f'      <Condition>\n'
+                f'        <Expressions>\n'
+                f'          <Expression name="{name}"><![CDATA[(({digit_expr}) > {k})]]></Expression>\n'
+                f'        </Expressions>\n'
+                f'        <Compare expression="{name}">\n'
+                f'          <PartDraw x="{bx}" y="{by}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+                f'            <Arc centerX="{r}" centerY="{r}" width="{r}" height="{r}" '
+                f'startAngle="{start}" endAngle="{end}" direction="CLOCKWISE">\n'
+                f'              <WeightedStroke colors="{colors[k]}" thickness="{r}" cap="BUTT"/>\n'
+                f'            </Arc>\n'
+                f'          </PartDraw>\n'
+                f'        </Compare>\n'
+                f'      </Condition>')
+    return "\n".join(out)
+
+
+def hexagon_palette_list_option(option_id: str, layout, theme: str) -> str:
+    colors = palette_for(option_id, 6)
+    return (f'        <ListOption id="{option_id}">\n'
+            f'          <Group name="hex_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
+            f'{wff_hex_groups(layout, colors)}\n'
+            f'          </Group>\n'
+            f'        </ListOption>')
+
+
+def build_base_hexagon(theme: str, outline_color: str) -> str:
+    layout = full_layout()   # same positions as Quinary -- see module note above
+    palette_options = "\n".join(
+        hexagon_palette_list_option(opt_id, layout, theme) for opt_id, _res, _anchor in PALETTE_OPTIONS)
+    return f"""    <ListOption id="hexagon">
+      <Group name="hexagon_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+        <Group name="hexagon_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_hex_outlines(layout, outline_color)}
+        </Group>
+        <ListConfiguration id="palette">
+{palette_options}
+        </ListConfiguration>
+        <BooleanConfiguration id="labels">
+          <BooleanOption id="TRUE">
+            <Group name="hexagon_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_labels(layout)}
+{wff_decimal_readout()}
+            </Group>
+          </BooleanOption>
+        </BooleanConfiguration>
+      </Group>
+    </ListOption>"""
+
+
 def quinary_palette_list_option(option_id: str, layout, theme: str) -> str:
     colors = palette_for(option_id, 4)
     return (f'        <ListOption id="{option_id}">\n'
@@ -424,6 +518,7 @@ def build_user_configurations() -> str:
     <ListConfiguration id="base" displayName="cfg_base" defaultValue="quinary">
       <ListOption id="quinary" displayName="opt_quinary"/>
       <ListOption id="binary" displayName="opt_binary"/>
+      <ListOption id="hexagon" displayName="opt_hexagon"/>
     </ListConfiguration>
     <BooleanConfiguration id="theme" displayName="cfg_theme" defaultValue="FALSE"/>
     <BooleanConfiguration id="labels" displayName="cfg_labels" defaultValue="TRUE"/>"""
@@ -459,6 +554,7 @@ def build_wff() -> str:
           <ListConfiguration id="base">
 {build_base_quinary("dark", OUTLINE_DARK)}
 {build_base_binary("dark", OFF_DARK)}
+{build_base_hexagon("dark", OUTLINE_DARK)}
           </ListConfiguration>
         </Group>
       </BooleanOption>
@@ -470,6 +566,7 @@ def build_wff() -> str:
           <ListConfiguration id="base">
 {build_base_quinary("light", OUTLINE_LIGHT)}
 {build_base_binary("light", OFF_LIGHT)}
+{build_base_hexagon("light", OUTLINE_LIGHT)}
           </ListConfiguration>
         </Group>
       </BooleanOption>
@@ -506,6 +603,7 @@ _HTML_TMPL = r"""<!doctype html>
     <label>base <select id="base">
       <option value="quinary">Quinary</option>
       <option value="binary">Binary</option>
+      <option value="hexagon">Hexagon</option>
     </select></label>
     <label><input type="checkbox" id="theme"> light theme</label>
     <label><input type="checkbox" id="labels" checked> labels</label>
@@ -517,6 +615,8 @@ const SUB_GAP = __SUB_GAP__, LABEL_W = __LABEL_W__, LABEL_H = __LABEL_H__;
 const POS_SIGN = {TR:[1,-1], TL:[-1,-1], BL:[-1,1], BR:[1,1]};
 const POS_ANGLES = {TR:[0,90], BR:[90,180], BL:[180,270], TL:[270,360]};
 const POSITIONS = ["TR","TL","BL","BR"];
+const HEX_POSITIONS = ["P0","P1","P2","P3","P4","P5"];
+const HEX_ANGLES = Object.fromEntries(HEX_POSITIONS.map((p, i) => [p, [i * 60, (i + 1) * 60]]));
 const QUINARY_LAYOUT = __QUINARY_LAYOUT_JS__;
 const DECIMAL_X = __DECIMAL_X__;
 const DECIMAL_ROWS = __DECIMAL_ROWS_JS__;
@@ -598,6 +698,7 @@ PALETTE_OPTIONS.forEach(([id, label]) => {
 __JS_VALUE_FN__
 function quinaryDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (5 ** place)) % 5); }
 function binaryBit(src, k, now) { return Math.round(Math.floor(value(src, now) / (2 ** k)) % 2); }
+function hexDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (7 ** place)) % 7); }
 function polar(cx, cy, r, deg) { const rad = deg * Math.PI / 180; return [cx + r * Math.sin(rad), cy - r * Math.cos(rad)]; }
 function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
@@ -661,6 +762,33 @@ function drawQuinary(colors, outline, showLabels, now) {
   return s;
 }
 
+function drawHexagon(colors, outline, showLabels, now) {
+  // Reuses QUINARY_LAYOUT's x/y/place positions verbatim (base-5 and base-7
+  // both need 2 places for H, 3 for M/S -- see the Python-side module note),
+  // rendering every group as a 6-wedge circle instead of a 4-cell quad.
+  let s = "";
+  for (const c of QUINARY_LAYOUT) {
+    const r = c.w / 2;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    const digit = hexDigit(c.src, c.place, now);
+    HEX_POSITIONS.forEach((pos, k) => {
+      if (digit <= k) return;
+      const [a0, a1] = HEX_ANGLES[pos];
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+    });
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
 function drawBinary(color, offColor, showLabels, now) {
   let s = "";
   for (const c of BINARY_LAYOUT) {
@@ -693,6 +821,8 @@ function draw() {
   let s = `<rect x="0" y="0" width="__CANVAS__" height="__CANVAS__" fill="${BG[key]}"/>`;
   if (base === "binary") {
     s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
+  } else if (base === "hexagon") {
+    s += drawHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], showLabels, now);
   } else {
     s += drawQuinary(paletteFor(paletteSel.value, 4), OUTLINE[key], showLabels, now);
   }
