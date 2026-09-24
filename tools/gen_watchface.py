@@ -45,7 +45,10 @@ from wff_common import (
     build_heart_icon, wff_complication_date, wff_complication_heart,
     wff_complication_weather, JS_VALUE_FN,
 )
-from palettes import PALETTE_OPTIONS, palette_for, ANCHOR_COLORS
+from palettes import (
+    PALETTE_OPTIONS, palette_for, ANCHOR_COLORS, OKABE_ITO,
+    ROYGBIV_START_DEG, ROYGBIV_END_DEG,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "app" / "src" / "main" / "res" / "raw" / "watchface.xml"
@@ -272,6 +275,126 @@ def build_base_quinary() -> str:
     </ListOption>"""
 
 
+# ---- Binary (base 2) geometry -- ported from BinaryWatchFace, raw binary
+# mode only (BCD mode stays a BinaryWatchFace-only feature for now; it's a
+# secondary mode of base-2 itself, not another numeral base, so folding it
+# in here would be scope creep on top of the base picker this app already
+# adds). Binary keeps its classic "every lit LED is the same one color"
+# look rather than adopting per-position palette colors like Quinary's
+# quads -- it requests just ONE color from whichever palette is selected
+# (palette_for(id, 1)), so it still participates in the same 18-option
+# picker without breaking its own established visual identity. ----
+LED_R = 15
+GX, GY = 46, 52
+OFF_COLOR = "#FF1C1C1C"
+BINARY_ROWS = [("H", "[HOUR_0_23]", 6), ("M", "[MINUTE]", 6), ("S", "[SECOND]", 6)]
+
+
+def bit_expr(value_expr: str, k: int) -> str:
+    return f"round(floor(({value_expr}) / {1 << k}) % 2)"
+
+
+def binary_layout():
+    n = len(BINARY_ROWS)
+    for r, (label, expr, nbits) in enumerate(BINARY_ROWS):
+        cy = C + (r - (n - 1) / 2) * GY
+        for col in range(nbits):
+            k = nbits - 1 - col
+            cx = C + (col - (nbits - 1) / 2) * GX
+            yield dict(x=cx, y=cy, k=k, expr=expr,
+                       label=label if col == 0 else None, label_x=cx - GX, label_y=cy)
+
+
+def wff_binary_cells(layout, color):
+    d, lit = [], []
+    for c in layout:
+        x, y = round(c["x"] - LED_R), round(c["y"] - LED_R)
+        w = LED_R * 2
+        d.append(
+            f'      <PartDraw x="{x}" y="{y}" width="{w}" height="{w}">\n'
+            f'        <Ellipse x="0" y="0" width="{w}" height="{w}"><Fill color="{OFF_COLOR}"/></Ellipse>\n'
+            f'      </PartDraw>')
+        name = f'b{c["k"]}_{round(c["x"])}_{round(c["y"])}'
+        lit.append(
+            f'      <Condition>\n'
+            f'        <Expressions>\n'
+            f'          <Expression name="{name}">{bit_expr(c["expr"], c["k"])}</Expression>\n'
+            f'        </Expressions>\n'
+            f'        <Compare expression="{name}">\n'
+            f'          <PartDraw x="{x}" y="{y}" width="{w}" height="{w}">\n'
+            f'            <Ellipse x="0" y="0" width="{w}" height="{w}"><Fill color="{color}"/></Ellipse>\n'
+            f'          </PartDraw>\n'
+            f'        </Compare>\n'
+            f'      </Condition>')
+    return "\n".join(d + lit)
+
+
+def wff_binary_labels(layout):
+    out = []
+    for c in layout:
+        if not c["label"]:
+            continue
+        x, y = round(c["label_x"] - GX / 2), round(c["label_y"] - GY / 2)
+        out.append(
+            f'        <PartText x="{x}" y="{y}" width="{GX}" height="{GY}">\n'
+            f'          <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="26" '
+            f'weight="NORMAL" color="{LABEL_COLOR}">{c["label"].upper()}</Font></Text>\n'
+            f'        </PartText>')
+    return "\n".join(out)
+
+
+BINARY_DECIMAL_W, BINARY_DECIMAL_H = 44, 36
+
+
+def wff_binary_decimal_readout():
+    n = len(BINARY_ROWS)
+    exprs = {"H": "[HOUR_0_23]", "M": "[MINUTE]", "S": "[SECOND]"}
+    out = []
+    for r, (label, expr, nbits) in enumerate(BINARY_ROWS):
+        cy = C + (r - (n - 1) / 2) * GY
+        rightmost_cx = C + (nbits - 1) / 2 * GX
+        dx = rightmost_cx + GX
+        x, y = round(dx - BINARY_DECIMAL_W / 2), round(cy - BINARY_DECIMAL_H / 2)
+        out.append(
+            f'        <PartText x="{x}" y="{y}" width="{BINARY_DECIMAL_W}" height="{BINARY_DECIMAL_H}">\n'
+            f'          <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="26" '
+            f'weight="NORMAL" color="{LABEL_COLOR}">\n'
+            f'              <Template>%02d<Parameter expression="{exprs[label]}"/></Template>\n'
+            f'          </Font></Text>\n'
+            f'        </PartText>')
+    return "\n".join(out)
+
+
+def binary_palette_list_option(option_id: str, layout) -> str:
+    color = palette_for(option_id, 1)[0]
+    return (f'        <ListOption id="{option_id}">\n'
+            f'          <Group name="binary_palette_{option_id}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
+            f'{wff_binary_cells(layout, color)}\n'
+            f'          </Group>\n'
+            f'        </ListOption>')
+
+
+def build_base_binary() -> str:
+    layout = list(binary_layout())
+    palette_options = "\n".join(
+        binary_palette_list_option(opt_id, layout) for opt_id, _res, _anchor in PALETTE_OPTIONS)
+    return f"""    <ListOption id="binary">
+      <Group name="binary" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+        <ListConfiguration id="palette">
+{palette_options}
+        </ListConfiguration>
+        <BooleanConfiguration id="labels">
+          <BooleanOption id="TRUE">
+            <Group name="binary_labels" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_binary_labels(layout)}
+{wff_binary_decimal_readout()}
+            </Group>
+          </BooleanOption>
+        </BooleanConfiguration>
+      </Group>
+    </ListOption>"""
+
+
 # ======================================================================
 # WFF  (res/raw/watchface.xml)
 # ======================================================================
@@ -286,6 +409,7 @@ def build_user_configurations() -> str:
     </ListConfiguration>
     <ListConfiguration id="base" displayName="cfg_base" defaultValue="quinary">
       <ListOption id="quinary" displayName="opt_quinary"/>
+      <ListOption id="binary" displayName="opt_binary"/>
     </ListConfiguration>
     <BooleanConfiguration id="theme" displayName="cfg_theme" defaultValue="FALSE"/>
     <BooleanConfiguration id="labels" displayName="cfg_labels" defaultValue="TRUE"/>"""
@@ -320,6 +444,7 @@ def build_wff() -> str:
 
     <ListConfiguration id="base">
 {build_base_quinary()}
+{build_base_binary()}
     </ListConfiguration>
 
     <!-- complications: direct Scene children, declared AFTER the theme/base
@@ -350,7 +475,10 @@ _HTML_TMPL = r"""<!doctype html>
   <svg id="face" width="360" height="360" viewBox="0 0 __CANVAS__ __CANVAS__"></svg>
   <div style="margin-top:14px">
     <label>palette <select id="palette"></select></label>
-    <label>base <select id="base"><option value="quinary">Quinary</option></select></label>
+    <label>base <select id="base">
+      <option value="quinary">Quinary</option>
+      <option value="binary">Binary</option>
+    </select></label>
     <label><input type="checkbox" id="theme"> light theme</label>
     <label><input type="checkbox" id="labels" checked> labels</label>
   </div>
@@ -361,22 +489,74 @@ const SUB_GAP = __SUB_GAP__, LABEL_W = __LABEL_W__, LABEL_H = __LABEL_H__;
 const POS_SIGN = {TR:[1,-1], TL:[-1,-1], BL:[-1,1], BR:[1,1]};
 const POS_ANGLES = {TR:[0,90], BR:[90,180], BL:[180,270], TL:[270,360]};
 const POSITIONS = ["TR","TL","BL","BR"];
-const LAYOUT = __LAYOUT_JS__;
+const QUINARY_LAYOUT = __QUINARY_LAYOUT_JS__;
 const DECIMAL_X = __DECIMAL_X__;
 const DECIMAL_ROWS = __DECIMAL_ROWS_JS__;
-const PALETTES = __PALETTES_JS__;     // { optionId: {label, colors:[4]} }
+const BINARY_LAYOUT = __BINARY_LAYOUT_JS__;
+const BINARY_GX = __BINARY_GX__, BINARY_GY = __BINARY_GY__, LED_R = __LED_R__, OFF_COLOR = "__OFF_COLOR__";
+const BINARY_DECIMAL_W = __BINARY_DECIMAL_W__;
 const OUTLINE = "__OUTLINE__", LABEL_COLOR = "__LABEL_COLOR__";
 const BG = {dark: "__BG_DARK__", light: "__BG_LIGHT__"};
 const svg = document.getElementById("face");
 const paletteSel = document.getElementById("palette");
-Object.entries(PALETTES).forEach(([id, p]) => {
-  const el = document.createElement("option"); el.value = id; el.textContent = p.label;
+const baseSel = document.getElementById("base");
+
+// ---- palette generation, ported verbatim from tools/palettes.py ----
+const ANCHORS = __ANCHORS_JS__;
+const OKABE_ITO = __OKABE_ITO_JS__;
+const ROYGBIV_START_DEG = __ROYGBIV_START__, ROYGBIV_END_DEG = __ROYGBIV_END__;
+function hexToHsl(hex) {
+  let r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h, s, l = (max+min)/2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+    if (max === r) h = (g-b)/d + (g<b?6:0);
+    else if (max === g) h = (b-r)/d + 2;
+    else h = (r-g)/d + 4;
+    h /= 6;
+  }
+  return [h, s, l];
+}
+function hslToHex(h, s, l) {
+  function f(n) { const k=(n+h*12)%12; const a=s*Math.min(l,1-l); const c=l-a*Math.max(-1,Math.min(k-3,9-k,1)); return Math.round(255*c); }
+  const r=f(0), g=f(8), b=f(4);
+  return "#" + [r,g,b].map(v => v.toString(16).padStart(2,"0")).join("").toUpperCase();
+}
+function monochromePalette(anchorHex, n) {
+  const [h,s] = hexToHsl(anchorHex);
+  const lo = 0.28, hi = 0.82, out = [];
+  for (let i = 0; i < n; i++) { const t = n>1 ? i/(n-1) : 0.5; out.push(hslToHex(h, s, lo+t*(hi-lo))); }
+  return out;
+}
+function rainbowPalette(n) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const t = n>1 ? i/(n-1) : 0.5;
+    const hue = (ROYGBIV_START_DEG + t*(ROYGBIV_END_DEG-ROYGBIV_START_DEG)) / 360;
+    out.push(hslToHex(hue, 0.85, 0.55));
+  }
+  return out;
+}
+function colorblindPalette(n) { return OKABE_ITO.slice(0, n); }
+function paletteFor(id, n) {
+  if (id === "rainbow") return rainbowPalette(n);
+  if (id === "colorblind") return colorblindPalette(n);
+  const anchor = ANCHORS.find(a => a[0] === id);
+  return monochromePalette(anchor[2], n);
+}
+const PALETTE_OPTIONS = [["rainbow","Rainbow"],["colorblind","Colorblind-safe"], ...ANCHORS.map(a => [a[0], a[1]+" shades"])];
+PALETTE_OPTIONS.forEach(([id, label]) => {
+  const el = document.createElement("option"); el.value = id; el.textContent = label;
   if (id === "colorblind") el.selected = true;
   paletteSel.appendChild(el);
 });
 
 __JS_VALUE_FN__
 function quinaryDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (5 ** place)) % 5); }
+function binaryBit(src, k, now) { return Math.round(Math.floor(value(src, now) / (2 ** k)) % 2); }
 function polar(cx, cy, r, deg) { const rad = deg * Math.PI / 180; return [cx + r * Math.sin(rad), cy - r * Math.cos(rad)]; }
 function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
@@ -389,13 +569,10 @@ function outlineShape(c) {
   if (c.radius > 0) return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" rx="${c.radius}" ry="${c.radius}" ${stroke}/>`;
   return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" ${stroke}/>`;
 }
-function draw() {
-  const now = new Date();
-  const light = document.getElementById("theme").checked;
-  const showLabels = document.getElementById("labels").checked;
-  const colors = PALETTES[paletteSel.value].colors;
-  let s = `<rect x="0" y="0" width="__CANVAS__" height="__CANVAS__" fill="${BG[light ? "light" : "dark"]}"/>`;
-  for (const c of LAYOUT) {
+
+function drawQuinary(colors, showLabels, now) {
+  let s = "";
+  for (const c of QUINARY_LAYOUT) {
     s += outlineShape(c);
     const digit = quinaryDigit(c.src, c.place, now);
     if (c.shape === "pie") {
@@ -414,9 +591,7 @@ function draw() {
       // squares over the 3 corners that face the digit group's own center,
       // leaving only the true OUTER corner rounded. That's what makes
       // adjacent lit cells fuse into one seamless rounded shape instead of
-      // 4 separate pills. The preview was missing this (each cell was fully
-      // rounded on all 4 corners), which is exactly what looked like a
-      // "lost" full shape -- the real generated XML never had this bug.
+      // 4 separate pills.
       const CORNER_XY = {TL: [0, 0], TR: [cellW - r, 0], BL: [0, cellH - r], BR: [cellW - r, cellH - r]};
       POSITIONS.forEach((pos, k) => {
         if (digit <= k) return;
@@ -442,8 +617,45 @@ function draw() {
       s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
     }
   }
+  return s;
+}
+
+function drawBinary(color, showLabels, now) {
+  let s = "";
+  for (const c of BINARY_LAYOUT) {
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${OFF_COLOR}"/>`;
+    if (binaryBit(c.src, c.k, now)) {
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${color}"/>`;
+    }
+    if (showLabels && c.label) {
+      s += `<text x="${c.x - BINARY_GX}" y="${c.y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    const rows = {};
+    for (const c of BINARY_LAYOUT) { if (!(c.src in rows)) rows[c.src] = c.y; }
+    for (const [src, cy] of Object.entries(rows)) {
+      const rightmost = Math.max(...BINARY_LAYOUT.filter(c => c.src === src).map(c => c.x));
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${rightmost + BINARY_GX}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
+function draw() {
+  const now = new Date();
+  const light = document.getElementById("theme").checked;
+  const showLabels = document.getElementById("labels").checked;
+  const base = baseSel.value;
+  let s = `<rect x="0" y="0" width="__CANVAS__" height="__CANVAS__" fill="${BG[light ? "light" : "dark"]}"/>`;
+  if (base === "binary") {
+    s += drawBinary(paletteFor(paletteSel.value, 1)[0], showLabels, now);
+  } else {
+    s += drawQuinary(paletteFor(paletteSel.value, 4), showLabels, now);
+  }
   svg.innerHTML = s;
-  document.getElementById("readout").textContent = now.toTimeString().slice(0, 8);
+  document.getElementById("readout").textContent = now.toTimeString().slice(0, 8) + "  (" + base + ")";
 }
 setInterval(draw, 250); draw();
 </script>
@@ -451,34 +663,36 @@ setInterval(draw, 250); draw();
 
 
 def build_html() -> str:
-    def js_layout(layout):
-        rows = []
-        for c in layout:
-            lab = f'"{c["label"]}"' if c["label"] else "null"
-            rows.append(
-                '{x:%.1f,y:%.1f,w:%.1f,h:%.1f,shape:"%s",radius:%d,place:%d,src:%s,label:%s,label_x:%s,label_y:%s}' % (
-                    c["x"], c["y"], c["w"], c["h"], c["shape"], c["radius"], c["place"],
-                    repr(c["expr"]).replace("'", '"'), lab, c["label_x"], c["label_y"]))
-        return "[" + ",".join(rows) + "]"
-
     def css(argb):
         return "#" + argb[-6:]
-
-    palettes_js = "{" + ",".join(
-        '"%s":{label:"%s",colors:[%s]}' % (
-            opt_id, opt_id.capitalize(),
-            ",".join(f'"{css(c)}"' for c in palette_for(opt_id, 4)))
-        for opt_id, _res, _anchor in PALETTE_OPTIONS) + "}"
 
     repl = {
         "__CANVAS__": str(CANVAS),
         "__SUB_GAP__": str(SUB_GAP),
         "__LABEL_W__": str(LABEL_W),
         "__LABEL_H__": str(LABEL_H),
-        "__LAYOUT_JS__": js_layout(full_layout()),
+        "__QUINARY_LAYOUT_JS__": "[" + ",".join(
+            '{x:%.1f,y:%.1f,w:%.1f,h:%.1f,shape:"%s",radius:%d,place:%d,src:%s,label:%s,label_x:%s,label_y:%s}' % (
+                c["x"], c["y"], c["w"], c["h"], c["shape"], c["radius"], c["place"],
+                repr(c["expr"]).replace("'", '"'), (f'"{c["label"]}"' if c["label"] else "null"),
+                c["label_x"], c["label_y"])
+            for c in full_layout()) + "]",
         "__DECIMAL_X__": str(DECIMAL_X),
         "__DECIMAL_ROWS_JS__": "[" + ",".join(f'["{expr}",{cy}]' for expr, cy in DECIMAL_ROWS) + "]",
-        "__PALETTES_JS__": palettes_js,
+        "__BINARY_LAYOUT_JS__": "[" + ",".join(
+            '{x:%.1f,y:%.1f,k:%d,src:%s,label:%s}' % (
+                c["x"], c["y"], c["k"], repr(c["expr"]).replace("'", '"'),
+                (f'"{c["label"]}"' if c["label"] else "null"))
+            for c in binary_layout()) + "]",
+        "__BINARY_GX__": str(GX),
+        "__BINARY_GY__": str(GY),
+        "__LED_R__": str(LED_R),
+        "__OFF_COLOR__": css(OFF_COLOR),
+        "__BINARY_DECIMAL_W__": str(BINARY_DECIMAL_W),
+        "__ANCHORS_JS__": "[" + ",".join(f'["{aid}","{name}","{argb}"]' for aid, name, argb in ANCHOR_COLORS) + "]",
+        "__OKABE_ITO_JS__": "[" + ",".join(f'"{css(c)}"' for c in OKABE_ITO) + "]",
+        "__ROYGBIV_START__": str(ROYGBIV_START_DEG),
+        "__ROYGBIV_END__": str(ROYGBIV_END_DEG),
         "__OUTLINE__": css(OUTLINE_COLOR),
         "__LABEL_COLOR__": css(LABEL_COLOR),
         "__BG_DARK__": css(BG_DARK),

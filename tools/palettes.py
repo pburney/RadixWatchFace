@@ -57,9 +57,13 @@ OKABE_ITO = [
     "#FFCC79A7",  # reddish purple
 ]
 
-RAINBOW_START_DEG = 140   # arbitrary fixed reference angle (a green-ish
-                          # start), chosen only so "rainbow" isn't identical
-                          # to any one anchor's hue by coincidence
+# ROYGBIV runs red (0 deg) to violet (~270 deg) and deliberately does NOT
+# wrap the rest of the way around the wheel back to red -- that remaining
+# arc is magenta/pink, which isn't a spectral color (it's what's "missing"
+# when you bend a physical rainbow into a closed wheel), so wrapping through
+# it would break the red-to-violet spectrum order Paul asked for.
+ROYGBIV_START_DEG = 0     # red
+ROYGBIV_END_DEG = 270     # violet
 
 
 def _hex_to_rgb01(h):
@@ -87,9 +91,12 @@ def monochrome_palette(anchor_argb: str, n: int) -> list[str]:
 
 
 def rainbow_palette(n: int) -> list[str]:
+    """ROYGBIV order, red to violet -- a linear hue sweep across a fixed
+    170-degree arc, not a full 360-degree wrap (see ROYGBIV_END_DEG)."""
     out = []
     for i in range(n):
-        hue = ((RAINBOW_START_DEG / 360) + i / n) % 1.0
+        t = i / (n - 1) if n > 1 else 0.5
+        hue = (ROYGBIV_START_DEG + t * (ROYGBIV_END_DEG - ROYGBIV_START_DEG)) / 360
         out.append(_rgb01_to_argb_hex(colorsys.hls_to_rgb(hue, 0.55, 0.85)))
     return out
 
