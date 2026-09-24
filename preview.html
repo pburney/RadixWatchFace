@@ -1,0 +1,99 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Radix Watch Face - preview</title>
+<style>
+  body { background:#111; color:#ccc; font:14px system-ui; text-align:center; margin:0; padding:24px; }
+  svg  { border-radius:50%; box-shadow:0 0 40px #0008; }
+  label { margin:0 10px; }
+  .wrap { display:inline-block; }
+</style>
+<div class="wrap">
+  <h2>Radix Watch Face</h2>
+  <svg id="face" width="360" height="360" viewBox="0 0 450 450"></svg>
+  <div style="margin-top:14px">
+    <label>palette <select id="palette"></select></label>
+    <label>base <select id="base"><option value="quinary">Quinary</option></select></label>
+    <label><input type="checkbox" id="theme"> light theme</label>
+    <label><input type="checkbox" id="labels" checked> labels</label>
+  </div>
+  <p id="readout" style="color:#666"></p>
+</div>
+<script>
+const SUB_GAP = 0, LABEL_W = 36, LABEL_H = 36;
+const POS_SIGN = {TR:[1,-1], TL:[-1,-1], BL:[-1,1], BR:[1,1]};
+const POS_ANGLES = {TR:[0,90], BR:[90,180], BL:[180,270], TL:[270,360]};
+const POSITIONS = ["TR","TL","BL","BR"];
+const LAYOUT = [{x:157.0,y:162.0,w:112.0,h:72.0,shape:"bar",radius:8,place:1,src:"[HOUR_0_23]",label:"H",label_x:73,label_y:162},{x:293.0,y:162.0,w:112.0,h:72.0,shape:"bar",radius:8,place:0,src:"[HOUR_0_23]",label:null,label_x:73,label_y:162},{x:137.0,y:249.0,w:72.0,h:72.0,shape:"rounded",radius:24,place:2,src:"[MINUTE]",label:"M",label_x:73,label_y:249},{x:225.0,y:249.0,w:72.0,h:72.0,shape:"rounded",radius:24,place:1,src:"[MINUTE]",label:null,label_x:73,label_y:249},{x:313.0,y:249.0,w:72.0,h:72.0,shape:"rounded",radius:24,place:0,src:"[MINUTE]",label:null,label_x:73,label_y:249},{x:137.0,y:336.0,w:72.0,h:72.0,shape:"pie",radius:0,place:2,src:"[SECOND]",label:"S",label_x:73,label_y:336},{x:225.0,y:336.0,w:72.0,h:72.0,shape:"pie",radius:0,place:1,src:"[SECOND]",label:null,label_x:73,label_y:336},{x:313.0,y:336.0,w:72.0,h:72.0,shape:"pie",radius:0,place:0,src:"[SECOND]",label:null,label_x:73,label_y:336}];
+const DECIMAL_X = 381;
+const DECIMAL_ROWS = [["[HOUR_0_23]",162],["[MINUTE]",249],["[SECOND]",336]];
+const PALETTES = {"rainbow":{label:"Rainbow",colors:["#2BEE6C","#2B4BEE","#EE2BAD","#EECD2B"]},"colorblind":{label:"Colorblind",colors:["#FFFFFF","#56B4E9","#E69F00","#009E73"]},"green":{label:"Green",colors:["#008F24","#00EB3B","#47FF75","#A3FFBA"]},"emerald":{label:"Emerald",colors:["#008F3B","#00EB61","#47FF94","#A3FFC9"]},"teal":{label:"Teal",colors:["#0D8265","#15D6A6","#58EFC9","#ABF7E4"]},"cyan":{label:"Cyan",colors:["#007A8F","#00C8EB","#47E4FF","#A3F1FF"]},"blue":{label:"Blue",colors:["#005B8F","#0096EB","#47BCFF","#A3DEFF"]},"indigo":{label:"Indigo",colors:["#283167","#4151A9","#7B87CC","#BDC3E5"]},"violet":{label:"Violet",colors:["#23008F","#3900EB","#7447FF","#B9A3FF"]},"purple":{label:"Purple",colors:["#56008F","#8D00EB","#B647FF","#DAA3FF"]},"magenta":{label:"Magenta",colors:["#8F0067","#EB00AA","#FF47CC","#FFA3E6"]},"pink":{label:"Pink",colors:["#8F0037","#EB005B","#FF478E","#FFA3C7"]},"red":{label:"Red",colors:["#8F0000","#EB0000","#FF4747","#FFA3A3"]},"orange":{label:"Orange",colors:["#8F4600","#EB7200","#FFA147","#FFD0A3"]},"amber":{label:"Amber",colors:["#8F5E00","#EB9B00","#FFC147","#FFE0A3"]},"yellow":{label:"Yellow",colors:["#8F7700","#EBC300","#FFE047","#FFF0A3"]},"olive":{label:"Olive",colors:["#565837","#8D905B","#B6B88E","#DADCC7"]},"white":{label:"White",colors:["#474747","#757575","#A3A3A3","#D1D1D1"]}};     // { optionId: {label, colors:[4]} }
+const OUTLINE = "#808080", LABEL_COLOR = "#808080";
+const BG = {dark: "#111111", light: "#FFFFFF"};
+const svg = document.getElementById("face");
+const paletteSel = document.getElementById("palette");
+Object.entries(PALETTES).forEach(([id, p]) => {
+  const el = document.createElement("option"); el.value = id; el.textContent = p.label;
+  if (id === "colorblind") el.selected = true;
+  paletteSel.appendChild(el);
+});
+
+function value(src, now) {
+  const H = now.getHours(), M = now.getMinutes(), S = now.getSeconds();
+  src = src.replaceAll("[HOUR_0_23]", H).replaceAll("[MINUTE]", M).replaceAll("[SECOND]", S);
+  src = src.replace(/floor\(([^()]+)\)/g, (_, e) => "Math.floor(" + e + ")");
+  return Function('"use strict";return (' + src + ')')();
+}
+function quinaryDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (5 ** place)) % 5); }
+function polar(cx, cy, r, deg) { const rad = deg * Math.PI / 180; return [cx + r * Math.sin(rad), cy - r * Math.cos(rad)]; }
+function wedgePath(cx, cy, r, a0, a1) {
+  const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
+  return `M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y1} Z`;
+}
+function outlineShape(c) {
+  const stroke = `fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
+  if (c.shape === "pie") return `<circle cx="${c.x}" cy="${c.y}" r="${c.w / 2}" ${stroke}/>`;
+  const x = c.x - c.w / 2, y = c.y - c.h / 2;
+  if (c.radius > 0) return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" rx="${c.radius}" ry="${c.radius}" ${stroke}/>`;
+  return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" ${stroke}/>`;
+}
+function draw() {
+  const now = new Date();
+  const light = document.getElementById("theme").checked;
+  const showLabels = document.getElementById("labels").checked;
+  const colors = PALETTES[paletteSel.value].colors;
+  let s = `<rect x="0" y="0" width="450" height="450" fill="${BG[light ? "light" : "dark"]}"/>`;
+  for (const c of LAYOUT) {
+    s += outlineShape(c);
+    const digit = quinaryDigit(c.src, c.place, now);
+    if (c.shape === "pie") {
+      const r = c.w / 2;
+      POSITIONS.forEach((pos, k) => {
+        if (digit <= k) return;
+        const [a0, a1] = POS_ANGLES[pos];
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      });
+    } else {
+      const cellW = (c.w - SUB_GAP) / 2, cellH = (c.h - SUB_GAP) / 2;
+      POSITIONS.forEach((pos, k) => {
+        if (digit <= k) return;
+        const [sx, sy] = POS_SIGN[pos];
+        const offX = sx * (cellW / 2 + SUB_GAP / 2), offY = sy * (cellH / 2 + SUB_GAP / 2);
+        const bx = c.x + offX - cellW / 2, by = c.y + offY - cellH / 2;
+        s += `<rect x="${bx}" y="${by}" width="${cellW}" height="${cellH}" rx="${c.radius}" ry="${c.radius}" fill="${colors[k]}"/>`;
+      });
+    }
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  svg.innerHTML = s;
+  document.getElementById("readout").textContent = now.toTimeString().slice(0, 8);
+}
+setInterval(draw, 250); draw();
+</script>

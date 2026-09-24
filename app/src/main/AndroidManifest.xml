@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.burnilab.radixwatchface">
+
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <application
+        android:allowBackup="true"
+        android:hasCode="false"
+        android:label="@string/app_name">
+
+        <!-- Watch Face Format runtime version.
+             v1 = Wear OS 4, v2 = Wear OS 5.  Bump to 3/4 if you target
+             newer WFF features; verify against the current sample. -->
+        <property
+            android:name="com.google.wear.watchface.format.version"
+            android:value="4" />
+
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
+
+        <meta-data
+            android:name="com.google.android.wearable.watchface.preview"
+            android:resource="@drawable/preview" />
+    </application>
+</manifest>

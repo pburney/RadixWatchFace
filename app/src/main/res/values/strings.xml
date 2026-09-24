@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Radix</string>
+
+    <string name="cfg_base">Numeral base</string>
+    <string name="opt_binary">Binary</string>
+    <string name="opt_quinary">Quinary (base 5)</string>
+
+    <string name="cfg_palette">Color scheme</string>
+    <string name="palette_rainbow">Rainbow</string>
+    <string name="palette_colorblind">Colorblind-safe</string>
+    <string name="palette_green">Green shades</string>
+    <string name="palette_emerald">Emerald shades</string>
+    <string name="palette_teal">Teal shades</string>
+    <string name="palette_cyan">Cyan shades</string>
+    <string name="palette_blue">Blue shades</string>
+    <string name="palette_indigo">Indigo shades</string>
+    <string name="palette_violet">Violet shades</string>
+    <string name="palette_purple">Purple shades</string>
+    <string name="palette_magenta">Magenta shades</string>
+    <string name="palette_pink">Pink shades</string>
+    <string name="palette_red">Red shades</string>
+    <string name="palette_orange">Orange shades</string>
+    <string name="palette_amber">Amber shades</string>
+    <string name="palette_yellow">Yellow shades</string>
+    <string name="palette_olive">Olive shades</string>
+    <string name="palette_white">White shades</string>
+
+    <string name="cfg_bcd">BCD mode</string>
+    <string name="cfg_theme">Light theme</string>
+    <string name="cfg_labels">Row labels</string>
+    <string name="cfg_color">LED color</string>
+
+    <string name="slot_heart">Heart rate</string>
+    <string name="slot_weather">Weather</string>
+    <string name="slot_date">Date</string>
+
+    <string name="color_green">Green</string>
+    <string name="color_emerald">Emerald</string>
+    <string name="color_teal">Teal</string>
+    <string name="color_cyan">Cyan</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_indigo">Indigo</string>
+    <string name="color_violet">Violet</string>
+    <string name="color_purple">Purple</string>
+    <string name="color_magenta">Magenta</string>
+    <string name="color_pink">Pink</string>
+    <string name="color_red">Red</string>
+    <string name="color_orange">Orange</string>
+    <string name="color_amber">Amber</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_olive">Olive</string>
+    <string name="color_white">White</string>
+
+    <string name="flavor_binary_classic">Binary Classic</string>
+    <string name="flavor_quinary_dark">Quinary Dark</string>
+    <string name="flavor_quinary_light">Quinary Light</string>
+</resources>
