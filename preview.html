@@ -74,12 +74,29 @@ function draw() {
       });
     } else {
       const cellW = (c.w - SUB_GAP) / 2, cellH = (c.h - SUB_GAP) / 2;
+      const r = c.radius;
+      // Mirrors the real WFF output's corner-squaring trick (RoundRectangle
+      // only takes ONE uniform radius for all 4 corners -- there's no
+      // per-corner control) -- round every corner, then paint same-color
+      // squares over the 3 corners that face the digit group's own center,
+      // leaving only the true OUTER corner rounded. That's what makes
+      // adjacent lit cells fuse into one seamless rounded shape instead of
+      // 4 separate pills. The preview was missing this (each cell was fully
+      // rounded on all 4 corners), which is exactly what looked like a
+      // "lost" full shape -- the real generated XML never had this bug.
+      const CORNER_XY = {TL: [0, 0], TR: [cellW - r, 0], BL: [0, cellH - r], BR: [cellW - r, cellH - r]};
       POSITIONS.forEach((pos, k) => {
         if (digit <= k) return;
         const [sx, sy] = POS_SIGN[pos];
         const offX = sx * (cellW / 2 + SUB_GAP / 2), offY = sy * (cellH / 2 + SUB_GAP / 2);
         const bx = c.x + offX - cellW / 2, by = c.y + offY - cellH / 2;
-        s += `<rect x="${bx}" y="${by}" width="${cellW}" height="${cellH}" rx="${c.radius}" ry="${c.radius}" fill="${colors[k]}"/>`;
+        s += `<rect x="${bx}" y="${by}" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${colors[k]}"/>`;
+        if (r > 0) {
+          for (const [corner, [cx, cy]] of Object.entries(CORNER_XY)) {
+            if (corner === pos) continue;
+            s += `<rect x="${bx + cx}" y="${by + cy}" width="${r}" height="${r}" fill="${colors[k]}"/>`;
+          }
+        }
       });
     }
     if (showLabels && c.label) {
