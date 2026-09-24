@@ -124,3 +124,28 @@ def palette_for(option_id: str, n: int) -> list[str]:
     if option_id == "colorblind":
         return colorblind_palette(n)
     return monochrome_palette(ANCHOR_ARGB[option_id], n)
+
+
+def ensure_contrast(argb: str, theme: str) -> str:
+    """For bases with only ONE color (Binary) there's no dashed outline or
+    neighboring different-colored block to fall back on, so a color that's
+    too close to the background is genuinely invisible, not just subtle --
+    caught by actually looking at a screenshot: Colorblind-safe's first
+    color is pure white (OKABE_ITO[0], chosen to match Quinary's own
+    TR position), which nearly vanishes against light theme's white
+    background. Clamps lightness away from the background's own lightness,
+    preserving hue/saturation -- a saturated color keeps its hue at a
+    different lightness; white/gray (s=0) simply becomes a mid-gray, which
+    is exactly the legible "on" dot light theme needs. Only ever used for
+    single-color bases; Quinary's multi-color groups have the dashed
+    outline plus neighboring colors as legibility anchors, which is real
+    but visibly weaker protection -- not fixed here, watch for it."""
+    r, g, b = _hex_to_rgb01(argb)
+    h, l, s = colorsys.rgb_to_hls(r, g, b)
+    if theme == "light" and l > 0.75:
+        l = 0.35
+    elif theme == "dark" and l < 0.20:
+        l = 0.65
+    else:
+        return argb
+    return _rgb01_to_argb_hex(colorsys.hls_to_rgb(h, l, s))

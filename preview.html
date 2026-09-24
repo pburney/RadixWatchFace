@@ -30,16 +30,18 @@ const QUINARY_LAYOUT = [{x:157.0,y:162.0,w:112.0,h:72.0,shape:"bar",radius:8,pla
 const DECIMAL_X = 381;
 const DECIMAL_ROWS = [["[HOUR_0_23]",162],["[MINUTE]",249],["[SECOND]",336]];
 const BINARY_LAYOUT = [{x:110.0,y:173.0,k:5,src:"[HOUR_0_23]",label:"H"},{x:156.0,y:173.0,k:4,src:"[HOUR_0_23]",label:null},{x:202.0,y:173.0,k:3,src:"[HOUR_0_23]",label:null},{x:248.0,y:173.0,k:2,src:"[HOUR_0_23]",label:null},{x:294.0,y:173.0,k:1,src:"[HOUR_0_23]",label:null},{x:340.0,y:173.0,k:0,src:"[HOUR_0_23]",label:null},{x:110.0,y:225.0,k:5,src:"[MINUTE]",label:"M"},{x:156.0,y:225.0,k:4,src:"[MINUTE]",label:null},{x:202.0,y:225.0,k:3,src:"[MINUTE]",label:null},{x:248.0,y:225.0,k:2,src:"[MINUTE]",label:null},{x:294.0,y:225.0,k:1,src:"[MINUTE]",label:null},{x:340.0,y:225.0,k:0,src:"[MINUTE]",label:null},{x:110.0,y:277.0,k:5,src:"[SECOND]",label:"S"},{x:156.0,y:277.0,k:4,src:"[SECOND]",label:null},{x:202.0,y:277.0,k:3,src:"[SECOND]",label:null},{x:248.0,y:277.0,k:2,src:"[SECOND]",label:null},{x:294.0,y:277.0,k:1,src:"[SECOND]",label:null},{x:340.0,y:277.0,k:0,src:"[SECOND]",label:null}];
-const BINARY_GX = 46, BINARY_GY = 52, LED_R = 15, OFF_COLOR = "#1C1C1C";
+const BINARY_GX = 46, BINARY_GY = 52, LED_R = 15;
+const OFF = {dark: "#1C1C1C", light: "#DEDEDE"};
 const BINARY_DECIMAL_W = 44;
-const OUTLINE = "#808080", LABEL_COLOR = "#808080";
+const OUTLINE = {dark: "#FFFFFF", light: "#111111"};
+const LABEL_COLOR = "#808080";
 const BG = {dark: "#111111", light: "#FFFFFF"};
 const svg = document.getElementById("face");
 const paletteSel = document.getElementById("palette");
 const baseSel = document.getElementById("base");
 
 // ---- palette generation, ported verbatim from tools/palettes.py ----
-const ANCHORS = [["green","Green","#FF33FF66"],["emerald","Emerald","#FF00C853"],["teal","Teal","#FF1DE9B6"],["cyan","Cyan","#FF33E1FF"],["blue","Blue","#FF33B5FF"],["indigo","Indigo","#FF5C6BC0"],["violet","Violet","#FF9B7BFF"],["purple","Purple","#FFC061FF"],["magenta","Magenta","#FFFF5CD2"],["pink","Pink","#FFFF6EA6"],["red","Red","#FFFF5A5A"],["orange","Orange","#FFFF9E42"],["amber","Amber","#FFFFC24B"],["yellow","Yellow","#FFFFE14D"],["olive","Olive","#FF8C8F5A"],["white","White","#FFF5F5F5"]];
+const ANCHORS = [["green","Green","#33FF66"],["emerald","Emerald","#00C853"],["teal","Teal","#1DE9B6"],["cyan","Cyan","#33E1FF"],["blue","Blue","#33B5FF"],["indigo","Indigo","#5C6BC0"],["violet","Violet","#9B7BFF"],["purple","Purple","#C061FF"],["magenta","Magenta","#FF5CD2"],["pink","Pink","#FF6EA6"],["red","Red","#FF5A5A"],["orange","Orange","#FF9E42"],["amber","Amber","#FFC24B"],["yellow","Yellow","#FFE14D"],["olive","Olive","#8C8F5A"],["white","White","#F5F5F5"]];
 const OKABE_ITO = ["#FFFFFF","#56B4E9","#E69F00","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7"];
 const ROYGBIV_START_DEG = 0, ROYGBIV_END_DEG = 270;
 function hexToHsl(hex) {
@@ -84,6 +86,17 @@ function paletteFor(id, n) {
   const anchor = ANCHORS.find(a => a[0] === id);
   return monochromePalette(anchor[2], n);
 }
+function ensureContrast(hex, theme) {
+  // Mirrors palettes.py's ensure_contrast() -- single-color bases (Binary)
+  // have no outline/neighboring color to fall back on, so a color too close
+  // to the background is genuinely invisible, not just subtle.
+  const [h, s, l0] = hexToHsl(hex);
+  let l = l0;
+  if (theme === "light" && l > 0.75) l = 0.35;
+  else if (theme === "dark" && l < 0.20) l = 0.65;
+  else return hex;
+  return hslToHex(h, s, l);
+}
 const PALETTE_OPTIONS = [["rainbow","Rainbow"],["colorblind","Colorblind-safe"], ...ANCHORS.map(a => [a[0], a[1]+" shades"])];
 PALETTE_OPTIONS.forEach(([id, label]) => {
   const el = document.createElement("option"); el.value = id; el.textContent = label;
@@ -104,18 +117,18 @@ function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
   return `M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y1} Z`;
 }
-function outlineShape(c) {
-  const stroke = `fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
+function outlineShape(c, outline) {
+  const stroke = `fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
   if (c.shape === "pie") return `<circle cx="${c.x}" cy="${c.y}" r="${c.w / 2}" ${stroke}/>`;
   const x = c.x - c.w / 2, y = c.y - c.h / 2;
   if (c.radius > 0) return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" rx="${c.radius}" ry="${c.radius}" ${stroke}/>`;
   return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" ${stroke}/>`;
 }
 
-function drawQuinary(colors, showLabels, now) {
+function drawQuinary(colors, outline, showLabels, now) {
   let s = "";
   for (const c of QUINARY_LAYOUT) {
-    s += outlineShape(c);
+    s += outlineShape(c, outline);
     const digit = quinaryDigit(c.src, c.place, now);
     if (c.shape === "pie") {
       const r = c.w / 2;
@@ -162,10 +175,10 @@ function drawQuinary(colors, showLabels, now) {
   return s;
 }
 
-function drawBinary(color, showLabels, now) {
+function drawBinary(color, offColor, showLabels, now) {
   let s = "";
   for (const c of BINARY_LAYOUT) {
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${OFF_COLOR}"/>`;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${offColor}"/>`;
     if (binaryBit(c.src, c.k, now)) {
       s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${color}"/>`;
     }
@@ -188,13 +201,14 @@ function drawBinary(color, showLabels, now) {
 function draw() {
   const now = new Date();
   const light = document.getElementById("theme").checked;
+  const key = light ? "light" : "dark";
   const showLabels = document.getElementById("labels").checked;
   const base = baseSel.value;
-  let s = `<rect x="0" y="0" width="450" height="450" fill="${BG[light ? "light" : "dark"]}"/>`;
+  let s = `<rect x="0" y="0" width="450" height="450" fill="${BG[key]}"/>`;
   if (base === "binary") {
-    s += drawBinary(paletteFor(paletteSel.value, 1)[0], showLabels, now);
+    s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
   } else {
-    s += drawQuinary(paletteFor(paletteSel.value, 4), showLabels, now);
+    s += drawQuinary(paletteFor(paletteSel.value, 4), OUTLINE[key], showLabels, now);
   }
   svg.innerHTML = s;
   document.getElementById("readout").textContent = now.toTimeString().slice(0, 8) + "  (" + base + ")";

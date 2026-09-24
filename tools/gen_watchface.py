@@ -14,14 +14,20 @@ order (declaration order = on-device editor order, independent of how the
 Scene structurally nests them for rendering).
 
 Structural nesting in <Scene> (a separate concern from the above):
-  BooleanConfiguration id="theme"    -- outer, background fill ONLY
-  ListConfiguration id="base"        -- one ListOption per numeral base
-    -> ListConfiguration id="palette"  (nested, 18 options, this base's
-       digit-group colors baked in per option -- see tools/palettes.py)
-    -> BooleanConfiguration id="labels" (nested SIBLING of palette, not
-       nested inside it -- label text/position depends on base, not on
-       which colors are chosen, so keeping it a sibling avoids a 3rd level
-       of nesting)
+  BooleanConfiguration id="theme"    -- OUTER (2026-09-24: base moved inside
+    this, see below), background fill first per branch
+    -> ListConfiguration id="base"     -- one ListOption per numeral base,
+       DUPLICATED per theme branch, so outline/off-LED colors can be real
+       per-branch literals rather than a [CONFIGURATION.theme] read from
+       outside its own structural branch (the exact unverified cross-branch
+       pattern that silently broke Quinary's complication tinting once
+       already -- not gambling on that again for a cosmetic color choice)
+      -> ListConfiguration id="palette"  (nested, 18 options, this base's
+         digit-group colors baked in per option -- see tools/palettes.py)
+      -> BooleanConfiguration id="labels" (nested SIBLING of palette, not
+         nested inside it -- label text/position depends on base, not on
+         which colors are chosen, so keeping it a sibling avoids a 4th
+         level of nesting)
   ComplicationSlot x3 -- Scene-level, added LAST (Quinary's paint-order
     lesson: a background declared after a ComplicationSlot silently paints
     over it), fixed neutral tint (COMPLICATION_TINT -- a ListConfiguration's
@@ -29,11 +35,10 @@ Structural nesting in <Scene> (a separate concern from the above):
     can't reference the palette directly; same simplification Quinary
     already uses for theme).
 
-Outline dash color and label/cheat-mode text color are fixed neutral grays
-rather than theme-dependent, for the same cross-branch-reference reason
-complications use a fixed tint -- and this isn't even a new simplification,
-Quinary's own THEMES dict already used the identical #FF808080 label color
-in both dark and light themes.
+Label/cheat-mode text color is still one fixed neutral gray regardless of
+theme -- not a simplification made under duress, Quinary's own THEMES dict
+already used the identical #FF808080 in both dark and light themes, so
+there was never a real reason to duplicate it.
 """
 
 import sys
@@ -47,7 +52,7 @@ from wff_common import (
 )
 from palettes import (
     PALETTE_OPTIONS, palette_for, ANCHOR_COLORS, OKABE_ITO,
-    ROYGBIV_START_DEG, ROYGBIV_END_DEG,
+    ROYGBIV_START_DEG, ROYGBIV_END_DEG, ensure_contrast,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -57,11 +62,20 @@ HEART_ICON = ROOT / "app" / "src" / "main" / "res" / "drawable" / "heart_icon.pn
 PREVIEW_IMG = ROOT / "app" / "src" / "main" / "res" / "drawable" / "preview.png"
 
 RADIUS = CANVAS / 2
-LABEL_COLOR = "#FF808080"          # fixed, theme-independent (see module docstring)
-OUTLINE_COLOR = "#80808080"        # fixed, semi-transparent mid-gray -- readable on
-                                    # both dark and light backgrounds without needing
-                                    # per-theme branching
+LABEL_COLOR = "#FF808080"          # fixed, theme-independent -- Quinary's own THEMES
+                                    # dict already used this identical gray in both
+                                    # dark and light, so no duplication needed here
 BG_DARK, BG_LIGHT = "#FF111111", "#FFFFFFFF"
+
+# 2026-09-24: outline and off-LED colors DO need to be theme-specific (Paul: light
+# mode's solid dark dim-LEDs read as jarring against a white background, and its
+# digit-group outlines were washed out compared to dark mode's). Rather than have
+# these read [CONFIGURATION.theme] from outside its own structural branch -- the
+# exact unverified cross-branch pattern that silently broke Quinary's complication
+# tinting once already -- `base` is nested INSIDE each theme BooleanOption branch
+# (see build_wff()), so these colors are simple per-branch literals, not a runtime
+# config read at all. Matches original QuinaryWatchFace's own per-theme values.
+OUTLINE_DARK, OUTLINE_LIGHT = "#99FFFFFF", "#99111111"
 
 # ---- Quinary (base 5) geometry -- ported verbatim from QuinaryWatchFace ----
 QUAD = 72
@@ -134,11 +148,11 @@ def full_layout():
 DECIMAL_ROWS = [("[HOUR_0_23]", ROW_Y[0]), ("[MINUTE]", ROW_Y[1]), ("[SECOND]", ROW_Y[2])]
 
 
-def wff_quad_outlines(layout):
+def wff_quad_outlines(layout, outline_color):
     out = []
     for c in layout:
         x, y = round(c["x"] - c["w"] / 2), round(c["y"] - c["h"] / 2)
-        stroke = f'<Stroke color="{OUTLINE_COLOR}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/>'
+        stroke = f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/>'
         if c["shape"] == "pie":
             shape_el = f'<Ellipse x="0" y="0" width="{c["w"]}" height="{c["h"]}">{stroke}</Ellipse>'
         elif c["radius"] > 0:
@@ -237,35 +251,35 @@ def wff_decimal_readout():
     return "\n".join(out)
 
 
-def quinary_palette_list_option(option_id: str, layout) -> str:
+def quinary_palette_list_option(option_id: str, layout, theme: str) -> str:
     colors = palette_for(option_id, 4)
     return (f'        <ListOption id="{option_id}">\n'
-            f'          <Group name="palette_{option_id}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
+            f'          <Group name="palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
             f'{wff_quads(layout, colors)}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
 
-def build_base_quinary() -> str:
+def build_base_quinary(theme: str, outline_color: str) -> str:
     layout = full_layout()
     palette_options = "\n".join(
-        quinary_palette_list_option(opt_id, layout) for opt_id, _res, _anchor in PALETTE_OPTIONS)
+        quinary_palette_list_option(opt_id, layout, theme) for opt_id, _res, _anchor in PALETTE_OPTIONS)
     # ListOption's schema only permits ONE direct child (confirmed the hard
     # way: validator rejected 3 siblings directly under ListOption) -- same
     # constraint BooleanOption already has, which is why every existing
     # BooleanOption in the sibling projects wraps its content in exactly one
     # Group. Do the same here: one Group holding outlines + palette + labels.
     return f"""    <ListOption id="quinary">
-      <Group name="quinary" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-        <Group name="quinary_outlines" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-{wff_quad_outlines(layout)}
+      <Group name="quinary_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+        <Group name="quinary_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_quad_outlines(layout, outline_color)}
         </Group>
         <ListConfiguration id="palette">
 {palette_options}
         </ListConfiguration>
         <BooleanConfiguration id="labels">
           <BooleanOption id="TRUE">
-            <Group name="quinary_labels" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+            <Group name="quinary_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
 {wff_labels(layout)}
 {wff_decimal_readout()}
             </Group>
@@ -286,7 +300,7 @@ def build_base_quinary() -> str:
 # picker without breaking its own established visual identity. ----
 LED_R = 15
 GX, GY = 46, 52
-OFF_COLOR = "#FF1C1C1C"
+OFF_DARK, OFF_LIGHT = "#FF1C1C1C", "#FFDEDEDE"
 BINARY_ROWS = [("H", "[HOUR_0_23]", 6), ("M", "[MINUTE]", 6), ("S", "[SECOND]", 6)]
 
 
@@ -305,14 +319,14 @@ def binary_layout():
                        label=label if col == 0 else None, label_x=cx - GX, label_y=cy)
 
 
-def wff_binary_cells(layout, color):
+def wff_binary_cells(layout, color, off_color):
     d, lit = [], []
     for c in layout:
         x, y = round(c["x"] - LED_R), round(c["y"] - LED_R)
         w = LED_R * 2
         d.append(
             f'      <PartDraw x="{x}" y="{y}" width="{w}" height="{w}">\n'
-            f'        <Ellipse x="0" y="0" width="{w}" height="{w}"><Fill color="{OFF_COLOR}"/></Ellipse>\n'
+            f'        <Ellipse x="0" y="0" width="{w}" height="{w}"><Fill color="{off_color}"/></Ellipse>\n'
             f'      </PartDraw>')
         name = f'b{c["k"]}_{round(c["x"])}_{round(c["y"])}'
         lit.append(
@@ -365,27 +379,27 @@ def wff_binary_decimal_readout():
     return "\n".join(out)
 
 
-def binary_palette_list_option(option_id: str, layout) -> str:
-    color = palette_for(option_id, 1)[0]
+def binary_palette_list_option(option_id: str, layout, theme: str, off_color: str) -> str:
+    color = ensure_contrast(palette_for(option_id, 1)[0], theme)
     return (f'        <ListOption id="{option_id}">\n'
-            f'          <Group name="binary_palette_{option_id}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
-            f'{wff_binary_cells(layout, color)}\n'
+            f'          <Group name="binary_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
+            f'{wff_binary_cells(layout, color, off_color)}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
 
-def build_base_binary() -> str:
+def build_base_binary(theme: str, off_color: str) -> str:
     layout = list(binary_layout())
     palette_options = "\n".join(
-        binary_palette_list_option(opt_id, layout) for opt_id, _res, _anchor in PALETTE_OPTIONS)
+        binary_palette_list_option(opt_id, layout, theme, off_color) for opt_id, _res, _anchor in PALETTE_OPTIONS)
     return f"""    <ListOption id="binary">
-      <Group name="binary" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+      <Group name="binary_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
         <ListConfiguration id="palette">
 {palette_options}
         </ListConfiguration>
         <BooleanConfiguration id="labels">
           <BooleanOption id="TRUE">
-            <Group name="binary_labels" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+            <Group name="binary_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
 {wff_binary_labels(layout)}
 {wff_binary_decimal_readout()}
             </Group>
@@ -427,25 +441,39 @@ def build_wff() -> str:
   </UserConfigurations>
 
   <Scene>
-    <!-- theme controls ONLY the background fill; digit-group colors come
-         entirely from the palette selection now, independent of theme. -->
+    <!-- `base` is nested INSIDE each theme branch (not a separate sibling),
+         specifically so outline/off-LED colors can be real per-branch
+         literals instead of a [CONFIGURATION.theme] read from outside its
+         own structural branch, the exact unverified cross-branch pattern
+         that silently broke Quinary's complication tinting once already.
+         Costs real file size (the whole base x palette tree is now
+         duplicated once per theme) in exchange for not gambling on that
+         again. Background fill still lives here too, first, per Quinary's
+         document-order lesson (painted before the digit content). -->
     <BooleanConfiguration id="theme">
       <BooleanOption id="FALSE">
-        <PartDraw x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-          <Rectangle x="0" y="0" width="{CANVAS}" height="{CANVAS}"><Fill color="{BG_DARK}"/></Rectangle>
-        </PartDraw>
+        <Group name="theme_dark" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+          <PartDraw x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+            <Rectangle x="0" y="0" width="{CANVAS}" height="{CANVAS}"><Fill color="{BG_DARK}"/></Rectangle>
+          </PartDraw>
+          <ListConfiguration id="base">
+{build_base_quinary("dark", OUTLINE_DARK)}
+{build_base_binary("dark", OFF_DARK)}
+          </ListConfiguration>
+        </Group>
       </BooleanOption>
       <BooleanOption id="TRUE">
-        <PartDraw x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-          <Rectangle x="0" y="0" width="{CANVAS}" height="{CANVAS}"><Fill color="{BG_LIGHT}"/></Rectangle>
-        </PartDraw>
+        <Group name="theme_light" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+          <PartDraw x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+            <Rectangle x="0" y="0" width="{CANVAS}" height="{CANVAS}"><Fill color="{BG_LIGHT}"/></Rectangle>
+          </PartDraw>
+          <ListConfiguration id="base">
+{build_base_quinary("light", OUTLINE_LIGHT)}
+{build_base_binary("light", OFF_LIGHT)}
+          </ListConfiguration>
+        </Group>
       </BooleanOption>
     </BooleanConfiguration>
-
-    <ListConfiguration id="base">
-{build_base_quinary()}
-{build_base_binary()}
-    </ListConfiguration>
 
     <!-- complications: direct Scene children, declared AFTER the theme/base
          blocks above (Quinary's document-order lesson: a background drawn
@@ -493,9 +521,11 @@ const QUINARY_LAYOUT = __QUINARY_LAYOUT_JS__;
 const DECIMAL_X = __DECIMAL_X__;
 const DECIMAL_ROWS = __DECIMAL_ROWS_JS__;
 const BINARY_LAYOUT = __BINARY_LAYOUT_JS__;
-const BINARY_GX = __BINARY_GX__, BINARY_GY = __BINARY_GY__, LED_R = __LED_R__, OFF_COLOR = "__OFF_COLOR__";
+const BINARY_GX = __BINARY_GX__, BINARY_GY = __BINARY_GY__, LED_R = __LED_R__;
+const OFF = {dark: "__OFF_DARK__", light: "__OFF_LIGHT__"};
 const BINARY_DECIMAL_W = __BINARY_DECIMAL_W__;
-const OUTLINE = "__OUTLINE__", LABEL_COLOR = "__LABEL_COLOR__";
+const OUTLINE = {dark: "__OUTLINE_DARK__", light: "__OUTLINE_LIGHT__"};
+const LABEL_COLOR = "__LABEL_COLOR__";
 const BG = {dark: "__BG_DARK__", light: "__BG_LIGHT__"};
 const svg = document.getElementById("face");
 const paletteSel = document.getElementById("palette");
@@ -547,6 +577,17 @@ function paletteFor(id, n) {
   const anchor = ANCHORS.find(a => a[0] === id);
   return monochromePalette(anchor[2], n);
 }
+function ensureContrast(hex, theme) {
+  // Mirrors palettes.py's ensure_contrast() -- single-color bases (Binary)
+  // have no outline/neighboring color to fall back on, so a color too close
+  // to the background is genuinely invisible, not just subtle.
+  const [h, s, l0] = hexToHsl(hex);
+  let l = l0;
+  if (theme === "light" && l > 0.75) l = 0.35;
+  else if (theme === "dark" && l < 0.20) l = 0.65;
+  else return hex;
+  return hslToHex(h, s, l);
+}
 const PALETTE_OPTIONS = [["rainbow","Rainbow"],["colorblind","Colorblind-safe"], ...ANCHORS.map(a => [a[0], a[1]+" shades"])];
 PALETTE_OPTIONS.forEach(([id, label]) => {
   const el = document.createElement("option"); el.value = id; el.textContent = label;
@@ -562,18 +603,18 @@ function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
   return `M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y1} Z`;
 }
-function outlineShape(c) {
-  const stroke = `fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
+function outlineShape(c, outline) {
+  const stroke = `fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
   if (c.shape === "pie") return `<circle cx="${c.x}" cy="${c.y}" r="${c.w / 2}" ${stroke}/>`;
   const x = c.x - c.w / 2, y = c.y - c.h / 2;
   if (c.radius > 0) return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" rx="${c.radius}" ry="${c.radius}" ${stroke}/>`;
   return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" ${stroke}/>`;
 }
 
-function drawQuinary(colors, showLabels, now) {
+function drawQuinary(colors, outline, showLabels, now) {
   let s = "";
   for (const c of QUINARY_LAYOUT) {
-    s += outlineShape(c);
+    s += outlineShape(c, outline);
     const digit = quinaryDigit(c.src, c.place, now);
     if (c.shape === "pie") {
       const r = c.w / 2;
@@ -620,10 +661,10 @@ function drawQuinary(colors, showLabels, now) {
   return s;
 }
 
-function drawBinary(color, showLabels, now) {
+function drawBinary(color, offColor, showLabels, now) {
   let s = "";
   for (const c of BINARY_LAYOUT) {
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${OFF_COLOR}"/>`;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${offColor}"/>`;
     if (binaryBit(c.src, c.k, now)) {
       s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${color}"/>`;
     }
@@ -646,13 +687,14 @@ function drawBinary(color, showLabels, now) {
 function draw() {
   const now = new Date();
   const light = document.getElementById("theme").checked;
+  const key = light ? "light" : "dark";
   const showLabels = document.getElementById("labels").checked;
   const base = baseSel.value;
-  let s = `<rect x="0" y="0" width="__CANVAS__" height="__CANVAS__" fill="${BG[light ? "light" : "dark"]}"/>`;
+  let s = `<rect x="0" y="0" width="__CANVAS__" height="__CANVAS__" fill="${BG[key]}"/>`;
   if (base === "binary") {
-    s += drawBinary(paletteFor(paletteSel.value, 1)[0], showLabels, now);
+    s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
   } else {
-    s += drawQuinary(paletteFor(paletteSel.value, 4), showLabels, now);
+    s += drawQuinary(paletteFor(paletteSel.value, 4), OUTLINE[key], showLabels, now);
   }
   svg.innerHTML = s;
   document.getElementById("readout").textContent = now.toTimeString().slice(0, 8) + "  (" + base + ")";
@@ -687,13 +729,21 @@ def build_html() -> str:
         "__BINARY_GX__": str(GX),
         "__BINARY_GY__": str(GY),
         "__LED_R__": str(LED_R),
-        "__OFF_COLOR__": css(OFF_COLOR),
+        "__OFF_DARK__": css(OFF_DARK),
+        "__OFF_LIGHT__": css(OFF_LIGHT),
         "__BINARY_DECIMAL_W__": str(BINARY_DECIMAL_W),
-        "__ANCHORS_JS__": "[" + ",".join(f'["{aid}","{name}","{argb}"]' for aid, name, argb in ANCHOR_COLORS) + "]",
+        # ANCHOR_COLORS stores WFF-format ARGB ("#FFFF5A5A"); the JS
+        # hexToHsl() mirrors palettes.py's monochrome_palette() math, which
+        # expects a plain 6-digit "#RRGGBB" string -- strip alpha with css()
+        # here, same as every other color fed into the JS. (Caught by
+        # actually looking at a screenshot: "Red shades" rendered yellow,
+        # because the alpha byte was silently being read as part of red.)
+        "__ANCHORS_JS__": "[" + ",".join(f'["{aid}","{name}","{css(argb)}"]' for aid, name, argb in ANCHOR_COLORS) + "]",
         "__OKABE_ITO_JS__": "[" + ",".join(f'"{css(c)}"' for c in OKABE_ITO) + "]",
         "__ROYGBIV_START__": str(ROYGBIV_START_DEG),
         "__ROYGBIV_END__": str(ROYGBIV_END_DEG),
-        "__OUTLINE__": css(OUTLINE_COLOR),
+        "__OUTLINE_DARK__": css(OUTLINE_DARK),
+        "__OUTLINE_LIGHT__": css(OUTLINE_LIGHT),
         "__LABEL_COLOR__": css(LABEL_COLOR),
         "__BG_DARK__": css(BG_DARK),
         "__BG_LIGHT__": css(BG_LIGHT),
