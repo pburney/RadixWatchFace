@@ -44,14 +44,17 @@ const OCT_ANGLES = Object.fromEntries(OCT_POSITIONS.map((p, i) => [p, [i * 45, (
 const OCTAGON_LAYOUT = [{x:181.0,y:162.0,w:72.0,h:72.0,place:1,src:"[HOUR_0_23]",label:"H",label_x:117.0,label_y:162},{x:269.0,y:162.0,w:72.0,h:72.0,place:0,src:"[HOUR_0_23]",label:null,label_x:117.0,label_y:162},{x:181.0,y:249.0,w:72.0,h:72.0,place:1,src:"[MINUTE]",label:"M",label_x:117.0,label_y:249},{x:269.0,y:249.0,w:72.0,h:72.0,place:0,src:"[MINUTE]",label:null,label_x:117.0,label_y:249},{x:181.0,y:336.0,w:72.0,h:72.0,place:1,src:"[SECOND]",label:"S",label_x:117.0,label_y:336},{x:269.0,y:336.0,w:72.0,h:72.0,place:0,src:"[SECOND]",label:null,label_x:117.0,label_y:336}];
 const OCT_DECIMAL_X = 337.0;
 const OCT_DECIMAL_ROWS = [["[HOUR_0_23]",162],["[MINUTE]",249],["[SECOND]",336]];
+const OCTAL_LAYOUT = [{x:157.0,y:162.0,place:1,src:"[HOUR_0_23]",label:"H"},{x:293.0,y:162.0,place:0,src:"[HOUR_0_23]",label:null},{x:157.0,y:249.0,place:1,src:"[MINUTE]",label:"M"},{x:293.0,y:249.0,place:0,src:"[MINUTE]",label:null},{x:157.0,y:336.0,place:1,src:"[SECOND]",label:"S"},{x:293.0,y:336.0,place:0,src:"[SECOND]",label:null}];
 const OCTAL_WIFI_BOX_W = 112;   // Paul: "the width of the hours in Quinary"
 const OCTAL_WIFI_BAR_W = 10, OCTAL_WIFI_GAP = 7, OCTAL_WIFI_N = 7, OCTAL_WIFI_MAX_H = 40, OCTAL_WIFI_MIN_H = 14;
 const OCTAL_WIFI_STEP = (OCTAL_WIFI_MAX_H - OCTAL_WIFI_MIN_H) / (OCTAL_WIFI_N - 1);
-const OCTAL_LABEL_X = 101.0;
-const OCTAL_DECIMAL_X = 353.0;
+const OCTAL_LABEL_X = 77.0;
+const OCTAL_DECIMAL_X = 377.0;
+const OCTAL_DECIMAL_ROWS = [["[HOUR_0_23]",162],["[MINUTE]",249],["[SECOND]",336]];
 function octalWifiBarGeom(k) {
   const h = OCTAL_WIFI_MAX_H - k * OCTAL_WIFI_STEP;
-  const xOff = -OCTAL_WIFI_BOX_W / 2 + k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) + OCTAL_WIFI_BAR_W / 2;
+  // mirrored: tallest (first-lit) bar sits at the box's own RIGHT edge
+  const xOff = OCTAL_WIFI_BOX_W / 2 - k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) - OCTAL_WIFI_BAR_W / 2;
   return [h, xOff];
 }
 const TRI_POSITIONS = ["P0","P1"];
@@ -376,19 +379,16 @@ function drawOctagon(colors, outline, showLabels, now) {
 }
 
 function drawOctal(colors, outline, showLabels, now) {
-  // Reuses OCTAGON_LAYOUT's cx/cy/place/expr -- base 8 has the same (2,2,2)
-  // place pattern as base 9. WiFi bars instead of wedge-pie: 7 independent
-  // vertical bars, tallest first (leftmost) decreasing to shortest
-  // (rightmost). No dashed "off" guides (dropped for the same reason as
-  // Pentagon's tally marks), and each box is widened to OCTAL_WIFI_BOX_W
-  // (Quinary's own Hour-bar width) -- wider than the 88px gap between the
-  // two boxes, so they deliberately overlap: the ones-place's tallest
-  // (leftmost, first-lit) bar reaches into the tens-place box, reading as
-  // a signal flowing into the more significant place. Own label_x/
-  // decimal_x (OCTAL_LABEL_X/DECIMAL_X), not OCTAGON_LAYOUT's embedded
-  // ones, since the widened boxes moved them.
+  // Own layout (OCTAL_LAYOUT), not OCTAGON_LAYOUT -- base 8 has the same
+  // (2,2,2) place pattern as base 9 but Octal's row centers are now spaced
+  // like Quinary's own Hour bars (112px boxes, 24px gap, no overlap)
+  // instead of Octagon's 88px pitch. WiFi bars: 7 independent vertical
+  // bars, tallest (first-lit) at each box's own RIGHT edge, decreasing
+  // leftward -- growth reads as flowing toward the more significant place
+  // through direction alone, with the two boxes physically separate. No
+  // dashed "off" guides.
   let s = "";
-  for (const c of OCTAGON_LAYOUT) {
+  for (const c of OCTAL_LAYOUT) {
     const digit = octalDigit(c.src, c.place, now);
     const baselineY = c.y + OCTAL_WIFI_MAX_H / 2;
     for (let k = 0; k < OCTAL_WIFI_N; k++) {
@@ -404,7 +404,7 @@ function drawOctal(colors, outline, showLabels, now) {
     }
   }
   if (showLabels) {
-    for (const [src, cy] of OCT_DECIMAL_ROWS) {
+    for (const [src, cy] of OCTAL_DECIMAL_ROWS) {
       const v = String(Math.round(value(src, now))).padStart(2, "0");
       s += `<text x="${OCTAL_DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
     }
