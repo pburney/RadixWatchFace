@@ -474,6 +474,110 @@ def build_base_octagon(theme: str, outline_color: str) -> str:
     </ListOption>"""
 
 
+# ---- Quaternary (base 4) -- checked computationally like Octagon, not
+# assumed: base 4 needs 3 places for H too (4^2=16<=23<64=4^3), not just
+# M/S -- a NEW place pattern (3,3,3) distinct from both Quinary/Hexagon's
+# (2,3,3) and Octagon's (2,2,2). Since H now needs exactly as many places
+# as M/S, all three rows can share the same right-aligned-by-place layout
+# with no special "stretch H to match width" treatment -- and that layout
+# is, conveniently, IDENTICAL to Quinary's existing quad_layout() geometry
+# (RIGHT_EDGE_X, QUAD_PITCH, QUAD, ROW_Y all reused unchanged), just with H
+# generalized to behave like M/S instead of being a special case. Positions
+# 0..2 (n=base-1=3) wedge-split circle, same proven technique as every
+# other n>=2 base.
+QUAT_POSITIONS = ["P0", "P1", "P2"]
+QUAT_ANGLES = {f"P{i}": (i * 120, (i + 1) * 120) for i in range(3)}
+
+
+def quaternary_digit_expr(value_expr: str, place: int) -> str:
+    return f"round(floor(({value_expr}) / {4 ** place}) % 4)"
+
+
+def quaternary_layout():
+    specs = [(0, "H", "[HOUR_0_23]"), (1, "M", "[MINUTE]"), (2, "S", "[SECOND]")]
+    out = []
+    for row_i, label, expr in specs:
+        cy = ROW_Y[row_i]
+        for col in range(3):
+            place = 2 - col
+            cx = RIGHT_EDGE_X - place * QUAD_PITCH
+            out.append(dict(x=cx, y=cy, w=QUAD, place=place, expr=expr,
+                             label=label if col == 0 else None, label_x=LABEL_X, label_y=cy))
+    return out
+
+
+def wff_quat_outlines(layout, outline_color):
+    out = []
+    for c in layout:
+        r = c["w"] / 2
+        x, y = round(c["x"] - r), round(c["y"] - r)
+        out.append(
+            f'      <PartDraw x="{x}" y="{y}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+            f'        <Ellipse x="0" y="0" width="{round(r * 2)}" height="{round(r * 2)}">'
+            f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/></Ellipse>\n'
+            f'      </PartDraw>')
+    return "\n".join(out)
+
+
+def wff_quat_groups(layout, colors):
+    out = []
+    for c in layout:
+        digit_expr = quaternary_digit_expr(c["expr"], c["place"])
+        r = c["w"] / 2
+        bx, by = round(c["x"] - r), round(c["y"] - r)
+        for k, pos in enumerate(QUAT_POSITIONS):
+            start, end = QUAT_ANGLES[pos]
+            name = f"t{c['place']}_{round(c['x'])}_{round(c['y'])}_{k}"
+            out.append(
+                f'      <Condition>\n'
+                f'        <Expressions>\n'
+                f'          <Expression name="{name}"><![CDATA[(({digit_expr}) > {k})]]></Expression>\n'
+                f'        </Expressions>\n'
+                f'        <Compare expression="{name}">\n'
+                f'          <PartDraw x="{bx}" y="{by}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+                f'            <Arc centerX="{r}" centerY="{r}" width="{r}" height="{r}" '
+                f'startAngle="{start}" endAngle="{end}" direction="CLOCKWISE">\n'
+                f'              <WeightedStroke colors="{colors[k]}" thickness="{r}" cap="BUTT"/>\n'
+                f'            </Arc>\n'
+                f'          </PartDraw>\n'
+                f'        </Compare>\n'
+                f'      </Condition>')
+    return "\n".join(out)
+
+
+def quaternary_palette_list_option(option_id: str, layout, theme: str) -> str:
+    colors = palette_for(option_id, 3)
+    return (f'        <ListOption id="{option_id}">\n'
+            f'          <Group name="quat_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
+            f'{wff_quat_groups(layout, colors)}\n'
+            f'          </Group>\n'
+            f'        </ListOption>')
+
+
+def build_base_quaternary(theme: str, outline_color: str) -> str:
+    layout = quaternary_layout()
+    palette_options = "\n".join(
+        quaternary_palette_list_option(opt_id, layout, theme) for opt_id, _res, _anchor in PALETTE_OPTIONS)
+    return f"""    <ListOption id="quaternary">
+      <Group name="quaternary_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+        <Group name="quaternary_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_quat_outlines(layout, outline_color)}
+        </Group>
+        <ListConfiguration id="palette">
+{palette_options}
+        </ListConfiguration>
+        <BooleanConfiguration id="labels">
+          <BooleanOption id="TRUE">
+            <Group name="quaternary_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_labels(layout)}
+{wff_decimal_readout()}
+            </Group>
+          </BooleanOption>
+        </BooleanConfiguration>
+      </Group>
+    </ListOption>"""
+
+
 def quinary_palette_list_option(option_id: str, layout, theme: str) -> str:
     colors = palette_for(option_id, 4)
     return (f'        <ListOption id="{option_id}">\n'
@@ -644,9 +748,10 @@ def build_user_configurations() -> str:
     return f"""    <ListConfiguration id="palette" displayName="cfg_palette" defaultValue="colorblind">
 {palette_list_options}
     </ListConfiguration>
-    <ListConfiguration id="base" displayName="cfg_base" defaultValue="quinary">
-      <ListOption id="quinary" displayName="opt_quinary"/>
+    <ListConfiguration id="base" displayName="cfg_base" defaultValue="binary">
       <ListOption id="binary" displayName="opt_binary"/>
+      <ListOption id="quaternary" displayName="opt_quaternary"/>
+      <ListOption id="quinary" displayName="opt_quinary"/>
       <ListOption id="hexagon" displayName="opt_hexagon"/>
       <ListOption id="octagon" displayName="opt_octagon"/>
     </ListConfiguration>
@@ -682,8 +787,9 @@ def build_wff() -> str:
             <Rectangle x="0" y="0" width="{CANVAS}" height="{CANVAS}"><Fill color="{BG_DARK}"/></Rectangle>
           </PartDraw>
           <ListConfiguration id="base">
-{build_base_quinary("dark", OUTLINE_DARK)}
 {build_base_binary("dark", OFF_DARK)}
+{build_base_quaternary("dark", OUTLINE_DARK)}
+{build_base_quinary("dark", OUTLINE_DARK)}
 {build_base_hexagon("dark", OUTLINE_DARK)}
 {build_base_octagon("dark", OUTLINE_DARK)}
           </ListConfiguration>
@@ -695,8 +801,9 @@ def build_wff() -> str:
             <Rectangle x="0" y="0" width="{CANVAS}" height="{CANVAS}"><Fill color="{BG_LIGHT}"/></Rectangle>
           </PartDraw>
           <ListConfiguration id="base">
-{build_base_quinary("light", OUTLINE_LIGHT)}
 {build_base_binary("light", OFF_LIGHT)}
+{build_base_quaternary("light", OUTLINE_LIGHT)}
+{build_base_quinary("light", OUTLINE_LIGHT)}
 {build_base_hexagon("light", OUTLINE_LIGHT)}
 {build_base_octagon("light", OUTLINE_LIGHT)}
           </ListConfiguration>
@@ -733,8 +840,9 @@ _HTML_TMPL = r"""<!doctype html>
   <div style="margin-top:14px">
     <label>palette <select id="palette"></select></label>
     <label>base <select id="base">
-      <option value="quinary">Quinary</option>
       <option value="binary">Binary</option>
+      <option value="quaternary">Quaternary</option>
+      <option value="quinary">Quinary</option>
       <option value="hexagon">Hexagon</option>
       <option value="octagon">Octagon</option>
     </select></label>
@@ -755,6 +863,9 @@ const OCT_ANGLES = Object.fromEntries(OCT_POSITIONS.map((p, i) => [p, [i * 45, (
 const OCTAGON_LAYOUT = __OCTAGON_LAYOUT_JS__;
 const OCT_DECIMAL_X = __OCT_DECIMAL_X__;
 const OCT_DECIMAL_ROWS = __OCT_DECIMAL_ROWS_JS__;
+const QUAT_POSITIONS = ["P0","P1","P2"];
+const QUAT_ANGLES = Object.fromEntries(QUAT_POSITIONS.map((p, i) => [p, [i * 120, (i + 1) * 120]]));
+const QUATERNARY_LAYOUT = __QUATERNARY_LAYOUT_JS__;
 const QUINARY_LAYOUT = __QUINARY_LAYOUT_JS__;
 const DECIMAL_X = __DECIMAL_X__;
 const DECIMAL_ROWS = __DECIMAL_ROWS_JS__;
@@ -838,6 +949,7 @@ function quinaryDigit(src, place, now) { return Math.round(Math.floor(value(src,
 function binaryBit(src, k, now) { return Math.round(Math.floor(value(src, now) / (2 ** k)) % 2); }
 function hexDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (7 ** place)) % 7); }
 function octDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (9 ** place)) % 9); }
+function quatDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (4 ** place)) % 4); }
 function polar(cx, cy, r, deg) { const rad = deg * Math.PI / 180; return [cx + r * Math.sin(rad), cy - r * Math.cos(rad)]; }
 function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
@@ -955,6 +1067,34 @@ function drawOctagon(colors, outline, showLabels, now) {
   return s;
 }
 
+function drawQuaternary(colors, outline, showLabels, now) {
+  // Own layout (QUATERNARY_LAYOUT), not a QUINARY_LAYOUT reuse like Hexagon --
+  // base 4's H row needs 3 places same as M/S (unlike Quinary's H, which only
+  // needs 2), so every row here uses the QUAD-width/3-place treatment instead
+  // of Quinary's narrower 2-place hour bars. Rendered as 3-wedge circles.
+  let s = "";
+  for (const c of QUATERNARY_LAYOUT) {
+    const r = c.w / 2;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    const digit = quatDigit(c.src, c.place, now);
+    QUAT_POSITIONS.forEach((pos, k) => {
+      if (digit <= k) return;
+      const [a0, a1] = QUAT_ANGLES[pos];
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+    });
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
 function drawBinary(color, offColor, showLabels, now) {
   let s = "";
   for (const c of BINARY_LAYOUT) {
@@ -987,6 +1127,8 @@ function draw() {
   let s = `<rect x="0" y="0" width="__CANVAS__" height="__CANVAS__" fill="${BG[key]}"/>`;
   if (base === "binary") {
     s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
+  } else if (base === "quaternary") {
+    s += drawQuaternary(paletteFor(paletteSel.value, 3), OUTLINE[key], showLabels, now);
   } else if (base === "hexagon") {
     s += drawHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], showLabels, now);
   } else if (base === "octagon") {
@@ -1027,6 +1169,12 @@ def build_html() -> str:
             for c in octagon_layout()) + "]",
         "__OCT_DECIMAL_X__": str(OCT_DECIMAL_X),
         "__OCT_DECIMAL_ROWS_JS__": "[" + ",".join(f'["{expr}",{cy}]' for expr, cy in OCT_DECIMAL_ROWS) + "]",
+        "__QUATERNARY_LAYOUT_JS__": "[" + ",".join(
+            '{x:%.1f,y:%.1f,w:%.1f,place:%d,src:%s,label:%s,label_x:%s,label_y:%s}' % (
+                c["x"], c["y"], c["w"], c["place"],
+                repr(c["expr"]).replace("'", '"'), (f'"{c["label"]}"' if c["label"] else "null"),
+                c["label_x"], c["label_y"])
+            for c in quaternary_layout()) + "]",
         "__BINARY_LAYOUT_JS__": "[" + ",".join(
             '{x:%.1f,y:%.1f,k:%d,src:%s,label:%s}' % (
                 c["x"], c["y"], c["k"], repr(c["expr"]).replace("'", '"'),
