@@ -262,29 +262,26 @@ function drawPentagon(colors, outline, showLabels, now) {
   // positions 0-3, a diagonal slash across all 4 for position 4 (lit only
   // at digit=5). The slash is a plain rect rotated via SVG transform here,
   // mirroring the real WFF Group's static pivotX/pivotY/angle attributes.
+  // 2026-09-24: dropped the dashed "off" guides -- Paul: they get confused
+  // with the actual tally marks (a dashed bar next to a solid one reads as
+  // "another mark", unlike a dashed circle next to a pie fill). Unlit
+  // positions now draw nothing at all.
   let s = "";
   for (const c of QUINARY_LAYOUT) {
     const digit = pentDigit(c.src, c.place, now);
     for (let k = 0; k < PENT_TALLY_N; k++) {
+      if (digit <= k) continue;
       const bx = c.x + pentTallyBarX(k) - PENT_TALLY_BAR_W / 2;
       const by = c.y - PENT_TALLY_BAR_H / 2;
-      const on = digit > k;
       const rx = PENT_TALLY_BAR_W / 2;
-      if (on) {
-        s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
-      } else {
-        s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
-      }
+      s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
     }
-    const slashOn = digit > 4;
-    const slashRx = PENT_TALLY_BAR_W / 2;
-    s += `<g transform="translate(${c.x},${c.y}) rotate(${PENT_TALLY_SLASH_ANGLE})">`;
-    if (slashOn) {
+    if (digit > 4) {
+      const slashRx = PENT_TALLY_BAR_W / 2;
+      s += `<g transform="translate(${c.x},${c.y}) rotate(${PENT_TALLY_SLASH_ANGLE})">`;
       s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="${colors[4]}"/>`;
-    } else {
-      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      s += `</g>`;
     }
-    s += `</g>`;
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }

@@ -362,32 +362,6 @@ def _pent_tally_bar_x(k: int) -> float:
     return -_PENT_TALLY_TOTAL_W / 2 + k * (PENT_TALLY_BAR_W + PENT_TALLY_GAP) + PENT_TALLY_BAR_W / 2
 
 
-def wff_pent_outlines(layout, outline_color):
-    stroke = f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/>'
-    out = []
-    for c in layout:
-        for k in range(PENT_TALLY_N):
-            bx = round(c["x"] + _pent_tally_bar_x(k) - PENT_TALLY_BAR_W / 2)
-            by = round(c["y"] - PENT_TALLY_BAR_H / 2)
-            out.append(
-                f'      <PartDraw x="{bx}" y="{by}" width="{PENT_TALLY_BAR_W}" height="{PENT_TALLY_BAR_H}">\n'
-                f'        <RoundRectangle x="0" y="0" width="{PENT_TALLY_BAR_W}" height="{PENT_TALLY_BAR_H}" '
-                f'cornerRadiusX="{PENT_TALLY_BAR_W / 2}" cornerRadiusY="{PENT_TALLY_BAR_W / 2}">{stroke}</RoundRectangle>\n'
-                f'      </PartDraw>')
-        sx = round(c["x"] - PENT_TALLY_SLASH_LEN / 2)
-        sy = round(c["y"] - PENT_TALLY_BAR_W / 2)
-        out.append(
-            f'      <Group name="pent_slash_outline_{round(c["x"])}_{round(c["y"])}" '
-            f'x="{sx}" y="{sy}" width="{PENT_TALLY_SLASH_LEN}" height="{PENT_TALLY_BAR_W}" '
-            f'pivotX="0.5" pivotY="0.5" angle="{PENT_TALLY_SLASH_ANGLE}">\n'
-            f'        <PartDraw x="0" y="0" width="{PENT_TALLY_SLASH_LEN}" height="{PENT_TALLY_BAR_W}">\n'
-            f'          <RoundRectangle x="0" y="0" width="{PENT_TALLY_SLASH_LEN}" height="{PENT_TALLY_BAR_W}" '
-            f'cornerRadiusX="{PENT_TALLY_BAR_W / 2}" cornerRadiusY="{PENT_TALLY_BAR_W / 2}">{stroke}</RoundRectangle>\n'
-            f'        </PartDraw>\n'
-            f'      </Group>')
-    return "\n".join(out)
-
-
 def wff_pent_groups(layout, colors):
     out = []
     for c in layout:
@@ -447,9 +421,6 @@ def build_base_pentagon(theme: str, outline_color: str) -> str:
         pentagon_palette_list_option(opt_id, layout, theme) for opt_id, _res, _anchor in PALETTE_OPTIONS)
     return f"""    <ListOption id="pentagon">
       <Group name="pentagon_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-        <Group name="pentagon_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-{wff_pent_outlines(layout, outline_color)}
-        </Group>
         <ListConfiguration id="palette">
 {palette_options}
         </ListConfiguration>
@@ -1627,29 +1598,26 @@ function drawPentagon(colors, outline, showLabels, now) {
   // positions 0-3, a diagonal slash across all 4 for position 4 (lit only
   // at digit=5). The slash is a plain rect rotated via SVG transform here,
   // mirroring the real WFF Group's static pivotX/pivotY/angle attributes.
+  // 2026-09-24: dropped the dashed "off" guides -- Paul: they get confused
+  // with the actual tally marks (a dashed bar next to a solid one reads as
+  // "another mark", unlike a dashed circle next to a pie fill). Unlit
+  // positions now draw nothing at all.
   let s = "";
   for (const c of QUINARY_LAYOUT) {
     const digit = pentDigit(c.src, c.place, now);
     for (let k = 0; k < PENT_TALLY_N; k++) {
+      if (digit <= k) continue;
       const bx = c.x + pentTallyBarX(k) - PENT_TALLY_BAR_W / 2;
       const by = c.y - PENT_TALLY_BAR_H / 2;
-      const on = digit > k;
       const rx = PENT_TALLY_BAR_W / 2;
-      if (on) {
-        s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
-      } else {
-        s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
-      }
+      s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
     }
-    const slashOn = digit > 4;
-    const slashRx = PENT_TALLY_BAR_W / 2;
-    s += `<g transform="translate(${c.x},${c.y}) rotate(${PENT_TALLY_SLASH_ANGLE})">`;
-    if (slashOn) {
+    if (digit > 4) {
+      const slashRx = PENT_TALLY_BAR_W / 2;
+      s += `<g transform="translate(${c.x},${c.y}) rotate(${PENT_TALLY_SLASH_ANGLE})">`;
       s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="${colors[4]}"/>`;
-    } else {
-      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      s += `</g>`;
     }
-    s += `</g>`;
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
