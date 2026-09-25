@@ -4,9 +4,11 @@
 
     <string name="cfg_base">Numeral base</string>
     <string name="opt_binary">Binary</string>
+    <string name="opt_trinary">Trinary (base 3)</string>
     <string name="opt_quaternary">Quaternary (base 4)</string>
     <string name="opt_quinary">Quinary (base 5)</string>
     <string name="opt_hexagon">Hexagon (base 7)</string>
+    <string name="opt_octal">Octal (base 8)</string>
     <string name="opt_octagon">Octagon (base 9)</string>
 
     <string name="cfg_palette">Color scheme</string>

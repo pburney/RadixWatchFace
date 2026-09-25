@@ -14,9 +14,11 @@
     <label>palette <select id="palette"></select></label>
     <label>base <select id="base">
       <option value="binary">Binary</option>
+      <option value="trinary">Trinary</option>
       <option value="quaternary">Quaternary</option>
       <option value="quinary">Quinary</option>
       <option value="hexagon">Hexagon</option>
+      <option value="octal">Octal</option>
       <option value="octagon">Octagon</option>
     </select></label>
     <label><input type="checkbox" id="theme"> light theme</label>
@@ -36,6 +38,13 @@ const OCT_ANGLES = Object.fromEntries(OCT_POSITIONS.map((p, i) => [p, [i * 45, (
 const OCTAGON_LAYOUT = [{x:181.0,y:162.0,w:72.0,h:72.0,place:1,src:"[HOUR_0_23]",label:"H",label_x:117.0,label_y:162},{x:269.0,y:162.0,w:72.0,h:72.0,place:0,src:"[HOUR_0_23]",label:null,label_x:117.0,label_y:162},{x:181.0,y:249.0,w:72.0,h:72.0,place:1,src:"[MINUTE]",label:"M",label_x:117.0,label_y:249},{x:269.0,y:249.0,w:72.0,h:72.0,place:0,src:"[MINUTE]",label:null,label_x:117.0,label_y:249},{x:181.0,y:336.0,w:72.0,h:72.0,place:1,src:"[SECOND]",label:"S",label_x:117.0,label_y:336},{x:269.0,y:336.0,w:72.0,h:72.0,place:0,src:"[SECOND]",label:null,label_x:117.0,label_y:336}];
 const OCT_DECIMAL_X = 337.0;
 const OCT_DECIMAL_ROWS = [["[HOUR_0_23]",162],["[MINUTE]",249],["[SECOND]",336]];
+const OCTAL_POSITIONS = Array.from({length: 7}, (_, i) => "P" + i);
+const OCTAL_ANGLES = Object.fromEntries(OCTAL_POSITIONS.map((p, i) => [p, [i * (360 / 7), (i + 1) * (360 / 7)]]));
+const TRI_POSITIONS = ["P0","P1"];
+const TRI_ANGLES = Object.fromEntries(TRI_POSITIONS.map((p, i) => [p, [i * 180, (i + 1) * 180]]));
+const TRINARY_LAYOUT = [{x:155.0,y:162.0,w:64.0,place:2,src:"[HOUR_0_23]",label:"H",label_x:67.0,label_y:162},{x:225.0,y:162.0,w:64.0,place:1,src:"[HOUR_0_23]",label:null,label_x:67.0,label_y:162},{x:295.0,y:162.0,w:64.0,place:0,src:"[HOUR_0_23]",label:null,label_x:67.0,label_y:162},{x:120.0,y:249.0,w:64.0,place:3,src:"[MINUTE]",label:"M",label_x:67.0,label_y:249},{x:190.0,y:249.0,w:64.0,place:2,src:"[MINUTE]",label:null,label_x:67.0,label_y:249},{x:260.0,y:249.0,w:64.0,place:1,src:"[MINUTE]",label:null,label_x:67.0,label_y:249},{x:330.0,y:249.0,w:64.0,place:0,src:"[MINUTE]",label:null,label_x:67.0,label_y:249},{x:120.0,y:336.0,w:64.0,place:3,src:"[SECOND]",label:"S",label_x:67.0,label_y:336},{x:190.0,y:336.0,w:64.0,place:2,src:"[SECOND]",label:null,label_x:67.0,label_y:336},{x:260.0,y:336.0,w:64.0,place:1,src:"[SECOND]",label:null,label_x:67.0,label_y:336},{x:330.0,y:336.0,w:64.0,place:0,src:"[SECOND]",label:null,label_x:67.0,label_y:336}];
+const TRI_DECIMAL_X = 386.0;
+const TRI_DECIMAL_ROWS = [["[HOUR_0_23]",162],["[MINUTE]",249],["[SECOND]",336]];
 const QUAT_POSITIONS = ["P0","P1","P2"];
 const QUAT_ANGLES = Object.fromEntries(QUAT_POSITIONS.map((p, i) => [p, [i * 120, (i + 1) * 120]]));
 const QUATERNARY_LAYOUT = [{x:137.0,y:162.0,w:72.0,place:2,src:"[HOUR_0_23]",label:"H",label_x:73,label_y:162},{x:225.0,y:162.0,w:72.0,place:1,src:"[HOUR_0_23]",label:null,label_x:73,label_y:162},{x:313.0,y:162.0,w:72.0,place:0,src:"[HOUR_0_23]",label:null,label_x:73,label_y:162},{x:137.0,y:249.0,w:72.0,place:2,src:"[MINUTE]",label:"M",label_x:73,label_y:249},{x:225.0,y:249.0,w:72.0,place:1,src:"[MINUTE]",label:null,label_x:73,label_y:249},{x:313.0,y:249.0,w:72.0,place:0,src:"[MINUTE]",label:null,label_x:73,label_y:249},{x:137.0,y:336.0,w:72.0,place:2,src:"[SECOND]",label:"S",label_x:73,label_y:336},{x:225.0,y:336.0,w:72.0,place:1,src:"[SECOND]",label:null,label_x:73,label_y:336},{x:313.0,y:336.0,w:72.0,place:0,src:"[SECOND]",label:null,label_x:73,label_y:336}];
@@ -128,6 +137,8 @@ function binaryBit(src, k, now) { return Math.round(Math.floor(value(src, now) /
 function hexDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (7 ** place)) % 7); }
 function octDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (9 ** place)) % 9); }
 function quatDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (4 ** place)) % 4); }
+function octalDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (8 ** place)) % 8); }
+function triDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (3 ** place)) % 3); }
 function polar(cx, cy, r, deg) { const rad = deg * Math.PI / 180; return [cx + r * Math.sin(rad), cy - r * Math.cos(rad)]; }
 function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
@@ -245,6 +256,59 @@ function drawOctagon(colors, outline, showLabels, now) {
   return s;
 }
 
+function drawOctal(colors, outline, showLabels, now) {
+  // Reuses OCTAGON_LAYOUT verbatim -- base 8 has the same (2,2,2) place
+  // pattern as base 9, so the same geometry works; only the digit math and
+  // wedge count (7 instead of 8) differ.
+  let s = "";
+  for (const c of OCTAGON_LAYOUT) {
+    const r = c.w / 2;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    const digit = octalDigit(c.src, c.place, now);
+    OCTAL_POSITIONS.forEach((pos, k) => {
+      if (digit <= k) return;
+      const [a0, a1] = OCTAL_ANGLES[pos];
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+    });
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of OCT_DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${OCT_DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
+function drawTrinary(colors, outline, showLabels, now) {
+  // Own layout (TRINARY_LAYOUT) -- base 3 needs 3 places for H, 4 for M/S,
+  // wider than any other base, so it doesn't reuse anyone else's geometry.
+  let s = "";
+  for (const c of TRINARY_LAYOUT) {
+    const r = c.w / 2;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    const digit = triDigit(c.src, c.place, now);
+    TRI_POSITIONS.forEach((pos, k) => {
+      if (digit <= k) return;
+      const [a0, a1] = TRI_ANGLES[pos];
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+    });
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of TRI_DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${TRI_DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
 function drawQuaternary(colors, outline, showLabels, now) {
   // Own layout (QUATERNARY_LAYOUT), not a QUINARY_LAYOUT reuse like Hexagon --
   // base 4's H row needs 3 places same as M/S (unlike Quinary's H, which only
@@ -305,10 +369,14 @@ function draw() {
   let s = `<rect x="0" y="0" width="450" height="450" fill="${BG[key]}"/>`;
   if (base === "binary") {
     s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
+  } else if (base === "trinary") {
+    s += drawTrinary(paletteFor(paletteSel.value, 2), OUTLINE[key], showLabels, now);
   } else if (base === "quaternary") {
     s += drawQuaternary(paletteFor(paletteSel.value, 3), OUTLINE[key], showLabels, now);
   } else if (base === "hexagon") {
     s += drawHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], showLabels, now);
+  } else if (base === "octal") {
+    s += drawOctal(paletteFor(paletteSel.value, 7), OUTLINE[key], showLabels, now);
   } else if (base === "octagon") {
     s += drawOctagon(paletteFor(paletteSel.value, 8), OUTLINE[key], showLabels, now);
   } else {

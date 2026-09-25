@@ -474,6 +474,82 @@ def build_base_octagon(theme: str, outline_color: str) -> str:
     </ListOption>"""
 
 
+# ---- Octal (base 8) -- checked computationally, not assumed from the
+# "just pie pieces" intuition alone: base 8 needs exactly 2 places for H,
+# M, AND S (8^2=64>23 and 8^2=64>59), the IDENTICAL (2,2,2) pattern
+# Octagon already uses -- so Octal reuses octagon_layout() and its geometry
+# wholesale (OCT_QUAD/PITCH/LABEL_X/DECIMAL_X, wff_octagon_outlines(),
+# wff_labels(), wff_octagon_decimal_readout(), all unchanged), swapping
+# only the digit math (mod 8 instead of mod 9) and the wedge count (7
+# positions instead of 8). No new layout, no new fit-check needed --
+# the geometry was already proven to fit by Octagon itself.
+OCTAL_POSITIONS = [f"P{i}" for i in range(7)]
+OCTAL_ANGLES = {f"P{i}": (i * (360 / 7), (i + 1) * (360 / 7)) for i in range(7)}
+
+
+def octal_digit_expr(value_expr: str, place: int) -> str:
+    return f"round(floor(({value_expr}) / {8 ** place}) % 8)"
+
+
+def wff_octal_groups(layout, colors):
+    out = []
+    for c in layout:
+        digit_expr = octal_digit_expr(c["expr"], c["place"])
+        r = c["w"] / 2
+        bx, by = round(c["x"] - r), round(c["y"] - r)
+        for k, pos in enumerate(OCTAL_POSITIONS):
+            start, end = OCTAL_ANGLES[pos]
+            name = f"l{c['place']}_{round(c['x'])}_{round(c['y'])}_{k}"
+            out.append(
+                f'      <Condition>\n'
+                f'        <Expressions>\n'
+                f'          <Expression name="{name}"><![CDATA[(({digit_expr}) > {k})]]></Expression>\n'
+                f'        </Expressions>\n'
+                f'        <Compare expression="{name}">\n'
+                f'          <PartDraw x="{bx}" y="{by}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+                f'            <Arc centerX="{r}" centerY="{r}" width="{r}" height="{r}" '
+                f'startAngle="{start:.4f}" endAngle="{end:.4f}" direction="CLOCKWISE">\n'
+                f'              <WeightedStroke colors="{colors[k]}" thickness="{r}" cap="BUTT"/>\n'
+                f'            </Arc>\n'
+                f'          </PartDraw>\n'
+                f'        </Compare>\n'
+                f'      </Condition>')
+    return "\n".join(out)
+
+
+def octal_palette_list_option(option_id: str, layout, theme: str) -> str:
+    colors = palette_for(option_id, 7)
+    return (f'        <ListOption id="{option_id}">\n'
+            f'          <Group name="octal_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
+            f'{wff_octal_groups(layout, colors)}\n'
+            f'          </Group>\n'
+            f'        </ListOption>')
+
+
+def build_base_octal(theme: str, outline_color: str) -> str:
+    layout = octagon_layout()   # same geometry as Octagon -- see module note above
+    palette_options = "\n".join(
+        octal_palette_list_option(opt_id, layout, theme) for opt_id, _res, _anchor in PALETTE_OPTIONS)
+    return f"""    <ListOption id="octal">
+      <Group name="octal_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+        <Group name="octal_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_octagon_outlines(layout, outline_color)}
+        </Group>
+        <ListConfiguration id="palette">
+{palette_options}
+        </ListConfiguration>
+        <BooleanConfiguration id="labels">
+          <BooleanOption id="TRUE">
+            <Group name="octal_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_labels(layout)}
+{wff_octagon_decimal_readout()}
+            </Group>
+          </BooleanOption>
+        </BooleanConfiguration>
+      </Group>
+    </ListOption>"""
+
+
 # ---- Quaternary (base 4) -- checked computationally like Octagon, not
 # assumed: base 4 needs 3 places for H too (4^2=16<=23<64=4^3), not just
 # M/S -- a NEW place pattern (3,3,3) distinct from both Quinary/Hexagon's
@@ -571,6 +647,161 @@ def build_base_quaternary(theme: str, outline_color: str) -> str:
             <Group name="quaternary_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
 {wff_labels(layout)}
 {wff_decimal_readout()}
+            </Group>
+          </BooleanOption>
+        </BooleanConfiguration>
+      </Group>
+    </ListOption>"""
+
+
+# ---- Trinary (base 3) -- checked computationally, NOT assumed to be "like
+# binary": base 3 needs 3 places for H (3^2=9<=23<27=3^3) and 4 places for
+# M/S (3^3=27<=59<81=3^4) -- a FOURTH distinct place pattern, wider than
+# anything built so far (Quinary/Hexagon 2,3,3 / Octagon 2,2,2 / Quaternary
+# 3,3,3). 4 columns in one row doesn't fit Quinary's existing
+# RIGHT_EDGE_X/QUAD_PITCH geometry (label/decimal readout boxes clip outside
+# the 225px-radius circle at that spacing -- verified with the same
+# farthest-corner check used for every other base, not eyeballed), so
+# Trinary gets its OWN smaller, centered layout: QUAD/PITCH shrunk from
+# Quinary's 72/88 to 64/70, and the label/decimal boxes shrunk to match
+# (36x36/44x36 -> 30x30/36x30, gaps 10->6) -- tightest margin 6.1px on the
+# S row's decimal readout, same ballpark as Quaternary's own tightest
+# margin. Two positions per digit (n=base-1=2), same wedge-split circle
+# technique as every base n>=2 -- NOT the n=1 filled-Ellipse special case
+# Binary needed (that's for n=1 only; n=2 is a perfectly normal 2-wedge
+# split, already covered by the general spike).
+TRI_QUAD = 64
+TRI_PITCH = 70
+TRI_LABEL_GAP = 6
+TRI_LABEL_W, TRI_LABEL_H = 30, 30
+TRI_DECIMAL_GAP = 6
+TRI_DECIMAL_W, TRI_DECIMAL_H = 36, 30
+_TRI_WIDEST_N = 4   # M/S -- widest row sets the shared label/decimal x, like Quinary's LABEL_X
+_TRI_LEFT_EDGE = C - (_TRI_WIDEST_N - 1) / 2 * TRI_PITCH - TRI_QUAD / 2
+_TRI_RIGHT_EDGE = C + (_TRI_WIDEST_N - 1) / 2 * TRI_PITCH + TRI_QUAD / 2
+TRI_LABEL_X = _TRI_LEFT_EDGE - TRI_LABEL_GAP - TRI_LABEL_W / 2
+TRI_DECIMAL_X = _TRI_RIGHT_EDGE + TRI_DECIMAL_GAP + TRI_DECIMAL_W / 2
+
+TRI_POSITIONS = ["P0", "P1"]
+TRI_ANGLES = {f"P{i}": (i * 180, (i + 1) * 180) for i in range(2)}
+
+
+def trinary_digit_expr(value_expr: str, place: int) -> str:
+    return f"round(floor(({value_expr}) / {3 ** place}) % 3)"
+
+
+def trinary_layout():
+    specs = [(0, "H", "[HOUR_0_23]", 3), (1, "M", "[MINUTE]", 4), (2, "S", "[SECOND]", 4)]
+    out = []
+    for row_i, label, expr, n in specs:
+        cy = ROW_Y[row_i]
+        for col in range(n):
+            place = n - 1 - col
+            cx = C + (col - (n - 1) / 2) * TRI_PITCH
+            out.append(dict(x=cx, y=cy, w=TRI_QUAD, place=place, expr=expr,
+                             label=label if col == 0 else None, label_x=TRI_LABEL_X, label_y=cy))
+    return out
+
+
+TRI_DECIMAL_ROWS = [("[HOUR_0_23]", ROW_Y[0]), ("[MINUTE]", ROW_Y[1]), ("[SECOND]", ROW_Y[2])]
+
+
+def wff_tri_decimal_readout():
+    out = []
+    for expr, cy in TRI_DECIMAL_ROWS:
+        x, y = round(TRI_DECIMAL_X - TRI_DECIMAL_W / 2), round(cy - TRI_DECIMAL_H / 2)
+        out.append(
+            f'        <PartText x="{x}" y="{y}" width="{TRI_DECIMAL_W}" height="{TRI_DECIMAL_H}">\n'
+            f'          <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="26" '
+            f'weight="NORMAL" color="{LABEL_COLOR}">\n'
+            f'              <Template>%02d<Parameter expression="{expr}"/></Template>\n'
+            f'          </Font></Text>\n'
+            f'        </PartText>')
+    return "\n".join(out)
+
+
+def wff_tri_labels(layout):
+    # Own function, not the shared wff_labels() -- Trinary's label box is
+    # genuinely smaller (TRI_LABEL_W/H=30x30 vs the 36x36 every other base
+    # uses), part of the clip-fit that made 4 columns work at all.
+    out = []
+    for c in layout:
+        if not c["label"]:
+            continue
+        x, y = round(c["label_x"] - TRI_LABEL_W / 2), round(c["label_y"] - TRI_LABEL_H / 2)
+        out.append(
+            f'        <PartText x="{x}" y="{y}" width="{TRI_LABEL_W}" height="{TRI_LABEL_H}">\n'
+            f'          <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="26" '
+            f'weight="NORMAL" color="{LABEL_COLOR}">{c["label"].upper()}</Font></Text>\n'
+            f'        </PartText>')
+    return "\n".join(out)
+
+
+def wff_tri_outlines(layout, outline_color):
+    out = []
+    for c in layout:
+        r = c["w"] / 2
+        x, y = round(c["x"] - r), round(c["y"] - r)
+        out.append(
+            f'      <PartDraw x="{x}" y="{y}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+            f'        <Ellipse x="0" y="0" width="{round(r * 2)}" height="{round(r * 2)}">'
+            f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/></Ellipse>\n'
+            f'      </PartDraw>')
+    return "\n".join(out)
+
+
+def wff_tri_groups(layout, colors):
+    out = []
+    for c in layout:
+        digit_expr = trinary_digit_expr(c["expr"], c["place"])
+        r = c["w"] / 2
+        bx, by = round(c["x"] - r), round(c["y"] - r)
+        for k, pos in enumerate(TRI_POSITIONS):
+            start, end = TRI_ANGLES[pos]
+            name = f"y{c['place']}_{round(c['x'])}_{round(c['y'])}_{k}"
+            out.append(
+                f'      <Condition>\n'
+                f'        <Expressions>\n'
+                f'          <Expression name="{name}"><![CDATA[(({digit_expr}) > {k})]]></Expression>\n'
+                f'        </Expressions>\n'
+                f'        <Compare expression="{name}">\n'
+                f'          <PartDraw x="{bx}" y="{by}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+                f'            <Arc centerX="{r}" centerY="{r}" width="{r}" height="{r}" '
+                f'startAngle="{start}" endAngle="{end}" direction="CLOCKWISE">\n'
+                f'              <WeightedStroke colors="{colors[k]}" thickness="{r}" cap="BUTT"/>\n'
+                f'            </Arc>\n'
+                f'          </PartDraw>\n'
+                f'        </Compare>\n'
+                f'      </Condition>')
+    return "\n".join(out)
+
+
+def trinary_palette_list_option(option_id: str, layout, theme: str) -> str:
+    colors = palette_for(option_id, 2)
+    return (f'        <ListOption id="{option_id}">\n'
+            f'          <Group name="tri_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
+            f'{wff_tri_groups(layout, colors)}\n'
+            f'          </Group>\n'
+            f'        </ListOption>')
+
+
+def build_base_trinary(theme: str, outline_color: str) -> str:
+    layout = trinary_layout()
+    palette_options = "\n".join(
+        trinary_palette_list_option(opt_id, layout, theme) for opt_id, _res, _anchor in PALETTE_OPTIONS)
+    return f"""    <ListOption id="trinary">
+      <Group name="trinary_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+        <Group name="trinary_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_tri_outlines(layout, outline_color)}
+        </Group>
+        <ListConfiguration id="palette">
+{palette_options}
+        </ListConfiguration>
+        <BooleanConfiguration id="labels">
+          <BooleanOption id="TRUE">
+            <Group name="trinary_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_tri_labels(layout)}
+{wff_tri_decimal_readout()}
             </Group>
           </BooleanOption>
         </BooleanConfiguration>
@@ -750,9 +981,11 @@ def build_user_configurations() -> str:
     </ListConfiguration>
     <ListConfiguration id="base" displayName="cfg_base" defaultValue="binary">
       <ListOption id="binary" displayName="opt_binary"/>
+      <ListOption id="trinary" displayName="opt_trinary"/>
       <ListOption id="quaternary" displayName="opt_quaternary"/>
       <ListOption id="quinary" displayName="opt_quinary"/>
       <ListOption id="hexagon" displayName="opt_hexagon"/>
+      <ListOption id="octal" displayName="opt_octal"/>
       <ListOption id="octagon" displayName="opt_octagon"/>
     </ListConfiguration>
     <BooleanConfiguration id="theme" displayName="cfg_theme" defaultValue="FALSE"/>
@@ -788,9 +1021,11 @@ def build_wff() -> str:
           </PartDraw>
           <ListConfiguration id="base">
 {build_base_binary("dark", OFF_DARK)}
+{build_base_trinary("dark", OUTLINE_DARK)}
 {build_base_quaternary("dark", OUTLINE_DARK)}
 {build_base_quinary("dark", OUTLINE_DARK)}
 {build_base_hexagon("dark", OUTLINE_DARK)}
+{build_base_octal("dark", OUTLINE_DARK)}
 {build_base_octagon("dark", OUTLINE_DARK)}
           </ListConfiguration>
         </Group>
@@ -802,9 +1037,11 @@ def build_wff() -> str:
           </PartDraw>
           <ListConfiguration id="base">
 {build_base_binary("light", OFF_LIGHT)}
+{build_base_trinary("light", OUTLINE_LIGHT)}
 {build_base_quaternary("light", OUTLINE_LIGHT)}
 {build_base_quinary("light", OUTLINE_LIGHT)}
 {build_base_hexagon("light", OUTLINE_LIGHT)}
+{build_base_octal("light", OUTLINE_LIGHT)}
 {build_base_octagon("light", OUTLINE_LIGHT)}
           </ListConfiguration>
         </Group>
@@ -841,9 +1078,11 @@ _HTML_TMPL = r"""<!doctype html>
     <label>palette <select id="palette"></select></label>
     <label>base <select id="base">
       <option value="binary">Binary</option>
+      <option value="trinary">Trinary</option>
       <option value="quaternary">Quaternary</option>
       <option value="quinary">Quinary</option>
       <option value="hexagon">Hexagon</option>
+      <option value="octal">Octal</option>
       <option value="octagon">Octagon</option>
     </select></label>
     <label><input type="checkbox" id="theme"> light theme</label>
@@ -863,6 +1102,13 @@ const OCT_ANGLES = Object.fromEntries(OCT_POSITIONS.map((p, i) => [p, [i * 45, (
 const OCTAGON_LAYOUT = __OCTAGON_LAYOUT_JS__;
 const OCT_DECIMAL_X = __OCT_DECIMAL_X__;
 const OCT_DECIMAL_ROWS = __OCT_DECIMAL_ROWS_JS__;
+const OCTAL_POSITIONS = Array.from({length: 7}, (_, i) => "P" + i);
+const OCTAL_ANGLES = Object.fromEntries(OCTAL_POSITIONS.map((p, i) => [p, [i * (360 / 7), (i + 1) * (360 / 7)]]));
+const TRI_POSITIONS = ["P0","P1"];
+const TRI_ANGLES = Object.fromEntries(TRI_POSITIONS.map((p, i) => [p, [i * 180, (i + 1) * 180]]));
+const TRINARY_LAYOUT = __TRINARY_LAYOUT_JS__;
+const TRI_DECIMAL_X = __TRI_DECIMAL_X__;
+const TRI_DECIMAL_ROWS = __TRI_DECIMAL_ROWS_JS__;
 const QUAT_POSITIONS = ["P0","P1","P2"];
 const QUAT_ANGLES = Object.fromEntries(QUAT_POSITIONS.map((p, i) => [p, [i * 120, (i + 1) * 120]]));
 const QUATERNARY_LAYOUT = __QUATERNARY_LAYOUT_JS__;
@@ -950,6 +1196,8 @@ function binaryBit(src, k, now) { return Math.round(Math.floor(value(src, now) /
 function hexDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (7 ** place)) % 7); }
 function octDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (9 ** place)) % 9); }
 function quatDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (4 ** place)) % 4); }
+function octalDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (8 ** place)) % 8); }
+function triDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (3 ** place)) % 3); }
 function polar(cx, cy, r, deg) { const rad = deg * Math.PI / 180; return [cx + r * Math.sin(rad), cy - r * Math.cos(rad)]; }
 function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
@@ -1067,6 +1315,59 @@ function drawOctagon(colors, outline, showLabels, now) {
   return s;
 }
 
+function drawOctal(colors, outline, showLabels, now) {
+  // Reuses OCTAGON_LAYOUT verbatim -- base 8 has the same (2,2,2) place
+  // pattern as base 9, so the same geometry works; only the digit math and
+  // wedge count (7 instead of 8) differ.
+  let s = "";
+  for (const c of OCTAGON_LAYOUT) {
+    const r = c.w / 2;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    const digit = octalDigit(c.src, c.place, now);
+    OCTAL_POSITIONS.forEach((pos, k) => {
+      if (digit <= k) return;
+      const [a0, a1] = OCTAL_ANGLES[pos];
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+    });
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of OCT_DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${OCT_DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
+function drawTrinary(colors, outline, showLabels, now) {
+  // Own layout (TRINARY_LAYOUT) -- base 3 needs 3 places for H, 4 for M/S,
+  // wider than any other base, so it doesn't reuse anyone else's geometry.
+  let s = "";
+  for (const c of TRINARY_LAYOUT) {
+    const r = c.w / 2;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    const digit = triDigit(c.src, c.place, now);
+    TRI_POSITIONS.forEach((pos, k) => {
+      if (digit <= k) return;
+      const [a0, a1] = TRI_ANGLES[pos];
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+    });
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of TRI_DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${TRI_DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
 function drawQuaternary(colors, outline, showLabels, now) {
   // Own layout (QUATERNARY_LAYOUT), not a QUINARY_LAYOUT reuse like Hexagon --
   // base 4's H row needs 3 places same as M/S (unlike Quinary's H, which only
@@ -1127,10 +1428,14 @@ function draw() {
   let s = `<rect x="0" y="0" width="__CANVAS__" height="__CANVAS__" fill="${BG[key]}"/>`;
   if (base === "binary") {
     s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
+  } else if (base === "trinary") {
+    s += drawTrinary(paletteFor(paletteSel.value, 2), OUTLINE[key], showLabels, now);
   } else if (base === "quaternary") {
     s += drawQuaternary(paletteFor(paletteSel.value, 3), OUTLINE[key], showLabels, now);
   } else if (base === "hexagon") {
     s += drawHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], showLabels, now);
+  } else if (base === "octal") {
+    s += drawOctal(paletteFor(paletteSel.value, 7), OUTLINE[key], showLabels, now);
   } else if (base === "octagon") {
     s += drawOctagon(paletteFor(paletteSel.value, 8), OUTLINE[key], showLabels, now);
   } else {
@@ -1169,6 +1474,14 @@ def build_html() -> str:
             for c in octagon_layout()) + "]",
         "__OCT_DECIMAL_X__": str(OCT_DECIMAL_X),
         "__OCT_DECIMAL_ROWS_JS__": "[" + ",".join(f'["{expr}",{cy}]' for expr, cy in OCT_DECIMAL_ROWS) + "]",
+        "__TRINARY_LAYOUT_JS__": "[" + ",".join(
+            '{x:%.1f,y:%.1f,w:%.1f,place:%d,src:%s,label:%s,label_x:%s,label_y:%s}' % (
+                c["x"], c["y"], c["w"], c["place"],
+                repr(c["expr"]).replace("'", '"'), (f'"{c["label"]}"' if c["label"] else "null"),
+                c["label_x"], c["label_y"])
+            for c in trinary_layout()) + "]",
+        "__TRI_DECIMAL_X__": str(TRI_DECIMAL_X),
+        "__TRI_DECIMAL_ROWS_JS__": "[" + ",".join(f'["{expr}",{cy}]' for expr, cy in TRI_DECIMAL_ROWS) + "]",
         "__QUATERNARY_LAYOUT_JS__": "[" + ",".join(
             '{x:%.1f,y:%.1f,w:%.1f,place:%d,src:%s,label:%s,label_x:%s,label_y:%s}' % (
                 c["x"], c["y"], c["w"], c["place"],
