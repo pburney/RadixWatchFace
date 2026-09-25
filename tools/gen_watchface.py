@@ -726,6 +726,13 @@ def build_base_octagon(theme: str, outline_color: str) -> str:
 #      leftward -- toward the tens-place box -- as seconds tick, giving the
 #      "flowing toward the more significant place" reading through
 #      DIRECTION alone, with the two boxes physically separate.
+#   4. Paul then asked to swap which SIDE is short: "swap it so the short
+#      side is on the right." Position (which bar lights first, at the
+#      box's own right edge) is unchanged -- only the HEIGHT assignment
+#      flips, from descending-with-k (tallest first-lit) to ascending-with-
+#      k (shortest first-lit, tallest last-lit at the box's left edge).
+#      This is now the classic ascending WiFi-signal look (short building
+#      up to tall) rather than the descending one used until now.
 #
 # All of this needs Octal's own layout function (not octagon_layout()'s
 # cx values) and its own label_x/decimal_x (not octagon_layout()'s embedded
@@ -771,10 +778,16 @@ def octal_digit_expr(value_expr: str, place: int) -> str:
 
 
 def _octal_wifi_bar_geom(k: int):
-    h = OCTAL_WIFI_MAX_H - k * _OCTAL_WIFI_STEP
-    # mirrored: the tallest (first-lit) bar sits at the box's own RIGHT
-    # edge, per Paul's "start from the right" -- growth reads as flowing
-    # leftward, toward the more significant (left) box, as digit increases.
+    # Paul: "swap it so the short side is on the right" -- height now
+    # ASCENDS with k (k=0, the first-lit/rightmost position, is the
+    # SHORTEST bar; the tallest bar is last-lit, at the box's left edge).
+    # Position (x_off) is unchanged from the "start from the right" fix --
+    # k=0 still sits at the box's own right edge and growth still reads as
+    # flowing leftward, toward the more significant (left) box, as digit
+    # increases. Only which END is short/tall flips, matching the classic
+    # ascending WiFi-signal look (short bars building up to tall) instead
+    # of the descending one used until now.
+    h = OCTAL_WIFI_MIN_H + k * _OCTAL_WIFI_STEP
     x_off = OCTAL_WIFI_BOX_W / 2 - k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) - OCTAL_WIFI_BAR_W / 2
     return h, x_off
 
@@ -1451,8 +1464,9 @@ const OCTAL_LABEL_X = __OCTAL_LABEL_X__;
 const OCTAL_DECIMAL_X = __OCTAL_DECIMAL_X__;
 const OCTAL_DECIMAL_ROWS = __OCT_DECIMAL_ROWS_JS__;
 function octalWifiBarGeom(k) {
-  const h = OCTAL_WIFI_MAX_H - k * OCTAL_WIFI_STEP;
-  // mirrored: tallest (first-lit) bar sits at the box's own RIGHT edge
+  // short side on the right: height ascends with k, so k=0 (first-lit,
+  // at the box's own right edge) is the shortest bar
+  const h = OCTAL_WIFI_MIN_H + k * OCTAL_WIFI_STEP;
   const xOff = OCTAL_WIFI_BOX_W / 2 - k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) - OCTAL_WIFI_BAR_W / 2;
   return [h, xOff];
 }
