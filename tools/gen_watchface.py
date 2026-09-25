@@ -316,6 +316,16 @@ def wff_grid_groups(cx, cy, w, h, rows, cols, radius, digit_expr, colors, name_p
 # same reason -- see the Hexagon note below). So Pentagon reuses
 # full_layout() wholesale too, exactly like Hexagon -- only the digit math
 # (base 6) and wedge count (5 positions instead of 4 or 6) differ.
+#
+# 2026-09-24 fix: Hour cells from hour_layout() are HOUR_W x HOUR_H (112x72,
+# NOT square), but the wedge-circle renderer used r=c["w"]/2 unconditionally
+# -- ballooning the Hour circle to a 112px diameter instead of respecting
+# the 72px row height. Computed the actual overlap rather than guessing:
+# that circle's bottom edge lands at row_y+56=218, while the Minute row's
+# circle top edge is at row_y-36=213 -- a real 5px overlap, not an illusion,
+# and exactly why Pentagon read as "too close together" (Hexagon had this
+# identical bug until its Hour row became a grid, which coincidentally
+# uses the correct h dimension). Fixed by using r=min(w,h)/2.
 PENT_POSITIONS = ["P0", "P1", "P2", "P3", "P4"]
 PENT_ANGLES = {f"P{i}": (i * 72, (i + 1) * 72) for i in range(5)}
 
@@ -327,7 +337,7 @@ def pent_digit_expr(value_expr: str, place: int) -> str:
 def wff_pent_outlines(layout, outline_color):
     out = []
     for c in layout:
-        r = c["w"] / 2
+        r = min(c["w"], c["h"]) / 2
         x, y = round(c["x"] - r), round(c["y"] - r)
         out.append(
             f'      <PartDraw x="{x}" y="{y}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
@@ -341,7 +351,7 @@ def wff_pent_groups(layout, colors):
     out = []
     for c in layout:
         digit_expr = pent_digit_expr(c["expr"], c["place"])
-        r = c["w"] / 2
+        r = min(c["w"], c["h"]) / 2
         bx, by = round(c["x"] - r), round(c["y"] - r)
         for k, pos in enumerate(PENT_POSITIONS):
             start, end = PENT_ANGLES[pos]
@@ -1517,7 +1527,7 @@ function drawPentagon(colors, outline, showLabels, now) {
   // pattern as base 5 and 7, only digit math + wedge count (5) differ.
   let s = "";
   for (const c of QUINARY_LAYOUT) {
-    const r = c.w / 2;
+    const r = Math.min(c.w, c.h) / 2;
     s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = pentDigit(c.src, c.place, now);
     PENT_POSITIONS.forEach((pos, k) => {
