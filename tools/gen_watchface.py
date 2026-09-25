@@ -251,6 +251,92 @@ def wff_decimal_readout():
     return "\n".join(out)
 
 
+# ---- Pentagon (base 6) -- checked computationally like every other base:
+# 6^1=6<=23<36=6^2 and 6^2=36<=59<216=6^3, giving the SAME (2,3,3) place
+# pattern as Quinary/Hexagon (5 and 7 give identical place counts for the
+# same reason -- see the Hexagon note below). So Pentagon reuses
+# full_layout() wholesale too, exactly like Hexagon -- only the digit math
+# (base 6) and wedge count (5 positions instead of 4 or 6) differ.
+PENT_POSITIONS = ["P0", "P1", "P2", "P3", "P4"]
+PENT_ANGLES = {f"P{i}": (i * 72, (i + 1) * 72) for i in range(5)}
+
+
+def pent_digit_expr(value_expr: str, place: int) -> str:
+    return f"round(floor(({value_expr}) / {6 ** place}) % 6)"
+
+
+def wff_pent_outlines(layout, outline_color):
+    out = []
+    for c in layout:
+        r = c["w"] / 2
+        x, y = round(c["x"] - r), round(c["y"] - r)
+        out.append(
+            f'      <PartDraw x="{x}" y="{y}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+            f'        <Ellipse x="0" y="0" width="{round(r * 2)}" height="{round(r * 2)}">'
+            f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/></Ellipse>\n'
+            f'      </PartDraw>')
+    return "\n".join(out)
+
+
+def wff_pent_groups(layout, colors):
+    out = []
+    for c in layout:
+        digit_expr = pent_digit_expr(c["expr"], c["place"])
+        r = c["w"] / 2
+        bx, by = round(c["x"] - r), round(c["y"] - r)
+        for k, pos in enumerate(PENT_POSITIONS):
+            start, end = PENT_ANGLES[pos]
+            name = f"p{c['place']}_{round(c['x'])}_{round(c['y'])}_{k}"
+            out.append(
+                f'      <Condition>\n'
+                f'        <Expressions>\n'
+                f'          <Expression name="{name}"><![CDATA[(({digit_expr}) > {k})]]></Expression>\n'
+                f'        </Expressions>\n'
+                f'        <Compare expression="{name}">\n'
+                f'          <PartDraw x="{bx}" y="{by}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+                f'            <Arc centerX="{r}" centerY="{r}" width="{r}" height="{r}" '
+                f'startAngle="{start}" endAngle="{end}" direction="CLOCKWISE">\n'
+                f'              <WeightedStroke colors="{colors[k]}" thickness="{r}" cap="BUTT"/>\n'
+                f'            </Arc>\n'
+                f'          </PartDraw>\n'
+                f'        </Compare>\n'
+                f'      </Condition>')
+    return "\n".join(out)
+
+
+def pentagon_palette_list_option(option_id: str, layout, theme: str) -> str:
+    colors = palette_for(option_id, 5)
+    return (f'        <ListOption id="{option_id}">\n'
+            f'          <Group name="pent_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
+            f'{wff_pent_groups(layout, colors)}\n'
+            f'          </Group>\n'
+            f'        </ListOption>')
+
+
+def build_base_pentagon(theme: str, outline_color: str) -> str:
+    layout = full_layout()   # same positions as Quinary/Hexagon -- see module note above
+    palette_options = "\n".join(
+        pentagon_palette_list_option(opt_id, layout, theme) for opt_id, _res, _anchor in PALETTE_OPTIONS)
+    return f"""    <ListOption id="pentagon">
+      <Group name="pentagon_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+        <Group name="pentagon_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_pent_outlines(layout, outline_color)}
+        </Group>
+        <ListConfiguration id="palette">
+{palette_options}
+        </ListConfiguration>
+        <BooleanConfiguration id="labels">
+          <BooleanOption id="TRUE">
+            <Group name="pentagon_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_labels(layout)}
+{wff_decimal_readout()}
+            </Group>
+          </BooleanOption>
+        </BooleanConfiguration>
+      </Group>
+    </ListOption>"""
+
+
 # ---- Hexagon (base 7) -- confirmed via this session's geometry spike that
 # Quinary's wedge-split-circle technique (Arc + WeightedStroke) generalizes
 # to any position count with zero special-casing except n=1 (see the n=1
@@ -984,6 +1070,7 @@ def build_user_configurations() -> str:
       <ListOption id="trinary" displayName="opt_trinary"/>
       <ListOption id="quaternary" displayName="opt_quaternary"/>
       <ListOption id="quinary" displayName="opt_quinary"/>
+      <ListOption id="pentagon" displayName="opt_pentagon"/>
       <ListOption id="hexagon" displayName="opt_hexagon"/>
       <ListOption id="octal" displayName="opt_octal"/>
       <ListOption id="octagon" displayName="opt_octagon"/>
@@ -1024,6 +1111,7 @@ def build_wff() -> str:
 {build_base_trinary("dark", OUTLINE_DARK)}
 {build_base_quaternary("dark", OUTLINE_DARK)}
 {build_base_quinary("dark", OUTLINE_DARK)}
+{build_base_pentagon("dark", OUTLINE_DARK)}
 {build_base_hexagon("dark", OUTLINE_DARK)}
 {build_base_octal("dark", OUTLINE_DARK)}
 {build_base_octagon("dark", OUTLINE_DARK)}
@@ -1040,6 +1128,7 @@ def build_wff() -> str:
 {build_base_trinary("light", OUTLINE_LIGHT)}
 {build_base_quaternary("light", OUTLINE_LIGHT)}
 {build_base_quinary("light", OUTLINE_LIGHT)}
+{build_base_pentagon("light", OUTLINE_LIGHT)}
 {build_base_hexagon("light", OUTLINE_LIGHT)}
 {build_base_octal("light", OUTLINE_LIGHT)}
 {build_base_octagon("light", OUTLINE_LIGHT)}
@@ -1081,6 +1170,7 @@ _HTML_TMPL = r"""<!doctype html>
       <option value="trinary">Trinary</option>
       <option value="quaternary">Quaternary</option>
       <option value="quinary">Quinary</option>
+      <option value="pentagon">Pentagon</option>
       <option value="hexagon">Hexagon</option>
       <option value="octal">Octal</option>
       <option value="octagon">Octagon</option>
@@ -1095,6 +1185,8 @@ const SUB_GAP = __SUB_GAP__, LABEL_W = __LABEL_W__, LABEL_H = __LABEL_H__;
 const POS_SIGN = {TR:[1,-1], TL:[-1,-1], BL:[-1,1], BR:[1,1]};
 const POS_ANGLES = {TR:[0,90], BR:[90,180], BL:[180,270], TL:[270,360]};
 const POSITIONS = ["TR","TL","BL","BR"];
+const PENT_POSITIONS = ["P0","P1","P2","P3","P4"];
+const PENT_ANGLES = Object.fromEntries(PENT_POSITIONS.map((p, i) => [p, [i * 72, (i + 1) * 72]]));
 const HEX_POSITIONS = ["P0","P1","P2","P3","P4","P5"];
 const HEX_ANGLES = Object.fromEntries(HEX_POSITIONS.map((p, i) => [p, [i * 60, (i + 1) * 60]]));
 const OCT_POSITIONS = Array.from({length: 8}, (_, i) => "P" + i);
@@ -1193,6 +1285,7 @@ PALETTE_OPTIONS.forEach(([id, label]) => {
 __JS_VALUE_FN__
 function quinaryDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (5 ** place)) % 5); }
 function binaryBit(src, k, now) { return Math.round(Math.floor(value(src, now) / (2 ** k)) % 2); }
+function pentDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (6 ** place)) % 6); }
 function hexDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (7 ** place)) % 7); }
 function octDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (9 ** place)) % 9); }
 function quatDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (4 ** place)) % 4); }
@@ -1248,6 +1341,32 @@ function drawQuinary(colors, outline, showLabels, now) {
         }
       });
     }
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
+function drawPentagon(colors, outline, showLabels, now) {
+  // Reuses QUINARY_LAYOUT verbatim -- base 6 has the same (2,3,3) place
+  // pattern as base 5 and 7, only digit math + wedge count (5) differ.
+  let s = "";
+  for (const c of QUINARY_LAYOUT) {
+    const r = c.w / 2;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    const digit = pentDigit(c.src, c.place, now);
+    PENT_POSITIONS.forEach((pos, k) => {
+      if (digit <= k) return;
+      const [a0, a1] = PENT_ANGLES[pos];
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+    });
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
@@ -1432,6 +1551,8 @@ function draw() {
     s += drawTrinary(paletteFor(paletteSel.value, 2), OUTLINE[key], showLabels, now);
   } else if (base === "quaternary") {
     s += drawQuaternary(paletteFor(paletteSel.value, 3), OUTLINE[key], showLabels, now);
+  } else if (base === "pentagon") {
+    s += drawPentagon(paletteFor(paletteSel.value, 5), OUTLINE[key], showLabels, now);
   } else if (base === "hexagon") {
     s += drawHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], showLabels, now);
   } else if (base === "octal") {

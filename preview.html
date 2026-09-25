@@ -17,6 +17,7 @@
       <option value="trinary">Trinary</option>
       <option value="quaternary">Quaternary</option>
       <option value="quinary">Quinary</option>
+      <option value="pentagon">Pentagon</option>
       <option value="hexagon">Hexagon</option>
       <option value="octal">Octal</option>
       <option value="octagon">Octagon</option>
@@ -31,6 +32,8 @@ const SUB_GAP = 0, LABEL_W = 36, LABEL_H = 36;
 const POS_SIGN = {TR:[1,-1], TL:[-1,-1], BL:[-1,1], BR:[1,1]};
 const POS_ANGLES = {TR:[0,90], BR:[90,180], BL:[180,270], TL:[270,360]};
 const POSITIONS = ["TR","TL","BL","BR"];
+const PENT_POSITIONS = ["P0","P1","P2","P3","P4"];
+const PENT_ANGLES = Object.fromEntries(PENT_POSITIONS.map((p, i) => [p, [i * 72, (i + 1) * 72]]));
 const HEX_POSITIONS = ["P0","P1","P2","P3","P4","P5"];
 const HEX_ANGLES = Object.fromEntries(HEX_POSITIONS.map((p, i) => [p, [i * 60, (i + 1) * 60]]));
 const OCT_POSITIONS = Array.from({length: 8}, (_, i) => "P" + i);
@@ -134,6 +137,7 @@ function value(src, now) {
 }
 function quinaryDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (5 ** place)) % 5); }
 function binaryBit(src, k, now) { return Math.round(Math.floor(value(src, now) / (2 ** k)) % 2); }
+function pentDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (6 ** place)) % 6); }
 function hexDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (7 ** place)) % 7); }
 function octDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (9 ** place)) % 9); }
 function quatDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (4 ** place)) % 4); }
@@ -189,6 +193,32 @@ function drawQuinary(colors, outline, showLabels, now) {
         }
       });
     }
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
+function drawPentagon(colors, outline, showLabels, now) {
+  // Reuses QUINARY_LAYOUT verbatim -- base 6 has the same (2,3,3) place
+  // pattern as base 5 and 7, only digit math + wedge count (5) differ.
+  let s = "";
+  for (const c of QUINARY_LAYOUT) {
+    const r = c.w / 2;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    const digit = pentDigit(c.src, c.place, now);
+    PENT_POSITIONS.forEach((pos, k) => {
+      if (digit <= k) return;
+      const [a0, a1] = PENT_ANGLES[pos];
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+    });
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
@@ -373,6 +403,8 @@ function draw() {
     s += drawTrinary(paletteFor(paletteSel.value, 2), OUTLINE[key], showLabels, now);
   } else if (base === "quaternary") {
     s += drawQuaternary(paletteFor(paletteSel.value, 3), OUTLINE[key], showLabels, now);
+  } else if (base === "pentagon") {
+    s += drawPentagon(paletteFor(paletteSel.value, 5), OUTLINE[key], showLabels, now);
   } else if (base === "hexagon") {
     s += drawHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], showLabels, now);
   } else if (base === "octal") {
