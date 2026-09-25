@@ -148,6 +148,46 @@ function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
   return `M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y1} Z`;
 }
+function ringWedgePath(cx, cy, rOuter, rInner, a0, a1) {
+  const [x0, y0] = polar(cx, cy, rOuter, a0), [x1, y1] = polar(cx, cy, rOuter, a1);
+  const [x0i, y0i] = polar(cx, cy, rInner, a0), [x1i, y1i] = polar(cx, cy, rInner, a1);
+  return `M ${x0} ${y0} A ${rOuter} ${rOuter} 0 0 1 ${x1} ${y1} L ${x1i} ${y1i} A ${rInner} ${rInner} 0 0 0 ${x0i} ${y0i} Z`;
+}
+// Generalizes Quinary's 2x2 corner-squaring trick to any rows x cols grid --
+// see the Python-side wff_grid_groups() note for the full "why" (a corner
+// stays rounded only when BOTH its adjacent edges are on the true grid
+// perimeter). Mirrors that function exactly so the preview matches the
+// real WFF output.
+function gridGroupSvg(cx, cy, w, h, rows, cols, radius, digit, colors) {
+  const cellW = w / cols, cellH = h / rows;
+  const bx0 = cx - w / 2, by0 = cy - h / 2;
+  let s = "";
+  for (let k = 0; k < rows * cols; k++) {
+    if (digit <= k) continue;
+    const row = Math.floor(k / cols), col = k % cols;
+    const bx = bx0 + col * cellW, by = by0 + row * cellH;
+    const r = Math.min(radius, cellW / 2, cellH / 2);
+    const color = colors[k];
+    const keep = {
+      TL: row === 0 && col === 0,
+      TR: row === 0 && col === cols - 1,
+      BL: row === rows - 1 && col === 0,
+      BR: row === rows - 1 && col === cols - 1,
+    };
+    s += `<g transform="translate(${bx},${by})">`;
+    s += `<rect x="0" y="0" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${color}"/>`;
+    const corners = { TL: [0, 0], TR: [cellW - r, 0], BL: [0, cellH - r], BR: [cellW - r, cellH - r] };
+    for (const [name, [ox, oy]] of Object.entries(corners)) {
+      if (!keep[name]) s += `<rect x="${ox}" y="${oy}" width="${r}" height="${r}" fill="${color}"/>`;
+    }
+    s += `</g>`;
+  }
+  return s;
+}
+function gridOutlineSvg(cx, cy, w, h, outline) {
+  const x = cx - w / 2, y = cy - h / 2, r = Math.min(w, h) * 0.1;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" ry="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+}
 function outlineShape(c, outline) {
   const stroke = `fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
   if (c.shape === "pie") return `<circle cx="${c.x}" cy="${c.y}" r="${c.w / 2}" ${stroke}/>`;
@@ -232,20 +272,31 @@ function drawPentagon(colors, outline, showLabels, now) {
   return s;
 }
 
+const HEX_GRID_ROWS = {
+  "[HOUR_0_23]": { rows: 2, cols: 3, radius: 6 },
+  "[MINUTE]": { rows: 3, cols: 2, radius: 999 },
+};
 function drawHexagon(colors, outline, showLabels, now) {
   // Reuses QUINARY_LAYOUT's x/y/place positions verbatim (base-5 and base-7
-  // both need 2 places for H, 3 for M/S -- see the Python-side module note),
-  // rendering every group as a 6-wedge circle instead of a 4-cell quad.
+  // both need 2 places for H, 3 for M/S -- see the Python-side module note).
+  // Hour/Minute now use the generalized grid renderer (2x3/3x2 -- 6 factors
+  // cleanly), Second stays the wedge pie.
   let s = "";
   for (const c of QUINARY_LAYOUT) {
-    const r = c.w / 2;
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = hexDigit(c.src, c.place, now);
-    HEX_POSITIONS.forEach((pos, k) => {
-      if (digit <= k) return;
-      const [a0, a1] = HEX_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
-    });
+    const gridCfg = HEX_GRID_ROWS[c.src];
+    if (gridCfg) {
+      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+    } else {
+      const r = c.w / 2;
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      HEX_POSITIONS.forEach((pos, k) => {
+        if (digit <= k) return;
+        const [a0, a1] = HEX_ANGLES[pos];
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      });
+    }
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
@@ -259,20 +310,33 @@ function drawHexagon(colors, outline, showLabels, now) {
   return s;
 }
 
+const OCTAGON_GRID_ROWS = {
+  "[HOUR_0_23]": { rows: 2, cols: 4, radius: 4 },
+  "[MINUTE]": { rows: 4, cols: 2, radius: 999 },
+};
 function drawOctagon(colors, outline, showLabels, now) {
   // Own layout, unlike Hexagon -- base 9 only needs 2 places for M/S too
   // (9^2=81 > 59), so Octagon uses a simpler, uniform 2-place-per-row
   // layout centered on the canvas rather than Quinary's asymmetric one.
+  // Hour/Minute use the generalized grid renderer (2x4/4x2 -- 8 factors
+  // cleanly), Second stays the wedge pie. Octal (drawOctal below) reuses
+  // this same layout but is NOT part of this -- 7 doesn't factor cleanly.
   let s = "";
   for (const c of OCTAGON_LAYOUT) {
-    const r = c.w / 2;
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = octDigit(c.src, c.place, now);
-    OCT_POSITIONS.forEach((pos, k) => {
-      if (digit <= k) return;
-      const [a0, a1] = OCT_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
-    });
+    const gridCfg = OCTAGON_GRID_ROWS[c.src];
+    if (gridCfg) {
+      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+    } else {
+      const r = c.w / 2;
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      OCT_POSITIONS.forEach((pos, k) => {
+        if (digit <= k) return;
+        const [a0, a1] = OCT_ANGLES[pos];
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      });
+    }
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
@@ -313,18 +377,31 @@ function drawOctal(colors, outline, showLabels, now) {
   return s;
 }
 
+const TRI_RING_STYLES = {
+  "[HOUR_0_23]": { thicknessFrac: 1.0, gap: 0 },    // solid pie (unchanged baseline)
+  "[MINUTE]": { thicknessFrac: 0.45, gap: 0 },      // thin ring / donut
+  "[SECOND]": { thicknessFrac: 0.45, gap: 10 },     // segmented ring
+};
 function drawTrinary(colors, outline, showLabels, now) {
   // Own layout (TRINARY_LAYOUT) -- base 3 needs 3 places for H, 4 for M/S,
   // wider than any other base, so it doesn't reuse anyone else's geometry.
+  // Ring-variant experiment: H stays a solid pie, M becomes a thin ring,
+  // S becomes a segmented ring -- same Arc technique, just thickness and
+  // angle-gap parameters, no new geometry.
   let s = "";
   for (const c of TRINARY_LAYOUT) {
     const r = c.w / 2;
     s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = triDigit(c.src, c.place, now);
+    const style = TRI_RING_STYLES[c.src];
     TRI_POSITIONS.forEach((pos, k) => {
       if (digit <= k) return;
-      const [a0, a1] = TRI_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      let [a0, a1] = TRI_ANGLES[pos];
+      a0 += style.gap / 2; a1 -= style.gap / 2;
+      const path = style.thicknessFrac >= 1.0
+        ? wedgePath(c.x, c.y, r, a0, a1)
+        : ringWedgePath(c.x, c.y, r, r * (1 - style.thicknessFrac), a0, a1);
+      s += `<path d="${path}" fill="${colors[k]}"/>`;
     });
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;

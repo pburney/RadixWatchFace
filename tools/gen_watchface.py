@@ -251,6 +251,65 @@ def wff_decimal_readout():
     return "\n".join(out)
 
 
+# ---- Generic grid-group renderer -- generalizes Quinary's 2x2
+# corner-squaring trick to any rows x cols grid whose rows*cols == n
+# positions. The 2x2 case is the special case where every subcell has
+# exactly one true outer corner (matching its own quadrant name); for a
+# taller/wider grid, a corner stays rounded only if BOTH of its adjacent
+# edges are on the true grid perimeter (row/col at the grid's extreme in
+# that direction) -- otherwise it's squared off so adjacent lit cells'
+# shared edges fuse flat. This reduces to exactly Quinary's own rule at
+# 2x2 and produces a plain rounded-RECTANGLE outline (rounded only at the
+# 4 literal grid corners) for any rows x cols -- verified by hand-tracing
+# 2x2/2x3/3x2/2x4 before trusting it, then confirmed visually via an SVG
+# mockup Paul reviewed before this was ported into real WFF XML.
+def wff_grid_outline(cx, cy, w, h, rows, cols, outline_color):
+    x, y = round(cx - w / 2), round(cy - h / 2)
+    r = min(w / cols, h / rows) * 0.25
+    return (f'      <PartDraw x="{x}" y="{y}" width="{round(w)}" height="{round(h)}">\n'
+            f'        <RoundRectangle x="0" y="0" width="{round(w)}" height="{round(h)}" '
+            f'cornerRadiusX="{r:.1f}" cornerRadiusY="{r:.1f}">'
+            f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/></RoundRectangle>\n'
+            f'      </PartDraw>')
+
+
+def wff_grid_groups(cx, cy, w, h, rows, cols, radius, digit_expr, colors, name_prefix):
+    cell_w, cell_h = w / cols, h / rows
+    bx0, by0 = cx - w / 2, cy - h / 2
+    out = []
+    for k in range(rows * cols):
+        row, col = divmod(k, cols)
+        bx, by = round(bx0 + col * cell_w), round(by0 + row * cell_h)
+        cw, ch = round(cell_w), round(cell_h)
+        r = min(radius, cw / 2, ch / 2)
+        color = colors[k]
+        keep_rounded = {
+            "TL": row == 0 and col == 0,
+            "TR": row == 0 and col == cols - 1,
+            "BL": row == rows - 1 and col == 0,
+            "BR": row == rows - 1 and col == cols - 1,
+        }
+        corner_xy = {"TL": (0, 0), "TR": (cw - r, 0), "BL": (0, ch - r), "BR": (cw - r, ch - r)}
+        squares = "".join(
+            f'<Rectangle x="{sx:.1f}" y="{sy:.1f}" width="{r:.1f}" height="{r:.1f}"><Fill color="{color}"/></Rectangle>'
+            for corner, (sx, sy) in corner_xy.items() if not keep_rounded[corner])
+        shape_el = (f'<RoundRectangle x="0" y="0" width="{cw}" height="{ch}" '
+                    f'cornerRadiusX="{r:.1f}" cornerRadiusY="{r:.1f}"><Fill color="{color}"/></RoundRectangle>{squares}')
+        name = f"{name_prefix}_{k}"
+        out.append(
+            f'      <Condition>\n'
+            f'        <Expressions>\n'
+            f'          <Expression name="{name}"><![CDATA[(({digit_expr}) > {k})]]></Expression>\n'
+            f'        </Expressions>\n'
+            f'        <Compare expression="{name}">\n'
+            f'          <PartDraw x="{bx}" y="{by}" width="{cw}" height="{ch}">\n'
+            f'            {shape_el}\n'
+            f'          </PartDraw>\n'
+            f'        </Compare>\n'
+            f'      </Condition>')
+    return "\n".join(out)
+
+
 # ---- Pentagon (base 6) -- checked computationally like every other base:
 # 6^1=6<=23<36=6^2 and 6^2=36<=59<216=6^3, giving the SAME (2,3,3) place
 # pattern as Quinary/Hexagon (5 and 7 give identical place counts for the
@@ -347,12 +406,17 @@ def build_base_pentagon(theme: str, outline_color: str) -> str:
 # and 7^2=49<=59<343 -- so the SAME x/y positions work, only the digit math
 # (base 7 instead of 5) and the rendering (6-wedge circle instead of a
 # 4-cell quad with per-row bar/rounded/pie shapes) differ. There's no
-# 2x2-grid equivalent for 6 positions, so every row renders as a wedge
-# circle -- no per-row shape variety the way Quinary has H/M/S look
-# different at a glance; row identity here is label + position only, same
-# as Binary already relies on.
+# 2x2-grid equivalent for 6 positions as a single monolithic shape, BUT
+# 6 = 2x3 does factor into a small rectangular grid -- 2026-09-24: Hour and
+# Minute now use the generalized grid renderer (wff_grid_groups) for a real
+# chunky-tile / blob look, same as Quinary, while Second stays the wedge
+# pie (row identity here is now genuinely 3-way, not just label+position).
 HEX_POSITIONS = ["P0", "P1", "P2", "P3", "P4", "P5"]
 HEX_ANGLES = {f"P{i}": (i * 60, (i + 1) * 60) for i in range(6)}
+HEX_GRID_ROWS = {
+    "[HOUR_0_23]": dict(rows=2, cols=3, radius=6, prefix="hxt"),    # chunky tile
+    "[MINUTE]": dict(rows=3, cols=2, radius=999, prefix="hxb"),     # blob (radius clamped to max)
+}
 
 
 def hex_digit_expr(value_expr: str, place: int) -> str:
@@ -362,6 +426,10 @@ def hex_digit_expr(value_expr: str, place: int) -> str:
 def wff_hex_outlines(layout, outline_color):
     out = []
     for c in layout:
+        cfg = HEX_GRID_ROWS.get(c["expr"])
+        if cfg:
+            out.append(wff_grid_outline(c["x"], c["y"], c["w"], c["h"], cfg["rows"], cfg["cols"], outline_color))
+            continue
         r = c["w"] / 2
         x, y = round(c["x"] - r), round(c["y"] - r)
         out.append(
@@ -376,6 +444,12 @@ def wff_hex_groups(layout, colors):
     out = []
     for c in layout:
         digit_expr = hex_digit_expr(c["expr"], c["place"])
+        cfg = HEX_GRID_ROWS.get(c["expr"])
+        if cfg:
+            prefix = f'{cfg["prefix"]}{c["place"]}_{round(c["x"])}_{round(c["y"])}'
+            out.append(wff_grid_groups(c["x"], c["y"], c["w"], c["h"], cfg["rows"], cfg["cols"],
+                                        cfg["radius"], digit_expr, colors, prefix))
+            continue
         r = c["w"] / 2
         bx, by = round(c["x"] - r), round(c["y"] - r)
         for k, pos in enumerate(HEX_POSITIONS):
@@ -454,6 +528,19 @@ OCT_DECIMAL_X = OCT_RIGHT_CX + OCT_QUAD / 2 + OCT_DECIMAL_GAP + OCT_DECIMAL_W / 
 OCT_POSITIONS = [f"P{i}" for i in range(8)]
 OCT_ANGLES = {f"P{i}": (i * 45, (i + 1) * 45) for i in range(8)}
 
+# 2026-09-24: Octagon (base 9, n=8 positions) gets the same generalized grid
+# treatment as Hexagon -- 8 = 2x4 factors cleanly. Octal (base 8, n=7
+# positions) shares this SAME layout/outline geometry but is NOT part of
+# this -- 7 doesn't factor into a small grid, and it keeps wedge-pie
+# throughout. Passed as an explicit optional param (default: no rows get
+# grid treatment) rather than a module-level dict, specifically so Octal's
+# calls to these same functions are unaffected -- an accidental shared
+# mutable default here would silently break Octal's outline/content match.
+OCTAGON_GRID_ROWS = {
+    "[HOUR_0_23]": dict(rows=2, cols=4, radius=4, prefix="ogt"),   # chunky tile
+    "[MINUTE]": dict(rows=4, cols=2, radius=999, prefix="ogb"),    # blob
+}
+
 
 def octagon_digit_expr(value_expr: str, place: int) -> str:
     return f"round(floor(({value_expr}) / {9 ** place}) % 9)"
@@ -488,9 +575,14 @@ def wff_octagon_decimal_readout():
     return "\n".join(out)
 
 
-def wff_octagon_outlines(layout, outline_color):
+def wff_octagon_outlines(layout, outline_color, grid_rows=None):
+    grid_rows = grid_rows or {}
     out = []
     for c in layout:
+        cfg = grid_rows.get(c["expr"])
+        if cfg:
+            out.append(wff_grid_outline(c["x"], c["y"], c["w"], c["h"], cfg["rows"], cfg["cols"], outline_color))
+            continue
         r = c["w"] / 2
         x, y = round(c["x"] - r), round(c["y"] - r)
         out.append(
@@ -501,10 +593,17 @@ def wff_octagon_outlines(layout, outline_color):
     return "\n".join(out)
 
 
-def wff_octagon_groups(layout, colors):
+def wff_octagon_groups(layout, colors, grid_rows=None):
+    grid_rows = grid_rows or {}
     out = []
     for c in layout:
         digit_expr = octagon_digit_expr(c["expr"], c["place"])
+        cfg = grid_rows.get(c["expr"])
+        if cfg:
+            prefix = f'{cfg["prefix"]}{c["place"]}_{round(c["x"])}_{round(c["y"])}'
+            out.append(wff_grid_groups(c["x"], c["y"], c["w"], c["h"], cfg["rows"], cfg["cols"],
+                                        cfg["radius"], digit_expr, colors, prefix))
+            continue
         r = c["w"] / 2
         bx, by = round(c["x"] - r), round(c["y"] - r)
         for k, pos in enumerate(OCT_POSITIONS):
@@ -531,7 +630,7 @@ def octagon_palette_list_option(option_id: str, layout, theme: str) -> str:
     colors = palette_for(option_id, 8)
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="oct_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
-            f'{wff_octagon_groups(layout, colors)}\n'
+            f'{wff_octagon_groups(layout, colors, OCTAGON_GRID_ROWS)}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
@@ -543,7 +642,7 @@ def build_base_octagon(theme: str, outline_color: str) -> str:
     return f"""    <ListOption id="octagon">
       <Group name="octagon_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
         <Group name="octagon_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-{wff_octagon_outlines(layout, outline_color)}
+{wff_octagon_outlines(layout, outline_color, OCTAGON_GRID_ROWS)}
         </Group>
         <ListConfiguration id="palette">
 {palette_options}
@@ -771,6 +870,21 @@ TRI_DECIMAL_X = _TRI_RIGHT_EDGE + TRI_DECIMAL_GAP + TRI_DECIMAL_W / 2
 TRI_POSITIONS = ["P0", "P1"]
 TRI_ANGLES = {f"P{i}": (i * 180, (i + 1) * 180) for i in range(2)}
 
+# 2026-09-24: Trinary is the ring-variant experiment (Paul: "Let's try the
+# ring for Trinary") -- same proven Arc/WeightedStroke element every wedge
+# base already uses, just a different `thickness` (ring vs. solid pie) and
+# angle padding (gap between wedges) per row. No new element, no new
+# geometry, no new fit-check: a thinner/gapped stroke only draws LESS than
+# the already-validated bounding circle, never more.
+#   thickness_frac=1.0 -> solid pie (the original, unchanged look)
+#   thickness_frac<1.0 -> a ring/donut (stroke doesn't reach the center)
+#   gap>0              -> shrinks each wedge's angle span, opening a gap
+TRI_RING_STYLES = {
+    "[HOUR_0_23]": dict(thickness_frac=1.0, gap=0),    # solid pie (unchanged baseline)
+    "[MINUTE]": dict(thickness_frac=0.45, gap=0),      # thin ring / donut
+    "[SECOND]": dict(thickness_frac=0.45, gap=10),     # segmented ring
+}
+
 
 def trinary_digit_expr(value_expr: str, place: int) -> str:
     return f"round(floor(({value_expr}) / {3 ** place}) % 3)"
@@ -842,8 +956,12 @@ def wff_tri_groups(layout, colors):
         digit_expr = trinary_digit_expr(c["expr"], c["place"])
         r = c["w"] / 2
         bx, by = round(c["x"] - r), round(c["y"] - r)
+        style = TRI_RING_STYLES[c["expr"]]
+        thickness = r * style["thickness_frac"]
+        gap = style["gap"]
         for k, pos in enumerate(TRI_POSITIONS):
             start, end = TRI_ANGLES[pos]
+            start, end = start + gap / 2, end - gap / 2
             name = f"y{c['place']}_{round(c['x'])}_{round(c['y'])}_{k}"
             out.append(
                 f'      <Condition>\n'
@@ -854,7 +972,7 @@ def wff_tri_groups(layout, colors):
                 f'          <PartDraw x="{bx}" y="{by}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
                 f'            <Arc centerX="{r}" centerY="{r}" width="{r}" height="{r}" '
                 f'startAngle="{start}" endAngle="{end}" direction="CLOCKWISE">\n'
-                f'              <WeightedStroke colors="{colors[k]}" thickness="{r}" cap="BUTT"/>\n'
+                f'              <WeightedStroke colors="{colors[k]}" thickness="{thickness:.2f}" cap="BUTT"/>\n'
                 f'            </Arc>\n'
                 f'          </PartDraw>\n'
                 f'        </Compare>\n'
@@ -1296,6 +1414,46 @@ function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
   return `M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y1} Z`;
 }
+function ringWedgePath(cx, cy, rOuter, rInner, a0, a1) {
+  const [x0, y0] = polar(cx, cy, rOuter, a0), [x1, y1] = polar(cx, cy, rOuter, a1);
+  const [x0i, y0i] = polar(cx, cy, rInner, a0), [x1i, y1i] = polar(cx, cy, rInner, a1);
+  return `M ${x0} ${y0} A ${rOuter} ${rOuter} 0 0 1 ${x1} ${y1} L ${x1i} ${y1i} A ${rInner} ${rInner} 0 0 0 ${x0i} ${y0i} Z`;
+}
+// Generalizes Quinary's 2x2 corner-squaring trick to any rows x cols grid --
+// see the Python-side wff_grid_groups() note for the full "why" (a corner
+// stays rounded only when BOTH its adjacent edges are on the true grid
+// perimeter). Mirrors that function exactly so the preview matches the
+// real WFF output.
+function gridGroupSvg(cx, cy, w, h, rows, cols, radius, digit, colors) {
+  const cellW = w / cols, cellH = h / rows;
+  const bx0 = cx - w / 2, by0 = cy - h / 2;
+  let s = "";
+  for (let k = 0; k < rows * cols; k++) {
+    if (digit <= k) continue;
+    const row = Math.floor(k / cols), col = k % cols;
+    const bx = bx0 + col * cellW, by = by0 + row * cellH;
+    const r = Math.min(radius, cellW / 2, cellH / 2);
+    const color = colors[k];
+    const keep = {
+      TL: row === 0 && col === 0,
+      TR: row === 0 && col === cols - 1,
+      BL: row === rows - 1 && col === 0,
+      BR: row === rows - 1 && col === cols - 1,
+    };
+    s += `<g transform="translate(${bx},${by})">`;
+    s += `<rect x="0" y="0" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${color}"/>`;
+    const corners = { TL: [0, 0], TR: [cellW - r, 0], BL: [0, cellH - r], BR: [cellW - r, cellH - r] };
+    for (const [name, [ox, oy]] of Object.entries(corners)) {
+      if (!keep[name]) s += `<rect x="${ox}" y="${oy}" width="${r}" height="${r}" fill="${color}"/>`;
+    }
+    s += `</g>`;
+  }
+  return s;
+}
+function gridOutlineSvg(cx, cy, w, h, outline) {
+  const x = cx - w / 2, y = cy - h / 2, r = Math.min(w, h) * 0.1;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" ry="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+}
 function outlineShape(c, outline) {
   const stroke = `fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
   if (c.shape === "pie") return `<circle cx="${c.x}" cy="${c.y}" r="${c.w / 2}" ${stroke}/>`;
@@ -1380,20 +1538,31 @@ function drawPentagon(colors, outline, showLabels, now) {
   return s;
 }
 
+const HEX_GRID_ROWS = {
+  "[HOUR_0_23]": { rows: 2, cols: 3, radius: 6 },
+  "[MINUTE]": { rows: 3, cols: 2, radius: 999 },
+};
 function drawHexagon(colors, outline, showLabels, now) {
   // Reuses QUINARY_LAYOUT's x/y/place positions verbatim (base-5 and base-7
-  // both need 2 places for H, 3 for M/S -- see the Python-side module note),
-  // rendering every group as a 6-wedge circle instead of a 4-cell quad.
+  // both need 2 places for H, 3 for M/S -- see the Python-side module note).
+  // Hour/Minute now use the generalized grid renderer (2x3/3x2 -- 6 factors
+  // cleanly), Second stays the wedge pie.
   let s = "";
   for (const c of QUINARY_LAYOUT) {
-    const r = c.w / 2;
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = hexDigit(c.src, c.place, now);
-    HEX_POSITIONS.forEach((pos, k) => {
-      if (digit <= k) return;
-      const [a0, a1] = HEX_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
-    });
+    const gridCfg = HEX_GRID_ROWS[c.src];
+    if (gridCfg) {
+      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+    } else {
+      const r = c.w / 2;
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      HEX_POSITIONS.forEach((pos, k) => {
+        if (digit <= k) return;
+        const [a0, a1] = HEX_ANGLES[pos];
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      });
+    }
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
@@ -1407,20 +1576,33 @@ function drawHexagon(colors, outline, showLabels, now) {
   return s;
 }
 
+const OCTAGON_GRID_ROWS = {
+  "[HOUR_0_23]": { rows: 2, cols: 4, radius: 4 },
+  "[MINUTE]": { rows: 4, cols: 2, radius: 999 },
+};
 function drawOctagon(colors, outline, showLabels, now) {
   // Own layout, unlike Hexagon -- base 9 only needs 2 places for M/S too
   // (9^2=81 > 59), so Octagon uses a simpler, uniform 2-place-per-row
   // layout centered on the canvas rather than Quinary's asymmetric one.
+  // Hour/Minute use the generalized grid renderer (2x4/4x2 -- 8 factors
+  // cleanly), Second stays the wedge pie. Octal (drawOctal below) reuses
+  // this same layout but is NOT part of this -- 7 doesn't factor cleanly.
   let s = "";
   for (const c of OCTAGON_LAYOUT) {
-    const r = c.w / 2;
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = octDigit(c.src, c.place, now);
-    OCT_POSITIONS.forEach((pos, k) => {
-      if (digit <= k) return;
-      const [a0, a1] = OCT_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
-    });
+    const gridCfg = OCTAGON_GRID_ROWS[c.src];
+    if (gridCfg) {
+      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+    } else {
+      const r = c.w / 2;
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      OCT_POSITIONS.forEach((pos, k) => {
+        if (digit <= k) return;
+        const [a0, a1] = OCT_ANGLES[pos];
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      });
+    }
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
@@ -1461,18 +1643,31 @@ function drawOctal(colors, outline, showLabels, now) {
   return s;
 }
 
+const TRI_RING_STYLES = {
+  "[HOUR_0_23]": { thicknessFrac: 1.0, gap: 0 },    // solid pie (unchanged baseline)
+  "[MINUTE]": { thicknessFrac: 0.45, gap: 0 },      // thin ring / donut
+  "[SECOND]": { thicknessFrac: 0.45, gap: 10 },     // segmented ring
+};
 function drawTrinary(colors, outline, showLabels, now) {
   // Own layout (TRINARY_LAYOUT) -- base 3 needs 3 places for H, 4 for M/S,
   // wider than any other base, so it doesn't reuse anyone else's geometry.
+  // Ring-variant experiment: H stays a solid pie, M becomes a thin ring,
+  // S becomes a segmented ring -- same Arc technique, just thickness and
+  // angle-gap parameters, no new geometry.
   let s = "";
   for (const c of TRINARY_LAYOUT) {
     const r = c.w / 2;
     s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = triDigit(c.src, c.place, now);
+    const style = TRI_RING_STYLES[c.src];
     TRI_POSITIONS.forEach((pos, k) => {
       if (digit <= k) return;
-      const [a0, a1] = TRI_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      let [a0, a1] = TRI_ANGLES[pos];
+      a0 += style.gap / 2; a1 -= style.gap / 2;
+      const path = style.thicknessFrac >= 1.0
+        ? wedgePath(c.x, c.y, r, a0, a1)
+        : ringWedgePath(c.x, c.y, r, r * (1 - style.thicknessFrac), a0, a1);
+      s += `<path d="${path}" fill="${colors[k]}"/>`;
     });
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
