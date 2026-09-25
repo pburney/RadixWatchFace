@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Radix Watch Face</title>
+<meta name="description" content="A Wear OS watch face that counts time in whatever numeral base you pick — try it live, no watch required.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #eef0ea;
+    --surface: #ffffff;
+    --ink: #1b1e22;
+    --muted: #5c6470;
+    --border: #d6dad2;
+    --accent: #8a6a2f;
+    --accent-ink: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14171c;
+      --surface: #1c2028;
+      --ink: #e8e6df;
+      --muted: #8b93a0;
+      --border: #2a2f38;
+      --accent: #c9a15a;
+      --accent-ink: #14171c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14171c;
+    --surface: #1c2028;
+    --ink: #e8e6df;
+    --muted: #8b93a0;
+    --border: #2a2f38;
+    --accent: #c9a15a;
+    --accent-ink: #14171c;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.5 "Work Sans", system-ui, sans-serif;
+    padding-inline: 16px;
+    padding-block: 28px 40px;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 650;
+    font-optical-sizing: auto;
+    font-size: clamp(2rem, 7vw, 2.6rem);
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+    text-wrap: balance;
+  }
+  .tagline { color: var(--muted); margin: 0 0 24px; max-width: 46ch; }
+  .tagline b { color: var(--ink); font-weight: 600; }
+
+  .stage {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  #face {
+    width: min(100%, 340px);
+    aspect-ratio: 1;
+    display: block;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--border), 0 8px 28px #0003;
+  }
+
+  .breakdown {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .breakdown b { color: var(--accent); font-weight: 600; }
+
+  .panel {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 420px) { .panel { grid-template-columns: 1fr; } }
+
+  .field {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field.row { flex-direction: row; align-items: center; justify-content: space-between; }
+  .field label.name {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  select {
+    font: 500 14px "Work Sans", sans-serif;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    padding: 2px 0;
+  }
+  select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  .switch {
+    position: relative;
+    width: 40px;
+    height: 24px;
+    flex: none;
+  }
+  .switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .switch .track {
+    position: absolute; inset: 0;
+    background: var(--border);
+    border-radius: 999px;
+    transition: background 0.15s;
+  }
+  .switch .thumb {
+    position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--surface);
+    box-shadow: 0 1px 2px #0003;
+    transition: transform 0.15s;
+  }
+  .switch input:checked + .track { background: var(--accent); }
+  .switch input:checked + .track + .thumb { transform: translateX(16px); }
+  .switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  option:disabled { color: #999; }
+
+  footer {
+    margin-top: 28px;
+    font-size: 12.5px;
+    color: var(--muted);
+    text-align: center;
+  }
+  footer a { color: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  .fs-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 500 13px "Work Sans", sans-serif;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  .fs-btn:hover { border-color: var(--accent); }
+  .fs-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .fs-btn svg { width: 15px; height: 15px; flex: none; }
+
+  body.is-fullscreen h1,
+  body.is-fullscreen .tagline,
+  body.is-fullscreen .panel,
+  body.is-fullscreen footer {
+    display: none;
+  }
+  body.is-fullscreen {
+    max-width: none;
+    padding: 0;
+    height: 100vh;
+  }
+  body.is-fullscreen .stage {
+    height: 100%;
+    justify-content: center;
+    border: none;
+    border-radius: 0;
+    background: var(--bg);
+  }
+  body.is-fullscreen #face {
+    width: min(88vh, 88vw);
+  }
+</style>
+</head>
+<body>
+
+<h1>Radix</h1>
+<p class="tagline">A Wear OS watch face that counts in whatever base you pick — right now,
+  every base from <b>binary</b> (base 2) through <b>nonary</b> (base 9): binary,
+  trinary, quaternary, quinary, senary, septenary, octal, and nonary. This is a live
+  preview: pick a base, a color scheme, a theme, and watch it read the actual time.</p>
+
+<div class="stage">
+  <svg id="face" viewBox="0 0 450 450"></svg>
+  <div class="breakdown" id="breakdown"></div>
+  <button class="fs-btn" id="fsBtn" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3"/>
+    </svg>
+    <span id="fsBtnLabel">Fullscreen</span>
+  </button>
+</div>
+
+<div class="panel">
+  <div class="field">
+    <label class="name" for="base">Numeral base</label>
+    <select id="base">
+      <option value="binary">Binary (base 2)</option>
+      <option value="trinary">Trinary (base 3)</option>
+      <option value="quaternary">Quaternary (base 4)</option>
+      <option value="quinary">Quinary (base 5)</option>
+      <option value="pentagon">Senary (base 6)</option>
+      <option value="hexagon">Septenary (base 7)</option>
+      <option value="octal">Octal (base 8)</option>
+      <option value="octagon">Nonary (base 9)</option>
+    </select>
+  </div>
+  <div class="field">
+    <label class="name" for="palette">Color scheme</label>
+    <select id="palette"></select>
+  </div>
+  <div class="field row">
+    <label class="name" for="theme">Light theme</label>
+    <span class="switch"><input type="checkbox" id="theme"><span class="track"></span><span class="thumb"></span></span>
+  </div>
+  <div class="field row">
+    <label class="name" for="labels">Row labels</label>
+    <span class="switch"><input type="checkbox" id="labels" checked><span class="track"></span><span class="thumb"></span></span>
+  </div>
+</div>
+
+<footer>Open source (Apache-2.0) —
+  <a href="https://github.com/pburney/RadixWatchFace">view the source on GitHub</a>.
+  Radix consolidates the <a href="https://github.com/pburney/BinaryWatchFace">Binary</a>
+  and <a href="https://github.com/pburney/QuinaryWatchFace">Quinary</a> watch faces into
+  one app with a base/color picker. Built with Claude Code.</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---- geometry, ported verbatim from RadixWatchFace/tools/gen_watchface.py ----
+  const CANVAS = 450, C = 225;
+  const QUAD = 72, SUB_GAP = 0, HOUR_RADIUS = 8, MINUTE_RADIUS = 24, QUAD_PITCH = 88;
+  const ROW_Y = { 0: 162, 1: 249, 2: 336 };
+  const RIGHT_EDGE_X = 313, HOUR_H = 72, HOUR_GAP = 24;
+  const HOUR_TOTAL_W = 2 * QUAD_PITCH + QUAD;
+  const HOUR_W = Math.floor((HOUR_TOTAL_W - HOUR_GAP) / 2);
+  const LABEL_GAP = 10, LABEL_W = 36, LABEL_H = 36;
+  const ROW_LEFT_EDGE_X = RIGHT_EDGE_X + QUAD / 2 - HOUR_TOTAL_W;
+  const LABEL_X = ROW_LEFT_EDGE_X - LABEL_GAP - LABEL_W / 2;
+  const ROW_RIGHT_EDGE_X = RIGHT_EDGE_X + QUAD / 2;
+  const DECIMAL_GAP = 10, DECIMAL_W = 44, DECIMAL_H = 36;
+  const DECIMAL_X = ROW_RIGHT_EDGE_X + DECIMAL_GAP + DECIMAL_W / 2;
+
+  const POSITIONS = ["TR", "TL", "BL", "BR"];
+  // Pentagon: tally marks, not wedges -- base 6's digit range (0-5) maps
+  // onto the classic tally system (4 bars + a diagonal 5th). Sized so both
+  // the bars' and the slash's farthest corners stay within ~28-30px of the
+  // cell center, comfortably inside the 36px bound the Pentagon
+  // circle-overlap fix already proved safe against row spacing.
+  const PENT_TALLY_BAR_W = 6, PENT_TALLY_BAR_H = 48, PENT_TALLY_GAP = 4, PENT_TALLY_N = 4;
+  const PENT_TALLY_TOTAL_W = PENT_TALLY_N * PENT_TALLY_BAR_W + (PENT_TALLY_N - 1) * PENT_TALLY_GAP;
+  const PENT_TALLY_SLASH_LEN = Math.round(Math.hypot(PENT_TALLY_TOTAL_W, PENT_TALLY_BAR_H));
+  const PENT_TALLY_SLASH_ANGLE = -35;
+  function pentTallyBarX(k) { return -PENT_TALLY_TOTAL_W / 2 + k * (PENT_TALLY_BAR_W + PENT_TALLY_GAP) + PENT_TALLY_BAR_W / 2; }
+  // Octal: WiFi bars, not wedges -- 7 independent vertical bars. Own
+  // row-center positions (OCTAL_LEFT_CX/RIGHT_CX), not OCT_LEFT_CX/
+  // RIGHT_CX -- 2026-09-24 refined twice: boxes widened to HOUR_W=112
+  // (Paul: "the width of the hours in Quinary") first kept the original
+  // 88px-apart centers (deliberate 24px overlap, meant to read as "a
+  // growing signal flowing into the next box"), then Paul clarified he'd
+  // meant the signal to start from the RIGHT of each box (not the left),
+  // and asked to widen the WHOLE FACE layout so the boxes don't overlap at
+  // all. Both bars' lighting order is mirrored (tallest, still first-lit,
+  // now sits at each box's own RIGHT edge), and the box centers are
+  // repositioned using the exact same spacing Quinary's own Hour row uses
+  // (112px boxes, 24px gap, centered on the canvas) -- reused directly
+  // rather than re-deriving new numbers, since that spacing is already
+  // proven to fit the circular clip by Quinary's own Hour bars. No dashed
+  // "off" guides here either, same fix as Pentagon's.
+  const OCTAL_WIFI_BOX_W = HOUR_W;
+  const OCTAL_ROW_GAP = HOUR_GAP;
+  const OCTAL_ROW_TOTAL_W = 2 * OCTAL_WIFI_BOX_W + OCTAL_ROW_GAP;
+  const OCTAL_LEFT_CX = C - OCTAL_ROW_TOTAL_W / 2 + OCTAL_WIFI_BOX_W / 2;
+  const OCTAL_RIGHT_CX = C + OCTAL_ROW_TOTAL_W / 2 - OCTAL_WIFI_BOX_W / 2;
+  const OCTAL_WIFI_BAR_W = 10, OCTAL_WIFI_GAP = 7, OCTAL_WIFI_N = 7, OCTAL_WIFI_MAX_H = 40, OCTAL_WIFI_MIN_H = 14;
+  const OCTAL_WIFI_STEP = (OCTAL_WIFI_MAX_H - OCTAL_WIFI_MIN_H) / (OCTAL_WIFI_N - 1);
+  const OCTAL_LABEL_GAP = 10, OCTAL_LABEL_W = 28;
+  const OCTAL_DECIMAL_GAP = 10, OCTAL_DECIMAL_W = 36;
+  const OCTAL_LABEL_X = OCTAL_LEFT_CX - OCTAL_WIFI_BOX_W / 2 - OCTAL_LABEL_GAP - OCTAL_LABEL_W / 2;
+  const OCTAL_DECIMAL_X = OCTAL_RIGHT_CX + OCTAL_WIFI_BOX_W / 2 + OCTAL_DECIMAL_GAP + OCTAL_DECIMAL_W / 2;
+  function octalLayout() {
+    const specs = [["H", "H", 0], ["M", "M", 1], ["S", "S", 2]];
+    const out = [];
+    for (const [label, src, rowI] of specs) {
+      const cy = ROW_Y[rowI];
+      [OCTAL_LEFT_CX, OCTAL_RIGHT_CX].forEach((cx, col) => {
+        out.push({ x: cx, y: cy, place: 1 - col, src, label: col === 0 ? label : null });
+      });
+    }
+    return out;
+  }
+  const OCTAL_LAYOUT = octalLayout();
+  function octalWifiBarGeom(k) {
+    // short side on the right: height ascends with k, so k=0 (first-lit,
+    // at the box's own right edge) is the shortest bar
+    const h = OCTAL_WIFI_MIN_H + k * OCTAL_WIFI_STEP;
+    const xOff = OCTAL_WIFI_BOX_W / 2 - k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) - OCTAL_WIFI_BAR_W / 2;
+    return [h, xOff];
+  }
+  const HEX_POSITIONS = ["P0", "P1", "P2", "P3", "P4", "P5"];
+  const HEX_ANGLES = Object.fromEntries(HEX_POSITIONS.map((p, i) => [p, [i * 60, (i + 1) * 60]]));
+  const OCT_POSITIONS = Array.from({ length: 8 }, (_, i) => "P" + i);
+  const OCT_ANGLES = Object.fromEntries(OCT_POSITIONS.map((p, i) => [p, [i * 45, (i + 1) * 45]]));
+  const POS_SIGN = { TR: [1, -1], TL: [-1, -1], BL: [-1, 1], BR: [1, 1] };
+  const POS_ANGLES = { TR: [0, 90], BR: [90, 180], BL: [180, 270], TL: [270, 360] };
+
+  // Octagon (base 9) does NOT reuse Quinary's layout, unlike Hexagon --
+  // base 9 only needs 2 places for M/S too (9^2=81 > 59), unlike base 5/7's
+  // 3 places -- so it gets its own simple, centered, uniform layout.
+  const OCT_QUAD = 72, OCT_PITCH = 88, OCT_LABEL_GAP = 10;
+  const OCT_LEFT_CX = C - OCT_PITCH / 2, OCT_RIGHT_CX = C + OCT_PITCH / 2;
+  const OCT_LABEL_X = OCT_LEFT_CX - OCT_QUAD / 2 - OCT_LABEL_GAP - LABEL_W / 2;
+  const OCT_DECIMAL_GAP = 10, OCT_DECIMAL_W = 44;
+  const OCT_DECIMAL_X = OCT_RIGHT_CX + OCT_QUAD / 2 + OCT_DECIMAL_GAP + OCT_DECIMAL_W / 2;
+  function octagonLayout() {
+    const specs = [["H", "H", 0], ["M", "M", 1], ["S", "S", 2]];
+    const out = [];
+    for (const [label, src, rowI] of specs) {
+      const cy = ROW_Y[rowI];
+      [OCT_LEFT_CX, OCT_RIGHT_CX].forEach((cx, col) => {
+        out.push({ x: cx, y: cy, w: OCT_QUAD, h: OCT_QUAD, place: 1 - col, src,
+                   label: col === 0 ? label : null, label_x: OCT_LABEL_X, label_y: cy });
+      });
+    }
+    return out;
+  }
+  const OCTAGON_LAYOUT = octagonLayout();
+  const OCT_DECIMAL_ROWS = [["H", ROW_Y[0]], ["M", ROW_Y[1]], ["S", ROW_Y[2]]];
+
+  // Octal (base 8): same (2,2,2) place pattern as Octagon (8^2=64>23 and
+  // 8^2=64>59, identical to 9^2=81), so it reuses OCTAGON_LAYOUT wholesale --
+  // only the digit math (mod 8) and wedge count (7 instead of 8) differ.
+  const OCTAL_POSITIONS = Array.from({ length: 7 }, (_, i) => "P" + i);
+  const OCTAL_ANGLES = Object.fromEntries(OCTAL_POSITIONS.map((p, i) => [p, [i * (360 / 7), (i + 1) * (360 / 7)]]));
+
+  // Trinary (base 3): needs its OWN layout -- base 3 needs 3 places for H
+  // (3^2=9<=23<27) and 4 for M/S (3^3=27<=59<81), a wider pattern than any
+  // other base (Quinary/Hexagon max out at 3, Quaternary at 3,3,3). 4
+  // columns don't fit Quinary's existing spacing (label/decimal boxes clip
+  // outside the circle at that pitch -- verified with the same
+  // farthest-corner check every other base used), so Trinary shrinks
+  // QUAD/PITCH from 72/88 to 64/70 and the label/decimal boxes to match.
+  const TRI_QUAD = 64, TRI_PITCH = 70;
+  const TRI_LABEL_GAP = 6, TRI_LABEL_W = 30, TRI_LABEL_H = 30;
+  const TRI_DECIMAL_GAP = 6, TRI_DECIMAL_W = 36, TRI_DECIMAL_H = 30;
+  const TRI_WIDEST_N = 4;
+  const TRI_LEFT_EDGE = C - (TRI_WIDEST_N - 1) / 2 * TRI_PITCH - TRI_QUAD / 2;
+  const TRI_RIGHT_EDGE = C + (TRI_WIDEST_N - 1) / 2 * TRI_PITCH + TRI_QUAD / 2;
+  const TRI_LABEL_X = TRI_LEFT_EDGE - TRI_LABEL_GAP - TRI_LABEL_W / 2;
+  const TRI_DECIMAL_X = TRI_RIGHT_EDGE + TRI_DECIMAL_GAP + TRI_DECIMAL_W / 2;
+  const TRI_POSITIONS = ["P0", "P1"];
+  const TRI_ANGLES = Object.fromEntries(TRI_POSITIONS.map((p, i) => [p, [i * 180, (i + 1) * 180]]));
+  function trinaryLayout() {
+    const specs = [[0, "H", "H", 3], [1, "M", "M", 4], [2, "S", "S", 4]];
+    const out = [];
+    for (const [rowI, label, src, n] of specs) {
+      const cy = ROW_Y[rowI];
+      for (let col = 0; col < n; col++) {
+        const place = n - 1 - col, cx = C + (col - (n - 1) / 2) * TRI_PITCH;
+        out.push({ x: cx, y: cy, w: TRI_QUAD, place, src, label: col === 0 ? label : null, label_x: TRI_LABEL_X, label_y: cy });
+      }
+    }
+    return out;
+  }
+  const TRINARY_LAYOUT = trinaryLayout();
+  const TRI_DECIMAL_ROWS = [["H", ROW_Y[0]], ["M", ROW_Y[1]], ["S", ROW_Y[2]]];
+
+  // Quaternary (base 4): H needs 3 places same as M/S (unlike Quinary's H,
+  // which only needs 2), so it gets its own layout -- QUAD-width, 3 places
+  // per row, right-aligned by place -- rather than reusing LAYOUT verbatim
+  // the way Hexagon does.
+  const QUAT_POSITIONS = ["P0", "P1", "P2"];
+  const QUAT_ANGLES = Object.fromEntries(QUAT_POSITIONS.map((p, i) => [p, [i * 120, (i + 1) * 120]]));
+  function quaternaryLayout() {
+    const specs = [[0, "H", "H"], [1, "M", "M"], [2, "S", "S"]];
+    const out = [];
+    for (const [rowI, label, src] of specs) {
+      const cy = ROW_Y[rowI];
+      for (let col = 0; col < 3; col++) {
+        const place = 2 - col, cx = RIGHT_EDGE_X - place * QUAD_PITCH;
+        out.push({ x: cx, y: cy, w: QUAD, place, src, label: col === 0 ? label : null, label_x: LABEL_X, label_y: cy });
+      }
+    }
+    return out;
+  }
+  const QUATERNARY_LAYOUT = quaternaryLayout();
+
+  function placesNeeded(maxValue) { let n = 1; while (5 ** n <= maxValue) n++; return n; }
+
+  function hourLayout() {
+    const cy = ROW_Y[0];
+    const totalW = 2 * HOUR_W + HOUR_GAP;
+    const leftX = C - totalW / 2 + HOUR_W / 2, rightX = C + totalW / 2 - HOUR_W / 2;
+    return [leftX, rightX].map((cx, col) => ({
+      x: cx, y: cy, w: HOUR_W, h: HOUR_H, shape: "bar", radius: HOUR_RADIUS,
+      place: 1 - col, src: "H", label: col === 0 ? "H" : null, label_x: LABEL_X, label_y: cy,
+    }));
+  }
+  function quadLayout() {
+    const specs = [[1, "M", "M", 59, "rounded"], [2, "S", "S", 59, "pie"]];
+    const out = [];
+    for (const [rowI, label, src, maxV, shape] of specs) {
+      const n = placesNeeded(maxV), cy = ROW_Y[rowI];
+      const radius = shape === "rounded" ? MINUTE_RADIUS : 0;
+      for (let col = 0; col < n; col++) {
+        const place = n - 1 - col, cx = RIGHT_EDGE_X - place * QUAD_PITCH;
+        out.push({ x: cx, y: cy, w: QUAD, h: QUAD, shape, radius, place, src,
+                   label: col === 0 ? label : null, label_x: LABEL_X, label_y: cy });
+      }
+    }
+    return out;
+  }
+  const LAYOUT = [...hourLayout(), ...quadLayout()];
+  const DECIMAL_ROWS = [["H", ROW_Y[0]], ["M", ROW_Y[1]], ["S", ROW_Y[2]]];
+
+  // ---- Binary (base 2) geometry, ported verbatim from BinaryWatchFace ----
+  const LED_R = 15, GX = 46, GY = 52;
+  const OFF = { dark: "#1C1C1C", light: "#DEDEDE" };
+  const OUTLINE = { dark: "#ffffff99", light: "#11111199" };
+  const BINARY_ROWS = [["H", "H", 6], ["M", "M", 6], ["S", "S", 6]];
+  function binaryLayout() {
+    const n = BINARY_ROWS.length, out = [];
+    BINARY_ROWS.forEach(([label, src, nbits], r) => {
+      const cy = C + (r - (n - 1) / 2) * GY;
+      for (let col = 0; col < nbits; col++) {
+        const k = nbits - 1 - col, cx = C + (col - (nbits - 1) / 2) * GX;
+        out.push({ x: cx, y: cy, k, src, label: col === 0 ? label : null });
+      }
+    });
+    return out;
+  }
+  const BINARY_LAYOUT = binaryLayout();
+
+  // ---- palettes, ported verbatim from RadixWatchFace/tools/palettes.py ----
+  const ANCHORS = [
+    ["green", "Green", "#33FF66"], ["emerald", "Emerald", "#00C853"], ["teal", "Teal", "#1DE9B6"],
+    ["cyan", "Cyan", "#33E1FF"], ["blue", "Blue", "#33B5FF"], ["indigo", "Indigo", "#5C6BC0"],
+    ["violet", "Violet", "#9B7BFF"], ["purple", "Purple", "#C061FF"], ["magenta", "Magenta", "#FF5CD2"],
+    ["pink", "Pink", "#FF6EA6"], ["red", "Red", "#FF5A5A"], ["orange", "Orange", "#FF9E42"],
+    ["amber", "Amber", "#FFC24B"], ["yellow", "Yellow", "#FFE14D"], ["olive", "Olive", "#8C8F5A"],
+    ["white", "White", "#F5F5F5"],
+  ];
+  const OKABE_ITO = ["#FFFFFF", "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"];
+  // ROYGBIV: red (0deg) to violet (270deg), NOT wrapped the rest of the way
+  // around the wheel back to red -- that remaining arc is magenta/pink,
+  // which isn't a spectral color, so wrapping through it would break the
+  // red-to-violet order.
+  const ROYGBIV_START = 0, ROYGBIV_END = 270;
+
+  function hexToHsl(hex) {
+    let r = parseInt(hex.slice(1, 3), 16) / 255, g = parseInt(hex.slice(3, 5), 16) / 255, b = parseInt(hex.slice(5, 7), 16) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h /= 6;
+    }
+    return [h, s, l];
+  }
+  function hslToHex(h, s, l) {
+    function f(n) {
+      const k = (n + h * 12) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+      return Math.round(255 * c);
+    }
+    const r = f(0), g = f(8), b = f(4);
+    return "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("").toUpperCase();
+  }
+  function monochromePalette(anchorHex, n) {
+    const [h, s] = hexToHsl(anchorHex);
+    const lo = 0.28, hi = 0.82, out = [];
+    for (let i = 0; i < n; i++) {
+      const t = n > 1 ? i / (n - 1) : 0.5;
+      out.push(hslToHex(h, s, lo + t * (hi - lo)));
+    }
+    return out;
+  }
+  function rainbowPalette(n) {
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      const t = n > 1 ? i / (n - 1) : 0.5;
+      out.push(hslToHex((ROYGBIV_START + t * (ROYGBIV_END - ROYGBIV_START)) / 360, 0.85, 0.55));
+    }
+    return out;
+  }
+  function colorblindPalette(n) { return OKABE_ITO.slice(0, n); }
+  function paletteFor(id, n) {
+    if (id === "rainbow") return rainbowPalette(n);
+    if (id === "colorblind") return colorblindPalette(n);
+    const anchor = ANCHORS.find((a) => a[0] === id);
+    return monochromePalette(anchor[2], n);
+  }
+  function ensureContrast(hex, theme) {
+    // Single-color bases (Binary) have no dashed outline or neighboring
+    // color to fall back on, so a color too close to the background is
+    // genuinely invisible -- e.g. Colorblind-safe's default is pure white,
+    // which nearly vanishes on light theme's white background.
+    const [h, s, l0] = hexToHsl(hex);
+    let l = l0;
+    if (theme === "light" && l > 0.75) l = 0.35;
+    else if (theme === "dark" && l < 0.20) l = 0.65;
+    else return hex;
+    return hslToHex(h, s, l);
+  }
+  const PALETTE_OPTIONS = [["rainbow", "Rainbow"], ["colorblind", "Colorblind-safe"],
+    ...ANCHORS.map(([id, name]) => [id, name + " shades"])];
+
+  const paletteSel = document.getElementById("palette");
+  for (const [id, label] of PALETTE_OPTIONS) {
+    const el = document.createElement("option");
+    el.value = id; el.textContent = label;
+    if (id === "colorblind") el.selected = true;
+    paletteSel.appendChild(el);
+  }
+
+  // ---- clock math (mirrors the WFF value expressions) ----
+  function fieldValue(src, now) {
+    if (src === "H") return now.getHours();
+    if (src === "M") return now.getMinutes();
+    return now.getSeconds();
+  }
+  function quinaryDigit(src, place, now) { return Math.floor(fieldValue(src, now) / 5 ** place) % 5; }
+  function binaryBit(src, k, now) { return Math.floor(fieldValue(src, now) / 2 ** k) % 2; }
+  function pentDigit(src, place, now) { return Math.floor(fieldValue(src, now) / 6 ** place) % 6; }
+  function hexDigit(src, place, now) { return Math.floor(fieldValue(src, now) / 7 ** place) % 7; }
+  function octDigit(src, place, now) { return Math.floor(fieldValue(src, now) / 9 ** place) % 9; }
+  function quatDigit(src, place, now) { return Math.floor(fieldValue(src, now) / 4 ** place) % 4; }
+  function octalDigit(src, place, now) { return Math.floor(fieldValue(src, now) / 8 ** place) % 8; }
+  function triDigit(src, place, now) { return Math.floor(fieldValue(src, now) / 3 ** place) % 3; }
+  function polar(cx, cy, r, deg) { const rad = (deg * Math.PI) / 180; return [cx + r * Math.sin(rad), cy - r * Math.cos(rad)]; }
+  function wedgePath(cx, cy, r, a0, a1) {
+    const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
+    return `M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y1} Z`;
+  }
+  function ringWedgePath(cx, cy, rOuter, rInner, a0, a1) {
+    const [x0, y0] = polar(cx, cy, rOuter, a0), [x1, y1] = polar(cx, cy, rOuter, a1);
+    const [x0i, y0i] = polar(cx, cy, rInner, a0), [x1i, y1i] = polar(cx, cy, rInner, a1);
+    return `M ${x0} ${y0} A ${rOuter} ${rOuter} 0 0 1 ${x1} ${y1} L ${x1i} ${y1i} A ${rInner} ${rInner} 0 0 0 ${x0i} ${y0i} Z`;
+  }
+  // Generalizes Quinary's 2x2 corner-squaring trick to any rows x cols grid
+  // -- a corner stays rounded only when BOTH its adjacent edges are on the
+  // true grid perimeter. Mirrors the real generator's gridGroupSvg exactly.
+  function gridGroupSvg(cx, cy, w, h, rows, cols, radius, digit, colors) {
+    const cellW = w / cols, cellH = h / rows;
+    const bx0 = cx - w / 2, by0 = cy - h / 2;
+    let s = "";
+    for (let k = 0; k < rows * cols; k++) {
+      if (digit <= k) continue;
+      const row = Math.floor(k / cols), col = k % cols;
+      const bx = bx0 + col * cellW, by = by0 + row * cellH;
+      const r = Math.min(radius, cellW / 2, cellH / 2);
+      const color = colors[k];
+      const keep = {
+        TL: row === 0 && col === 0,
+        TR: row === 0 && col === cols - 1,
+        BL: row === rows - 1 && col === 0,
+        BR: row === rows - 1 && col === cols - 1,
+      };
+      s += `<g transform="translate(${bx},${by})">`;
+      s += `<rect x="0" y="0" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${color}"/>`;
+      const corners = { TL: [0, 0], TR: [cellW - r, 0], BL: [0, cellH - r], BR: [cellW - r, cellH - r] };
+      for (const [name, [ox, oy]] of Object.entries(corners)) {
+        if (!keep[name]) s += `<rect x="${ox}" y="${oy}" width="${r}" height="${r}" fill="${color}"/>`;
+      }
+      s += `</g>`;
+    }
+    return s;
+  }
+  function gridOutlineSvg(cx, cy, w, h, outline) {
+    const x = cx - w / 2, y = cy - h / 2, r = Math.min(w, h) * 0.1;
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" ry="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+  }
+
+  const face = document.getElementById("face");
+  const breakdown = document.getElementById("breakdown");
+  const themeToggle = document.getElementById("theme");
+  const labelsToggle = document.getElementById("labels");
+
+  function outlineShape(c, outline) {
+    const stroke = `fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
+    if (c.shape === "pie") return `<circle cx="${c.x}" cy="${c.y}" r="${c.w / 2}" ${stroke}/>`;
+    const x = c.x - c.w / 2, y = c.y - c.h / 2;
+    if (c.radius > 0) return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" rx="${c.radius}" ry="${c.radius}" ${stroke}/>`;
+    return `<rect x="${x}" y="${y}" width="${c.w}" height="${c.h}" ${stroke}/>`;
+  }
+
+  function renderQuinary(colors, outline, labelColor, showLabels, now) {
+    let s = "";
+    for (const c of LAYOUT) {
+      s += outlineShape(c, outline);
+      const digit = quinaryDigit(c.src, c.place, now);
+      if (c.shape === "pie") {
+        const r = c.w / 2;
+        POSITIONS.forEach((pos, k) => {
+          if (digit <= k) return;
+          const [a0, a1] = POS_ANGLES[pos];
+          s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+        });
+      } else {
+        const cellW = (c.w - SUB_GAP) / 2, cellH = (c.h - SUB_GAP) / 2, r = c.radius;
+        const CORNER_XY = { TL: [0, 0], TR: [cellW - r, 0], BL: [0, cellH - r], BR: [cellW - r, cellH - r] };
+        POSITIONS.forEach((pos, k) => {
+          if (digit <= k) return;
+          const [sx, sy] = POS_SIGN[pos];
+          const offX = sx * (cellW / 2 + SUB_GAP / 2), offY = sy * (cellH / 2 + SUB_GAP / 2);
+          const bx = c.x + offX - cellW / 2, by = c.y + offY - cellH / 2;
+          s += `<rect x="${bx}" y="${by}" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${colors[k]}"/>`;
+          if (r > 0) {
+            for (const [corner, [cx, cy]] of Object.entries(CORNER_XY)) {
+              if (corner === pos) continue;
+              s += `<rect x="${bx + cx}" y="${by + cy}" width="${r}" height="${r}" fill="${colors[k]}"/>`;
+            }
+          }
+        });
+      }
+      if (showLabels && c.label) {
+        s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${c.label}</text>`;
+      }
+    }
+    if (showLabels) {
+      for (const [src, cy] of DECIMAL_ROWS) {
+        const v = String(fieldValue(src, now)).padStart(2, "0");
+        s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${v}</text>`;
+      }
+    }
+    return s;
+  }
+
+  function renderPentagon(colors, outline, labelColor, showLabels, now) {
+    // Reuses LAYOUT verbatim -- base 6 has the same (2,3,3) place pattern
+    // as base 5 and 7. Tally marks, not wedges: base 6's digit range (0-5)
+    // maps onto the classic tally system -- 4 vertical bars for positions
+    // 0-3, a diagonal slash across all 4 for position 4 (lit only at
+    // digit=5). The slash rotates via SVG transform here, mirroring the
+    // real WFF Group's static pivotX/pivotY/angle attributes.
+    // 2026-09-24: dropped the dashed "off" guides -- Paul: they get
+    // confused with the actual tally marks. Unlit positions draw nothing.
+    let s = "";
+    for (const c of LAYOUT) {
+      const digit = pentDigit(c.src, c.place, now);
+      for (let k = 0; k < PENT_TALLY_N; k++) {
+        if (digit <= k) continue;
+        const bx = c.x + pentTallyBarX(k) - PENT_TALLY_BAR_W / 2;
+        const by = c.y - PENT_TALLY_BAR_H / 2;
+        const rx = PENT_TALLY_BAR_W / 2;
+        s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      }
+      if (digit > 4) {
+        const slashRx = PENT_TALLY_BAR_W / 2;
+        s += `<g transform="translate(${c.x},${c.y}) rotate(${PENT_TALLY_SLASH_ANGLE})">`;
+        s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="${colors[4]}"/>`;
+        s += `</g>`;
+      }
+      if (showLabels && c.label) {
+        s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${c.label}</text>`;
+      }
+    }
+    if (showLabels) {
+      for (const [src, cy] of DECIMAL_ROWS) {
+        const v = String(fieldValue(src, now)).padStart(2, "0");
+        s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${v}</text>`;
+      }
+    }
+    return s;
+  }
+
+  const HEX_GRID_ROWS = { H: { rows: 2, cols: 3, radius: 6 }, M: { rows: 3, cols: 2, radius: 999 } };
+  function renderHexagon(colors, outline, labelColor, showLabels, now) {
+    // Reuses LAYOUT's x/y/place positions verbatim (base-5 and base-7 both
+    // need 2 places for H, 3 for M/S). Hour/Minute use the generalized grid
+    // renderer (2x3/3x2 -- 6 factors cleanly), Second stays the wedge pie.
+    let s = "";
+    for (const c of LAYOUT) {
+      const digit = hexDigit(c.src, c.place, now);
+      const gridCfg = HEX_GRID_ROWS[c.src];
+      if (gridCfg) {
+        s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+        s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+      } else {
+        const r = c.w / 2;
+        s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+        HEX_POSITIONS.forEach((pos, k) => {
+          if (digit <= k) return;
+          const [a0, a1] = HEX_ANGLES[pos];
+          s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+        });
+      }
+      if (showLabels && c.label) {
+        s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${c.label}</text>`;
+      }
+    }
+    if (showLabels) {
+      for (const [src, cy] of DECIMAL_ROWS) {
+        const v = String(fieldValue(src, now)).padStart(2, "0");
+        s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${v}</text>`;
+      }
+    }
+    return s;
+  }
+
+  const OCTAGON_GRID_ROWS = { H: { rows: 2, cols: 4, radius: 4 }, M: { rows: 4, cols: 2, radius: 999 } };
+  function renderOctagon(colors, outline, labelColor, showLabels, now) {
+    // Hour/Minute use the generalized grid renderer (2x4/4x2 -- 8 factors
+    // cleanly), Second stays the wedge pie. Octal (renderOctal below)
+    // reuses this same layout but is NOT part of this -- 7 doesn't factor.
+    let s = "";
+    for (const c of OCTAGON_LAYOUT) {
+      const digit = octDigit(c.src, c.place, now);
+      const gridCfg = OCTAGON_GRID_ROWS[c.src];
+      if (gridCfg) {
+        s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+        s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+      } else {
+        const r = c.w / 2;
+        s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+        OCT_POSITIONS.forEach((pos, k) => {
+          if (digit <= k) return;
+          const [a0, a1] = OCT_ANGLES[pos];
+          s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+        });
+      }
+      if (showLabels && c.label) {
+        s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${c.label}</text>`;
+      }
+    }
+    if (showLabels) {
+      for (const [src, cy] of OCT_DECIMAL_ROWS) {
+        const v = String(fieldValue(src, now)).padStart(2, "0");
+        s += `<text x="${OCT_DECIMAL_X}" y="${cy + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${v}</text>`;
+      }
+    }
+    return s;
+  }
+
+  function renderQuaternary(colors, outline, labelColor, showLabels, now) {
+    let s = "";
+    for (const c of QUATERNARY_LAYOUT) {
+      const r = c.w / 2;
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      const digit = quatDigit(c.src, c.place, now);
+      QUAT_POSITIONS.forEach((pos, k) => {
+        if (digit <= k) return;
+        const [a0, a1] = QUAT_ANGLES[pos];
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      });
+      if (showLabels && c.label) {
+        s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${c.label}</text>`;
+      }
+    }
+    if (showLabels) {
+      for (const [src, cy] of DECIMAL_ROWS) {
+        const v = String(fieldValue(src, now)).padStart(2, "0");
+        s += `<text x="${DECIMAL_X}" y="${cy + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${v}</text>`;
+      }
+    }
+    return s;
+  }
+
+  function renderOctal(colors, outline, labelColor, showLabels, now) {
+    // Own layout (OCTAL_LAYOUT), not OCTAGON_LAYOUT -- Octal's row centers
+    // are spaced like Quinary's own Hour bars (112px boxes, 24px gap, no
+    // overlap) instead of Octagon's 88px pitch. WiFi bars: 7 independent
+    // vertical bars, tallest (first-lit) at each box's own RIGHT edge,
+    // decreasing leftward -- growth reads as flowing toward the more
+    // significant place through direction alone, boxes physically
+    // separate. No dashed "off" guides.
+    let s = "";
+    for (const c of OCTAL_LAYOUT) {
+      const digit = octalDigit(c.src, c.place, now);
+      const baselineY = c.y + OCTAL_WIFI_MAX_H / 2;
+      for (let k = 0; k < OCTAL_WIFI_N; k++) {
+        if (digit <= k) continue;
+        const [h, xOff] = octalWifiBarGeom(k);
+        const bx = c.x + xOff - OCTAL_WIFI_BAR_W / 2;
+        const by = baselineY - h;
+        const rx = OCTAL_WIFI_BAR_W / 2;
+        s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      }
+      if (showLabels && c.label) {
+        s += `<text x="${OCTAL_LABEL_X}" y="${c.y + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${c.label}</text>`;
+      }
+    }
+    if (showLabels) {
+      for (const [src, cy] of OCT_DECIMAL_ROWS) {
+        const v = String(fieldValue(src, now)).padStart(2, "0");
+        s += `<text x="${OCTAL_DECIMAL_X}" y="${cy + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${v}</text>`;
+      }
+    }
+    return s;
+  }
+
+  const TRI_RING_STYLES = {
+    H: { thicknessFrac: 1.0, gap: 0 },    // solid pie (unchanged baseline)
+    M: { thicknessFrac: 0.45, gap: 0 },   // thin ring / donut
+    S: { thicknessFrac: 0.28, gap: 10 },  // segmented ring, larger hole than Minute
+  };
+  function renderTrinary(colors, outline, labelColor, showLabels, now) {
+    // Own layout (TRINARY_LAYOUT) -- base 3 needs 3 places for H, 4 for
+    // M/S, wider than any other base, so it doesn't reuse anyone else's.
+    // Ring-variant experiment: H stays solid pie, M becomes a thin ring,
+    // S becomes a segmented ring -- same Arc technique, just thickness and
+    // angle-gap parameters.
+    let s = "";
+    for (const c of TRINARY_LAYOUT) {
+      const r = c.w / 2;
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      const digit = triDigit(c.src, c.place, now);
+      const style = TRI_RING_STYLES[c.src];
+      TRI_POSITIONS.forEach((pos, k) => {
+        if (digit <= k) return;
+        let [a0, a1] = TRI_ANGLES[pos];
+        a0 += style.gap / 2; a1 -= style.gap / 2;
+        const path = style.thicknessFrac >= 1.0
+          ? wedgePath(c.x, c.y, r, a0, a1)
+          : ringWedgePath(c.x, c.y, r, r * (1 - style.thicknessFrac), a0, a1);
+        s += `<path d="${path}" fill="${colors[k]}"/>`;
+      });
+      if (showLabels && c.label) {
+        s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${c.label}</text>`;
+      }
+    }
+    if (showLabels) {
+      for (const [src, cy] of TRI_DECIMAL_ROWS) {
+        const v = String(fieldValue(src, now)).padStart(2, "0");
+        s += `<text x="${TRI_DECIMAL_X}" y="${cy + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${v}</text>`;
+      }
+    }
+    return s;
+  }
+
+  function renderBinary(color, offColor, labelColor, showLabels, now) {
+    let s = "";
+    for (const c of BINARY_LAYOUT) {
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${offColor}"/>`;
+      if (binaryBit(c.src, c.k, now)) s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${color}"/>`;
+      if (showLabels && c.label) {
+        s += `<text x="${c.x - GX}" y="${c.y + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${c.label}</text>`;
+      }
+    }
+    if (showLabels) {
+      for (const [label, src] of BINARY_ROWS) {
+        const rowXs = BINARY_LAYOUT.filter((c) => c.src === src).map((c) => c.x);
+        const cy = BINARY_LAYOUT.find((c) => c.src === src).y;
+        const v = String(fieldValue(src, now)).padStart(2, "0");
+        s += `<text x="${Math.max(...rowXs) + GX}" y="${cy + 8}" fill="${labelColor}" font-size="26" text-anchor="middle" font-family="IBM Plex Mono, monospace">${v}</text>`;
+      }
+    }
+    return s;
+  }
+
+  function render() {
+    const now = new Date();
+    const light = themeToggle.checked;
+    const key = light ? "light" : "dark";
+    const showLabels = labelsToggle.checked;
+    const base = baseSel.value;
+    const bg = light ? "#FFFFFF" : "#111111";
+    const labelColor = "#808080";
+    let s = `<rect x="0" y="0" width="450" height="450" fill="${bg}"/>`;
+    if (base === "binary") {
+      s += renderBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], labelColor, showLabels, now);
+    } else if (base === "trinary") {
+      s += renderTrinary(paletteFor(paletteSel.value, 2), OUTLINE[key], labelColor, showLabels, now);
+    } else if (base === "quaternary") {
+      s += renderQuaternary(paletteFor(paletteSel.value, 3), OUTLINE[key], labelColor, showLabels, now);
+    } else if (base === "pentagon") {
+      s += renderPentagon(paletteFor(paletteSel.value, 5), OUTLINE[key], labelColor, showLabels, now);
+    } else if (base === "hexagon") {
+      s += renderHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], labelColor, showLabels, now);
+    } else if (base === "octal") {
+      s += renderOctal(paletteFor(paletteSel.value, 7), OUTLINE[key], labelColor, showLabels, now);
+    } else if (base === "octagon") {
+      s += renderOctagon(paletteFor(paletteSel.value, 8), OUTLINE[key], labelColor, showLabels, now);
+    } else {
+      s += renderQuinary(paletteFor(paletteSel.value, 4), OUTLINE[key], labelColor, showLabels, now);
+    }
+    face.innerHTML = s;
+
+    if (base === "binary") {
+      const bits = (src, n) => Array.from({ length: n }, (_, i) => binaryBit(src, n - 1 - i, now)).join("");
+      breakdown.innerHTML =
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}` +
+        ` &nbsp;→&nbsp; H <b>${bits("H", 6)}</b> · M <b>${bits("M", 6)}</b> · S <b>${bits("S", 6)}</b> &nbsp;(binary)`;
+    } else if (base === "trinary") {
+      const hd = [2, 1, 0].map((p) => triDigit("H", p, now));
+      const md = [3, 2, 1, 0].map((p) => triDigit("M", p, now));
+      const sd = [3, 2, 1, 0].map((p) => triDigit("S", p, now));
+      breakdown.innerHTML =
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}` +
+        ` &nbsp;→&nbsp; H <b>${hd.join(" ")}</b> · M <b>${md.join(" ")}</b> · S <b>${sd.join(" ")}</b> &nbsp;(base-3 digits)`;
+    } else if (base === "quaternary") {
+      const hd = [2, 1, 0].map((p) => quatDigit("H", p, now));
+      const md = [2, 1, 0].map((p) => quatDigit("M", p, now));
+      const sd = [2, 1, 0].map((p) => quatDigit("S", p, now));
+      breakdown.innerHTML =
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}` +
+        ` &nbsp;→&nbsp; H <b>${hd.join(" ")}</b> · M <b>${md.join(" ")}</b> · S <b>${sd.join(" ")}</b> &nbsp;(base-4 digits)`;
+    } else if (base === "pentagon") {
+      const hd = [1, 0].map((p) => pentDigit("H", p, now));
+      const md = [2, 1, 0].map((p) => pentDigit("M", p, now));
+      const sd = [2, 1, 0].map((p) => pentDigit("S", p, now));
+      breakdown.innerHTML =
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}` +
+        ` &nbsp;→&nbsp; H <b>${hd.join(" ")}</b> · M <b>${md.join(" ")}</b> · S <b>${sd.join(" ")}</b> &nbsp;(base-6 digits)`;
+    } else if (base === "hexagon") {
+      const hd = [1, 0].map((p) => hexDigit("H", p, now));
+      const md = [2, 1, 0].map((p) => hexDigit("M", p, now));
+      const sd = [2, 1, 0].map((p) => hexDigit("S", p, now));
+      breakdown.innerHTML =
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}` +
+        ` &nbsp;→&nbsp; H <b>${hd.join(" ")}</b> · M <b>${md.join(" ")}</b> · S <b>${sd.join(" ")}</b> &nbsp;(base-7 digits)`;
+    } else if (base === "octal") {
+      const hd = [1, 0].map((p) => octalDigit("H", p, now));
+      const md = [1, 0].map((p) => octalDigit("M", p, now));
+      const sd = [1, 0].map((p) => octalDigit("S", p, now));
+      breakdown.innerHTML =
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}` +
+        ` &nbsp;→&nbsp; H <b>${hd.join(" ")}</b> · M <b>${md.join(" ")}</b> · S <b>${sd.join(" ")}</b> &nbsp;(base-8 digits)`;
+    } else if (base === "octagon") {
+      const hd = [1, 0].map((p) => octDigit("H", p, now));
+      const md = [1, 0].map((p) => octDigit("M", p, now));
+      const sd = [1, 0].map((p) => octDigit("S", p, now));
+      breakdown.innerHTML =
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}` +
+        ` &nbsp;→&nbsp; H <b>${hd.join(" ")}</b> · M <b>${md.join(" ")}</b> · S <b>${sd.join(" ")}</b> &nbsp;(base-9 digits)`;
+    } else {
+      const hd = [1, 0].map((p) => quinaryDigit("H", p, now));
+      const md = [2, 1, 0].map((p) => quinaryDigit("M", p, now));
+      const sd = [2, 1, 0].map((p) => quinaryDigit("S", p, now));
+      breakdown.innerHTML =
+        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}` +
+        ` &nbsp;→&nbsp; H <b>${hd.join(" ")}</b> · M <b>${md.join(" ")}</b> · S <b>${sd.join(" ")}</b> &nbsp;(base-5 digits)`;
+    }
+  }
+
+  const baseSel = document.getElementById("base");
+  paletteSel.addEventListener("change", render);
+  baseSel.addEventListener("change", render);
+  themeToggle.addEventListener("change", render);
+  labelsToggle.addEventListener("change", render);
+  setInterval(render, 1000);
+  render();
+
+  const fsBtn = document.getElementById("fsBtn");
+  const fsBtnLabel = document.getElementById("fsBtnLabel");
+  fsBtn.addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+  document.addEventListener("fullscreenchange", () => {
+    const active = !!document.fullscreenElement;
+    document.body.classList.toggle("is-fullscreen", active);
+    fsBtnLabel.textContent = active ? "Exit fullscreen" : "Fullscreen";
+  });
+})();
+</script>
+</body>
+</html>
