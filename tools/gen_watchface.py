@@ -345,6 +345,135 @@ def build_base_hexagon(theme: str, outline_color: str) -> str:
     </ListOption>"""
 
 
+# ---- Octagon (base 9) -- NOT a reuse of Quinary/Hexagon's layout, unlike
+# Hexagon. Checked computationally rather than assumed: base 9 only needs
+# 2 places for M/S (0-59), since 9^2=81 > 59 -- unlike base 5/7, which both
+# need 3 (25<=59 and 49<=59 respectively). A 3rd place would be permanently
+# dark for every valid time value, exactly the "permanently-dark quad"
+# outcome Quinary's own original design explicitly avoided. So Octagon gets
+# its own simple, uniform layout: every row (H, M, S) has exactly 2 places,
+# centered on the canvas rather than right-aligned+stretched the way
+# Quinary/Hexagon's asymmetric 2-vs-3-place rows needed.
+OCT_QUAD = 72
+OCT_PITCH = 88
+OCT_LABEL_GAP = 10
+OCT_LABEL_W, OCT_LABEL_H = 36, 36
+OCT_LEFT_CX = C - OCT_PITCH / 2
+OCT_RIGHT_CX = C + OCT_PITCH / 2
+OCT_LABEL_X = OCT_LEFT_CX - OCT_QUAD / 2 - OCT_LABEL_GAP - OCT_LABEL_W / 2
+OCT_DECIMAL_GAP = 10
+OCT_DECIMAL_W, OCT_DECIMAL_H = 44, 36
+OCT_DECIMAL_X = OCT_RIGHT_CX + OCT_QUAD / 2 + OCT_DECIMAL_GAP + OCT_DECIMAL_W / 2
+
+OCT_POSITIONS = [f"P{i}" for i in range(8)]
+OCT_ANGLES = {f"P{i}": (i * 45, (i + 1) * 45) for i in range(8)}
+
+
+def octagon_digit_expr(value_expr: str, place: int) -> str:
+    return f"round(floor(({value_expr}) / {9 ** place}) % 9)"
+
+
+def octagon_layout():
+    specs = [("H", "[HOUR_0_23]", 0), ("M", "[MINUTE]", 1), ("S", "[SECOND]", 2)]
+    out = []
+    for label, expr, row_i in specs:
+        cy = ROW_Y[row_i]
+        for col, cx in enumerate((OCT_LEFT_CX, OCT_RIGHT_CX)):
+            place = 1 - col
+            out.append(dict(x=cx, y=cy, w=OCT_QUAD, h=OCT_QUAD, place=place, expr=expr,
+                             label=label if col == 0 else None, label_x=OCT_LABEL_X, label_y=cy))
+    return out
+
+
+OCT_DECIMAL_ROWS = [("[HOUR_0_23]", ROW_Y[0]), ("[MINUTE]", ROW_Y[1]), ("[SECOND]", ROW_Y[2])]
+
+
+def wff_octagon_decimal_readout():
+    out = []
+    for expr, cy in OCT_DECIMAL_ROWS:
+        x, y = round(OCT_DECIMAL_X - OCT_DECIMAL_W / 2), round(cy - OCT_DECIMAL_H / 2)
+        out.append(
+            f'        <PartText x="{x}" y="{y}" width="{OCT_DECIMAL_W}" height="{OCT_DECIMAL_H}">\n'
+            f'          <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="26" '
+            f'weight="NORMAL" color="{LABEL_COLOR}">\n'
+            f'              <Template>%02d<Parameter expression="{expr}"/></Template>\n'
+            f'          </Font></Text>\n'
+            f'        </PartText>')
+    return "\n".join(out)
+
+
+def wff_octagon_outlines(layout, outline_color):
+    out = []
+    for c in layout:
+        r = c["w"] / 2
+        x, y = round(c["x"] - r), round(c["y"] - r)
+        out.append(
+            f'      <PartDraw x="{x}" y="{y}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+            f'        <Ellipse x="0" y="0" width="{round(r * 2)}" height="{round(r * 2)}">'
+            f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/></Ellipse>\n'
+            f'      </PartDraw>')
+    return "\n".join(out)
+
+
+def wff_octagon_groups(layout, colors):
+    out = []
+    for c in layout:
+        digit_expr = octagon_digit_expr(c["expr"], c["place"])
+        r = c["w"] / 2
+        bx, by = round(c["x"] - r), round(c["y"] - r)
+        for k, pos in enumerate(OCT_POSITIONS):
+            start, end = OCT_ANGLES[pos]
+            name = f"o{c['place']}_{round(c['x'])}_{round(c['y'])}_{k}"
+            out.append(
+                f'      <Condition>\n'
+                f'        <Expressions>\n'
+                f'          <Expression name="{name}"><![CDATA[(({digit_expr}) > {k})]]></Expression>\n'
+                f'        </Expressions>\n'
+                f'        <Compare expression="{name}">\n'
+                f'          <PartDraw x="{bx}" y="{by}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
+                f'            <Arc centerX="{r}" centerY="{r}" width="{r}" height="{r}" '
+                f'startAngle="{start}" endAngle="{end}" direction="CLOCKWISE">\n'
+                f'              <WeightedStroke colors="{colors[k]}" thickness="{r}" cap="BUTT"/>\n'
+                f'            </Arc>\n'
+                f'          </PartDraw>\n'
+                f'        </Compare>\n'
+                f'      </Condition>')
+    return "\n".join(out)
+
+
+def octagon_palette_list_option(option_id: str, layout, theme: str) -> str:
+    colors = palette_for(option_id, 8)
+    return (f'        <ListOption id="{option_id}">\n'
+            f'          <Group name="oct_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
+            f'{wff_octagon_groups(layout, colors)}\n'
+            f'          </Group>\n'
+            f'        </ListOption>')
+
+
+def build_base_octagon(theme: str, outline_color: str) -> str:
+    layout = octagon_layout()
+    palette_options = "\n".join(
+        octagon_palette_list_option(opt_id, layout, theme) for opt_id, _res, _anchor in PALETTE_OPTIONS)
+    return f"""    <ListOption id="octagon">
+      <Group name="octagon_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+        <Group name="octagon_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_octagon_outlines(layout, outline_color)}
+        </Group>
+        <ListConfiguration id="palette">
+{palette_options}
+        </ListConfiguration>
+        <BooleanConfiguration id="labels">
+          <BooleanOption id="TRUE">
+            <Group name="octagon_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
+{wff_labels(layout)}
+{wff_octagon_decimal_readout()}
+            </Group>
+          </BooleanOption>
+        </BooleanConfiguration>
+      </Group>
+    </ListOption>"""
+
+
 def quinary_palette_list_option(option_id: str, layout, theme: str) -> str:
     colors = palette_for(option_id, 4)
     return (f'        <ListOption id="{option_id}">\n'
@@ -519,6 +648,7 @@ def build_user_configurations() -> str:
       <ListOption id="quinary" displayName="opt_quinary"/>
       <ListOption id="binary" displayName="opt_binary"/>
       <ListOption id="hexagon" displayName="opt_hexagon"/>
+      <ListOption id="octagon" displayName="opt_octagon"/>
     </ListConfiguration>
     <BooleanConfiguration id="theme" displayName="cfg_theme" defaultValue="FALSE"/>
     <BooleanConfiguration id="labels" displayName="cfg_labels" defaultValue="TRUE"/>"""
@@ -555,6 +685,7 @@ def build_wff() -> str:
 {build_base_quinary("dark", OUTLINE_DARK)}
 {build_base_binary("dark", OFF_DARK)}
 {build_base_hexagon("dark", OUTLINE_DARK)}
+{build_base_octagon("dark", OUTLINE_DARK)}
           </ListConfiguration>
         </Group>
       </BooleanOption>
@@ -567,6 +698,7 @@ def build_wff() -> str:
 {build_base_quinary("light", OUTLINE_LIGHT)}
 {build_base_binary("light", OFF_LIGHT)}
 {build_base_hexagon("light", OUTLINE_LIGHT)}
+{build_base_octagon("light", OUTLINE_LIGHT)}
           </ListConfiguration>
         </Group>
       </BooleanOption>
@@ -604,6 +736,7 @@ _HTML_TMPL = r"""<!doctype html>
       <option value="quinary">Quinary</option>
       <option value="binary">Binary</option>
       <option value="hexagon">Hexagon</option>
+      <option value="octagon">Octagon</option>
     </select></label>
     <label><input type="checkbox" id="theme"> light theme</label>
     <label><input type="checkbox" id="labels" checked> labels</label>
@@ -617,6 +750,11 @@ const POS_ANGLES = {TR:[0,90], BR:[90,180], BL:[180,270], TL:[270,360]};
 const POSITIONS = ["TR","TL","BL","BR"];
 const HEX_POSITIONS = ["P0","P1","P2","P3","P4","P5"];
 const HEX_ANGLES = Object.fromEntries(HEX_POSITIONS.map((p, i) => [p, [i * 60, (i + 1) * 60]]));
+const OCT_POSITIONS = Array.from({length: 8}, (_, i) => "P" + i);
+const OCT_ANGLES = Object.fromEntries(OCT_POSITIONS.map((p, i) => [p, [i * 45, (i + 1) * 45]]));
+const OCTAGON_LAYOUT = __OCTAGON_LAYOUT_JS__;
+const OCT_DECIMAL_X = __OCT_DECIMAL_X__;
+const OCT_DECIMAL_ROWS = __OCT_DECIMAL_ROWS_JS__;
 const QUINARY_LAYOUT = __QUINARY_LAYOUT_JS__;
 const DECIMAL_X = __DECIMAL_X__;
 const DECIMAL_ROWS = __DECIMAL_ROWS_JS__;
@@ -699,6 +837,7 @@ __JS_VALUE_FN__
 function quinaryDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (5 ** place)) % 5); }
 function binaryBit(src, k, now) { return Math.round(Math.floor(value(src, now) / (2 ** k)) % 2); }
 function hexDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (7 ** place)) % 7); }
+function octDigit(src, place, now) { return Math.round(Math.floor(value(src, now) / (9 ** place)) % 9); }
 function polar(cx, cy, r, deg) { const rad = deg * Math.PI / 180; return [cx + r * Math.sin(rad), cy - r * Math.cos(rad)]; }
 function wedgePath(cx, cy, r, a0, a1) {
   const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
@@ -789,6 +928,33 @@ function drawHexagon(colors, outline, showLabels, now) {
   return s;
 }
 
+function drawOctagon(colors, outline, showLabels, now) {
+  // Own layout, unlike Hexagon -- base 9 only needs 2 places for M/S too
+  // (9^2=81 > 59), so Octagon uses a simpler, uniform 2-place-per-row
+  // layout centered on the canvas rather than Quinary's asymmetric one.
+  let s = "";
+  for (const c of OCTAGON_LAYOUT) {
+    const r = c.w / 2;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    const digit = octDigit(c.src, c.place, now);
+    OCT_POSITIONS.forEach((pos, k) => {
+      if (digit <= k) return;
+      const [a0, a1] = OCT_ANGLES[pos];
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+    });
+    if (showLabels && c.label) {
+      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+    }
+  }
+  if (showLabels) {
+    for (const [src, cy] of OCT_DECIMAL_ROWS) {
+      const v = String(Math.round(value(src, now))).padStart(2, "0");
+      s += `<text x="${OCT_DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+    }
+  }
+  return s;
+}
+
 function drawBinary(color, offColor, showLabels, now) {
   let s = "";
   for (const c of BINARY_LAYOUT) {
@@ -823,6 +989,8 @@ function draw() {
     s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
   } else if (base === "hexagon") {
     s += drawHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], showLabels, now);
+  } else if (base === "octagon") {
+    s += drawOctagon(paletteFor(paletteSel.value, 8), OUTLINE[key], showLabels, now);
   } else {
     s += drawQuinary(paletteFor(paletteSel.value, 4), OUTLINE[key], showLabels, now);
   }
@@ -851,6 +1019,14 @@ def build_html() -> str:
             for c in full_layout()) + "]",
         "__DECIMAL_X__": str(DECIMAL_X),
         "__DECIMAL_ROWS_JS__": "[" + ",".join(f'["{expr}",{cy}]' for expr, cy in DECIMAL_ROWS) + "]",
+        "__OCTAGON_LAYOUT_JS__": "[" + ",".join(
+            '{x:%.1f,y:%.1f,w:%.1f,h:%.1f,place:%d,src:%s,label:%s,label_x:%s,label_y:%s}' % (
+                c["x"], c["y"], c["w"], c["h"], c["place"],
+                repr(c["expr"]).replace("'", '"'), (f'"{c["label"]}"' if c["label"] else "null"),
+                c["label_x"], c["label_y"])
+            for c in octagon_layout()) + "]",
+        "__OCT_DECIMAL_X__": str(OCT_DECIMAL_X),
+        "__OCT_DECIMAL_ROWS_JS__": "[" + ",".join(f'["{expr}",{cy}]' for expr, cy in OCT_DECIMAL_ROWS) + "]",
         "__BINARY_LAYOUT_JS__": "[" + ",".join(
             '{x:%.1f,y:%.1f,k:%d,src:%s,label:%s}' % (
                 c["x"], c["y"], c["k"], repr(c["expr"]).replace("'", '"'),
