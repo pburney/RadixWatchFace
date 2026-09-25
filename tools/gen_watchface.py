@@ -699,24 +699,49 @@ def build_base_octagon(theme: str, outline_color: str) -> str:
     </ListOption>"""
 
 
-# ---- Octal (base 8) -- reuses octagon_layout()'s geometry (identical
-# (2,2,2) place pattern to Octagon, all rows square 72x72 cells, no
-# Hour/Minute-vs-Second mismatch the way Pentagon had). 2026-09-24: switched
-# from wedge-pie to WIFI BARS per Paul's ask, after tally marks worked out
-# well for Pentagon -- 7 independent vertical bars, tallest first (leftmost)
-# decreasing to shortest (rightmost), each lit independently like the other
-# count-encodings (no diagonal/rotation needed here, unlike Pentagon's tally
-# 5th mark). Verified computationally that the tallest bar's farthest corner
-# stays within a 28.3px radius of the cell center -- comfortably inside the
-# 36px bound Octagon's own wedge-pie already proved safe (7.7px margin,
-# same ballpark as Trinary's and Quaternary's accepted margins).
-OCTAL_WIFI_BAR_W = 4
-OCTAL_WIFI_GAP = 2
+# ---- Octal (base 8) -- reuses octagon_layout()'s cx/cy/place/expr geometry
+# (identical (2,2,2) place pattern to Octagon, all rows square 72x72 cells),
+# but NOT its embedded label_x/decimal readout -- see below. 2026-09-24:
+# switched from wedge-pie to WIFI BARS per Paul's ask, then twice refined
+# further ("I like the Octal a lot now"): dropped the dashed off-state
+# guides (same complaint/fix as Pentagon's tally marks -- a dashed bar next
+# to a solid one reads as "another mark"), and widened each digit-place's
+# bar box to HOUR_W=112 (Quinary's own Hour-bar width) instead of a tight
+# ~40px block. Left/right box centers (OCT_LEFT_CX/RIGHT_CX) stay 88px
+# apart (OCT_PITCH, unchanged), so a 112-wide box on each side DELIBERATELY
+# overlaps its neighbor by 24px in the middle -- Paul's own framing: "the
+# seconds will look like a growing signal flowing into the next box." Bars
+# already light tallest-first from each box's own left edge (unchanged
+# order), which is exactly what makes the overlap read as a signal
+# reaching into the neighboring (more significant) place: at digit=1, only
+# the tallest/leftmost bar shows, and for the ones-place box, that bar
+# sits deep in the tens-place box's own territory.
+#
+# Widening broke Octal's label_x/decimal_x, which used to come straight
+# from octagon_layout()'s embedded values (correct for Octagon's still-72px
+# boxes, wrong once Octal's boxes grew to 112px -- the labels/decimal text
+# would have sat inside the new wider bar area). Verified computationally
+# (same farthest-corner check as every other base) that the widened boxes
+# plus their own repositioned label/decimal text all stay comfortably
+# inside the circular clip -- worst case (S row's decimal readout) has a
+# 32.8px margin. Needed dedicated wff_octal_labels()/
+# wff_octal_decimal_readout() (not the shared wff_labels()/
+# wff_octagon_decimal_readout()) since the position numbers themselves
+# differ from Octagon's now, not just the box size.
+OCTAL_WIFI_BOX_W = HOUR_W   # Paul: "the width of the hours in Quinary"
+OCTAL_WIFI_BAR_W = 10
+OCTAL_WIFI_GAP = 7
 OCTAL_WIFI_N = 7
 OCTAL_WIFI_MAX_H = 40
 OCTAL_WIFI_MIN_H = 14
-_OCTAL_WIFI_TOTAL_W = OCTAL_WIFI_N * OCTAL_WIFI_BAR_W + (OCTAL_WIFI_N - 1) * OCTAL_WIFI_GAP
 _OCTAL_WIFI_STEP = (OCTAL_WIFI_MAX_H - OCTAL_WIFI_MIN_H) / (OCTAL_WIFI_N - 1)
+OCTAL_LABEL_GAP = 10
+OCTAL_LABEL_W, OCTAL_LABEL_H = 28, 28
+OCTAL_DECIMAL_GAP = 10
+OCTAL_DECIMAL_W, OCTAL_DECIMAL_H = 36, 28
+OCTAL_LABEL_X = OCT_LEFT_CX - OCTAL_WIFI_BOX_W / 2 - OCTAL_LABEL_GAP - OCTAL_LABEL_W / 2
+OCTAL_DECIMAL_X = OCT_RIGHT_CX + OCTAL_WIFI_BOX_W / 2 + OCTAL_DECIMAL_GAP + OCTAL_DECIMAL_W / 2
+OCTAL_DECIMAL_ROWS = [("[HOUR_0_23]", ROW_Y[0]), ("[MINUTE]", ROW_Y[1]), ("[SECOND]", ROW_Y[2])]
 
 
 def octal_digit_expr(value_expr: str, place: int) -> str:
@@ -725,25 +750,8 @@ def octal_digit_expr(value_expr: str, place: int) -> str:
 
 def _octal_wifi_bar_geom(k: int):
     h = OCTAL_WIFI_MAX_H - k * _OCTAL_WIFI_STEP
-    x_off = -_OCTAL_WIFI_TOTAL_W / 2 + k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) + OCTAL_WIFI_BAR_W / 2
+    x_off = -OCTAL_WIFI_BOX_W / 2 + k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) + OCTAL_WIFI_BAR_W / 2
     return h, x_off
-
-
-def wff_octal_outlines(layout, outline_color):
-    stroke = f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/>'
-    out = []
-    for c in layout:
-        baseline_y = c["y"] + OCTAL_WIFI_MAX_H / 2
-        for k in range(OCTAL_WIFI_N):
-            h, x_off = _octal_wifi_bar_geom(k)
-            bx = round(c["x"] + x_off - OCTAL_WIFI_BAR_W / 2)
-            by = round(baseline_y - h)
-            out.append(
-                f'      <PartDraw x="{bx}" y="{by}" width="{OCTAL_WIFI_BAR_W}" height="{round(h)}">\n'
-                f'        <RoundRectangle x="0" y="0" width="{OCTAL_WIFI_BAR_W}" height="{round(h)}" '
-                f'cornerRadiusX="{OCTAL_WIFI_BAR_W / 2}" cornerRadiusY="{OCTAL_WIFI_BAR_W / 2}">{stroke}</RoundRectangle>\n'
-                f'      </PartDraw>')
-    return "\n".join(out)
 
 
 def wff_octal_groups(layout, colors):
@@ -772,6 +780,34 @@ def wff_octal_groups(layout, colors):
     return "\n".join(out)
 
 
+def wff_octal_labels(layout):
+    out = []
+    for c in layout:
+        if not c["label"]:
+            continue
+        x, y = round(OCTAL_LABEL_X - OCTAL_LABEL_W / 2), round(c["y"] - OCTAL_LABEL_H / 2)
+        out.append(
+            f'        <PartText x="{x}" y="{y}" width="{OCTAL_LABEL_W}" height="{OCTAL_LABEL_H}">\n'
+            f'          <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="26" '
+            f'weight="NORMAL" color="{LABEL_COLOR}">{c["label"].upper()}</Font></Text>\n'
+            f'        </PartText>')
+    return "\n".join(out)
+
+
+def wff_octal_decimal_readout():
+    out = []
+    for expr, cy in OCTAL_DECIMAL_ROWS:
+        x, y = round(OCTAL_DECIMAL_X - OCTAL_DECIMAL_W / 2), round(cy - OCTAL_DECIMAL_H / 2)
+        out.append(
+            f'        <PartText x="{x}" y="{y}" width="{OCTAL_DECIMAL_W}" height="{OCTAL_DECIMAL_H}">\n'
+            f'          <Text align="CENTER"><Font family="SYNC_TO_DEVICE" size="26" '
+            f'weight="NORMAL" color="{LABEL_COLOR}">\n'
+            f'              <Template>%02d<Parameter expression="{expr}"/></Template>\n'
+            f'          </Font></Text>\n'
+            f'        </PartText>')
+    return "\n".join(out)
+
+
 def octal_palette_list_option(option_id: str, layout, theme: str) -> str:
     colors = palette_for(option_id, 7)
     return (f'        <ListOption id="{option_id}">\n'
@@ -782,22 +818,19 @@ def octal_palette_list_option(option_id: str, layout, theme: str) -> str:
 
 
 def build_base_octal(theme: str, outline_color: str) -> str:
-    layout = octagon_layout()   # same geometry as Octagon -- see module note above
+    layout = octagon_layout()   # cx/cy/place/expr only -- see module note above
     palette_options = "\n".join(
         octal_palette_list_option(opt_id, layout, theme) for opt_id, _res, _anchor in PALETTE_OPTIONS)
     return f"""    <ListOption id="octal">
       <Group name="octal_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-        <Group name="octal_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-{wff_octal_outlines(layout, outline_color)}
-        </Group>
         <ListConfiguration id="palette">
 {palette_options}
         </ListConfiguration>
         <BooleanConfiguration id="labels">
           <BooleanOption id="TRUE">
             <Group name="octal_labels_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-{wff_labels(layout)}
-{wff_octagon_decimal_readout()}
+{wff_octal_labels(layout)}
+{wff_octal_decimal_readout()}
             </Group>
           </BooleanOption>
         </BooleanConfiguration>
@@ -1385,12 +1418,14 @@ const OCT_ANGLES = Object.fromEntries(OCT_POSITIONS.map((p, i) => [p, [i * 45, (
 const OCTAGON_LAYOUT = __OCTAGON_LAYOUT_JS__;
 const OCT_DECIMAL_X = __OCT_DECIMAL_X__;
 const OCT_DECIMAL_ROWS = __OCT_DECIMAL_ROWS_JS__;
-const OCTAL_WIFI_BAR_W = 4, OCTAL_WIFI_GAP = 2, OCTAL_WIFI_N = 7, OCTAL_WIFI_MAX_H = 40, OCTAL_WIFI_MIN_H = 14;
-const OCTAL_WIFI_TOTAL_W = OCTAL_WIFI_N * OCTAL_WIFI_BAR_W + (OCTAL_WIFI_N - 1) * OCTAL_WIFI_GAP;
+const OCTAL_WIFI_BOX_W = __HOUR_W__;   // Paul: "the width of the hours in Quinary"
+const OCTAL_WIFI_BAR_W = 10, OCTAL_WIFI_GAP = 7, OCTAL_WIFI_N = 7, OCTAL_WIFI_MAX_H = 40, OCTAL_WIFI_MIN_H = 14;
 const OCTAL_WIFI_STEP = (OCTAL_WIFI_MAX_H - OCTAL_WIFI_MIN_H) / (OCTAL_WIFI_N - 1);
+const OCTAL_LABEL_X = __OCTAL_LABEL_X__;
+const OCTAL_DECIMAL_X = __OCTAL_DECIMAL_X__;
 function octalWifiBarGeom(k) {
   const h = OCTAL_WIFI_MAX_H - k * OCTAL_WIFI_STEP;
-  const xOff = -OCTAL_WIFI_TOTAL_W / 2 + k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) + OCTAL_WIFI_BAR_W / 2;
+  const xOff = -OCTAL_WIFI_BOX_W / 2 + k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) + OCTAL_WIFI_BAR_W / 2;
   return [h, xOff];
 }
 const TRI_POSITIONS = ["P0","P1"];
@@ -1710,34 +1745,37 @@ function drawOctagon(colors, outline, showLabels, now) {
 }
 
 function drawOctal(colors, outline, showLabels, now) {
-  // Reuses OCTAGON_LAYOUT verbatim -- base 8 has the same (2,2,2) place
-  // pattern as base 9, so the same geometry works. WiFi bars instead of
-  // wedge-pie: 7 independent vertical bars, tallest first (leftmost)
-  // decreasing to shortest (rightmost), no rotation needed (unlike
-  // Pentagon's tally 5th mark).
+  // Reuses OCTAGON_LAYOUT's cx/cy/place/expr -- base 8 has the same (2,2,2)
+  // place pattern as base 9. WiFi bars instead of wedge-pie: 7 independent
+  // vertical bars, tallest first (leftmost) decreasing to shortest
+  // (rightmost). No dashed "off" guides (dropped for the same reason as
+  // Pentagon's tally marks), and each box is widened to OCTAL_WIFI_BOX_W
+  // (Quinary's own Hour-bar width) -- wider than the 88px gap between the
+  // two boxes, so they deliberately overlap: the ones-place's tallest
+  // (leftmost, first-lit) bar reaches into the tens-place box, reading as
+  // a signal flowing into the more significant place. Own label_x/
+  // decimal_x (OCTAL_LABEL_X/DECIMAL_X), not OCTAGON_LAYOUT's embedded
+  // ones, since the widened boxes moved them.
   let s = "";
   for (const c of OCTAGON_LAYOUT) {
     const digit = octalDigit(c.src, c.place, now);
     const baselineY = c.y + OCTAL_WIFI_MAX_H / 2;
     for (let k = 0; k < OCTAL_WIFI_N; k++) {
+      if (digit <= k) continue;
       const [h, xOff] = octalWifiBarGeom(k);
       const bx = c.x + xOff - OCTAL_WIFI_BAR_W / 2;
       const by = baselineY - h;
       const rx = OCTAL_WIFI_BAR_W / 2;
-      if (digit > k) {
-        s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
-      } else {
-        s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
-      }
+      s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
     }
     if (showLabels && c.label) {
-      s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
+      s += `<text x="${OCTAL_LABEL_X}" y="${c.y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
   }
   if (showLabels) {
     for (const [src, cy] of OCT_DECIMAL_ROWS) {
       const v = String(Math.round(value(src, now))).padStart(2, "0");
-      s += `<text x="${OCT_DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
+      s += `<text x="${OCTAL_DECIMAL_X}" y="${cy + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${v}</text>`;
     }
   }
   return s;
@@ -1890,6 +1928,9 @@ def build_html() -> str:
             for c in octagon_layout()) + "]",
         "__OCT_DECIMAL_X__": str(OCT_DECIMAL_X),
         "__OCT_DECIMAL_ROWS_JS__": "[" + ",".join(f'["{expr}",{cy}]' for expr, cy in OCT_DECIMAL_ROWS) + "]",
+        "__OCTAL_LABEL_X__": str(OCTAL_LABEL_X),
+        "__OCTAL_DECIMAL_X__": str(OCTAL_DECIMAL_X),
+        "__HOUR_W__": str(HOUR_W),
         "__TRINARY_LAYOUT_JS__": "[" + ",".join(
             '{x:%.1f,y:%.1f,w:%.1f,place:%d,src:%s,label:%s,label_x:%s,label_y:%s}' % (
                 c["x"], c["y"], c["w"], c["place"],
