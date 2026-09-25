@@ -5,6 +5,16 @@
   <Metadata key="PREVIEW_TIME" value="10:08:32"/>
 
   <UserConfigurations>
+    <ListConfiguration id="base" displayName="cfg_base" defaultValue="binary">
+      <ListOption id="binary" displayName="opt_binary"/>
+      <ListOption id="trinary" displayName="opt_trinary"/>
+      <ListOption id="quaternary" displayName="opt_quaternary"/>
+      <ListOption id="quinary" displayName="opt_quinary"/>
+      <ListOption id="pentagon" displayName="opt_pentagon"/>
+      <ListOption id="hexagon" displayName="opt_hexagon"/>
+      <ListOption id="octal" displayName="opt_octal"/>
+      <ListOption id="octagon" displayName="opt_octagon"/>
+    </ListConfiguration>
     <ListConfiguration id="palette" displayName="cfg_palette" defaultValue="colorblind">
       <ListOption id="rainbow" displayName="palette_rainbow"/>
       <ListOption id="colorblind" displayName="palette_colorblind"/>
@@ -24,16 +34,6 @@
       <ListOption id="yellow" displayName="palette_yellow"/>
       <ListOption id="olive" displayName="palette_olive"/>
       <ListOption id="white" displayName="palette_white"/>
-    </ListConfiguration>
-    <ListConfiguration id="base" displayName="cfg_base" defaultValue="binary">
-      <ListOption id="binary" displayName="opt_binary"/>
-      <ListOption id="trinary" displayName="opt_trinary"/>
-      <ListOption id="quaternary" displayName="opt_quaternary"/>
-      <ListOption id="quinary" displayName="opt_quinary"/>
-      <ListOption id="pentagon" displayName="opt_pentagon"/>
-      <ListOption id="hexagon" displayName="opt_hexagon"/>
-      <ListOption id="octal" displayName="opt_octal"/>
-      <ListOption id="octagon" displayName="opt_octagon"/>
     </ListConfiguration>
     <BooleanConfiguration id="theme" displayName="cfg_theme" defaultValue="FALSE"/>
     <BooleanConfiguration id="labels" displayName="cfg_labels" defaultValue="TRUE"/>
@@ -4591,7 +4591,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFEE2B2B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFEE2B2B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4603,7 +4603,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8C2BEE" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8C2BEE" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4615,7 +4615,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFEE2B2B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFEE2B2B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4627,7 +4627,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8C2BEE" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8C2BEE" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4639,7 +4639,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFEE2B2B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFEE2B2B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4651,7 +4651,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8C2BEE" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8C2BEE" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4663,7 +4663,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFEE2B2B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFEE2B2B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4675,7 +4675,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8C2BEE" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8C2BEE" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4859,7 +4859,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4871,7 +4871,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56B4E9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56B4E9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4883,7 +4883,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4895,7 +4895,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56B4E9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56B4E9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4907,7 +4907,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4919,7 +4919,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56B4E9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56B4E9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4931,7 +4931,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4943,7 +4943,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56B4E9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56B4E9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5127,7 +5127,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F24" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F24" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5139,7 +5139,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFBA" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFBA" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5151,7 +5151,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F24" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F24" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5163,7 +5163,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFBA" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFBA" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5175,7 +5175,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F24" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F24" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5187,7 +5187,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFBA" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFBA" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5199,7 +5199,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F24" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F24" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5211,7 +5211,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFBA" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFBA" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5395,7 +5395,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F3B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F3B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5407,7 +5407,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFC9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFC9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5419,7 +5419,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F3B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F3B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5431,7 +5431,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFC9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFC9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5443,7 +5443,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F3B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F3B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5455,7 +5455,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFC9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFC9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5467,7 +5467,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F3B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F3B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5479,7 +5479,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFC9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFC9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5663,7 +5663,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF0D8265" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF0D8265" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5675,7 +5675,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFABF7E4" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFABF7E4" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5687,7 +5687,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF0D8265" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF0D8265" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5699,7 +5699,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFABF7E4" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFABF7E4" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5711,7 +5711,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF0D8265" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF0D8265" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5723,7 +5723,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFABF7E4" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFABF7E4" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5735,7 +5735,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF0D8265" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF0D8265" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5747,7 +5747,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFABF7E4" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFABF7E4" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5931,7 +5931,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF007A8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF007A8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5943,7 +5943,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3F1FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3F1FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5955,7 +5955,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF007A8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF007A8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5967,7 +5967,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3F1FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3F1FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5979,7 +5979,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF007A8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF007A8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -5991,7 +5991,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3F1FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3F1FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6003,7 +6003,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF007A8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF007A8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6015,7 +6015,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3F1FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3F1FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6199,7 +6199,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF005B8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF005B8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6211,7 +6211,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3DEFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3DEFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6223,7 +6223,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF005B8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF005B8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6235,7 +6235,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3DEFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3DEFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6247,7 +6247,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF005B8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF005B8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6259,7 +6259,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3DEFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3DEFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6271,7 +6271,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF005B8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF005B8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6283,7 +6283,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3DEFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3DEFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6467,7 +6467,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF283167" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF283167" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6479,7 +6479,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFBDC3E5" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFBDC3E5" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6491,7 +6491,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF283167" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF283167" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6503,7 +6503,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFBDC3E5" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFBDC3E5" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6515,7 +6515,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF283167" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF283167" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6527,7 +6527,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFBDC3E5" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFBDC3E5" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6539,7 +6539,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF283167" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF283167" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6551,7 +6551,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFBDC3E5" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFBDC3E5" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6735,7 +6735,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF23008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF23008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6747,7 +6747,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFB9A3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFB9A3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6759,7 +6759,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF23008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF23008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6771,7 +6771,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFB9A3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFB9A3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6783,7 +6783,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF23008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF23008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6795,7 +6795,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFB9A3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFB9A3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6807,7 +6807,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF23008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF23008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -6819,7 +6819,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFB9A3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFB9A3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7003,7 +7003,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7015,7 +7015,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDAA3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDAA3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7027,7 +7027,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7039,7 +7039,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDAA3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDAA3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7051,7 +7051,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7063,7 +7063,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDAA3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDAA3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7075,7 +7075,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7087,7 +7087,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDAA3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDAA3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7271,7 +7271,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0067" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0067" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7283,7 +7283,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3E6" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3E6" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7295,7 +7295,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0067" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0067" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7307,7 +7307,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3E6" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3E6" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7319,7 +7319,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0067" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0067" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7331,7 +7331,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3E6" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3E6" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7343,7 +7343,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0067" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0067" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7355,7 +7355,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3E6" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3E6" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7539,7 +7539,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0037" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0037" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7551,7 +7551,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3C7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3C7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7563,7 +7563,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0037" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0037" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7575,7 +7575,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3C7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3C7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7587,7 +7587,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0037" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0037" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7599,7 +7599,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3C7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3C7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7611,7 +7611,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0037" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0037" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7623,7 +7623,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3C7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3C7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7807,7 +7807,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0000" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7819,7 +7819,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7831,7 +7831,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0000" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7843,7 +7843,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7855,7 +7855,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0000" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7867,7 +7867,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7879,7 +7879,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0000" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -7891,7 +7891,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8075,7 +8075,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F4600" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F4600" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8087,7 +8087,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFD0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFD0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8099,7 +8099,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F4600" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F4600" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8111,7 +8111,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFD0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFD0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8123,7 +8123,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F4600" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F4600" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8135,7 +8135,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFD0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFD0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8147,7 +8147,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F4600" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F4600" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8159,7 +8159,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFD0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFD0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8343,7 +8343,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F5E00" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F5E00" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8355,7 +8355,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFE0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFE0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8367,7 +8367,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F5E00" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F5E00" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8379,7 +8379,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFE0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFE0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8391,7 +8391,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F5E00" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F5E00" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8403,7 +8403,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFE0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFE0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8415,7 +8415,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F5E00" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F5E00" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8427,7 +8427,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFE0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFE0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8611,7 +8611,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F7700" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F7700" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8623,7 +8623,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFF0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFF0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8635,7 +8635,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F7700" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F7700" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8647,7 +8647,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFF0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFF0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8659,7 +8659,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F7700" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F7700" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8671,7 +8671,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFF0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFF0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8683,7 +8683,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F7700" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F7700" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8695,7 +8695,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFF0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFF0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8879,7 +8879,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF565837" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF565837" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8891,7 +8891,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDADCC7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDADCC7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8903,7 +8903,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF565837" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF565837" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8915,7 +8915,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDADCC7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDADCC7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8927,7 +8927,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF565837" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF565837" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8939,7 +8939,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDADCC7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDADCC7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8951,7 +8951,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF565837" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF565837" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -8963,7 +8963,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDADCC7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDADCC7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9147,7 +9147,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF474747" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF474747" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9159,7 +9159,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFD1D1D1" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFD1D1D1" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9171,7 +9171,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF474747" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF474747" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9183,7 +9183,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFD1D1D1" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFD1D1D1" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9195,7 +9195,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF474747" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF474747" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9207,7 +9207,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFD1D1D1" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFD1D1D1" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9219,7 +9219,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF474747" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF474747" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9231,7 +9231,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFD1D1D1" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFD1D1D1" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60140,7 +60140,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFEE2B2B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFEE2B2B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60152,7 +60152,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8C2BEE" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8C2BEE" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60164,7 +60164,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFEE2B2B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFEE2B2B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60176,7 +60176,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8C2BEE" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8C2BEE" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60188,7 +60188,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFEE2B2B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFEE2B2B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60200,7 +60200,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8C2BEE" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8C2BEE" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60212,7 +60212,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFEE2B2B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFEE2B2B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60224,7 +60224,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8C2BEE" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8C2BEE" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60408,7 +60408,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60420,7 +60420,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56B4E9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56B4E9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60432,7 +60432,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60444,7 +60444,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56B4E9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56B4E9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60456,7 +60456,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60468,7 +60468,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56B4E9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56B4E9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60480,7 +60480,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60492,7 +60492,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56B4E9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56B4E9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60676,7 +60676,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F24" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F24" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60688,7 +60688,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFBA" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFBA" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60700,7 +60700,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F24" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F24" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60712,7 +60712,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFBA" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFBA" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60724,7 +60724,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F24" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F24" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60736,7 +60736,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFBA" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFBA" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60748,7 +60748,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F24" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F24" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60760,7 +60760,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFBA" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFBA" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60944,7 +60944,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F3B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F3B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60956,7 +60956,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFC9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFC9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60968,7 +60968,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F3B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F3B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60980,7 +60980,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFC9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFC9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60992,7 +60992,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F3B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F3B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61004,7 +61004,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFC9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFC9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61016,7 +61016,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF008F3B" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF008F3B" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61028,7 +61028,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3FFC9" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3FFC9" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61212,7 +61212,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF0D8265" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF0D8265" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61224,7 +61224,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFABF7E4" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFABF7E4" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61236,7 +61236,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF0D8265" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF0D8265" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61248,7 +61248,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFABF7E4" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFABF7E4" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61260,7 +61260,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF0D8265" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF0D8265" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61272,7 +61272,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFABF7E4" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFABF7E4" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61284,7 +61284,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF0D8265" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF0D8265" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61296,7 +61296,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFABF7E4" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFABF7E4" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61480,7 +61480,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF007A8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF007A8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61492,7 +61492,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3F1FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3F1FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61504,7 +61504,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF007A8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF007A8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61516,7 +61516,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3F1FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3F1FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61528,7 +61528,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF007A8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF007A8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61540,7 +61540,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3F1FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3F1FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61552,7 +61552,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF007A8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF007A8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61564,7 +61564,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3F1FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3F1FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61748,7 +61748,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF005B8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF005B8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61760,7 +61760,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3DEFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3DEFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61772,7 +61772,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF005B8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF005B8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61784,7 +61784,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3DEFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3DEFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61796,7 +61796,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF005B8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF005B8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61808,7 +61808,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3DEFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3DEFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61820,7 +61820,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF005B8F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF005B8F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -61832,7 +61832,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFA3DEFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFA3DEFF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62016,7 +62016,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF283167" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF283167" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62028,7 +62028,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFBDC3E5" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFBDC3E5" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62040,7 +62040,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF283167" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF283167" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62052,7 +62052,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFBDC3E5" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFBDC3E5" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62064,7 +62064,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF283167" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF283167" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62076,7 +62076,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFBDC3E5" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFBDC3E5" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62088,7 +62088,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF283167" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF283167" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62100,7 +62100,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFBDC3E5" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFBDC3E5" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62284,7 +62284,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF23008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF23008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62296,7 +62296,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFB9A3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFB9A3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62308,7 +62308,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF23008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF23008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62320,7 +62320,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFB9A3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFB9A3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62332,7 +62332,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF23008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF23008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62344,7 +62344,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFB9A3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFB9A3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62356,7 +62356,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF23008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF23008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62368,7 +62368,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFB9A3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFB9A3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62552,7 +62552,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62564,7 +62564,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDAA3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDAA3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62576,7 +62576,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62588,7 +62588,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDAA3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDAA3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62600,7 +62600,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62612,7 +62612,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDAA3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDAA3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62624,7 +62624,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF56008F" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF56008F" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62636,7 +62636,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDAA3FF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDAA3FF" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62820,7 +62820,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0067" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0067" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62832,7 +62832,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3E6" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3E6" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62844,7 +62844,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0067" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0067" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62856,7 +62856,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3E6" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3E6" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62868,7 +62868,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0067" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0067" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62880,7 +62880,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3E6" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3E6" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62892,7 +62892,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0067" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0067" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -62904,7 +62904,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3E6" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3E6" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63088,7 +63088,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0037" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0037" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63100,7 +63100,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3C7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3C7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63112,7 +63112,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0037" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0037" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63124,7 +63124,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3C7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3C7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63136,7 +63136,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0037" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0037" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63148,7 +63148,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3C7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3C7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63160,7 +63160,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0037" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0037" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63172,7 +63172,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3C7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3C7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63356,7 +63356,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0000" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63368,7 +63368,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63380,7 +63380,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0000" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63392,7 +63392,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63404,7 +63404,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0000" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63416,7 +63416,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63428,7 +63428,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F0000" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F0000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63440,7 +63440,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFA3A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFA3A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63624,7 +63624,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F4600" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F4600" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63636,7 +63636,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFD0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFD0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63648,7 +63648,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F4600" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F4600" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63660,7 +63660,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFD0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFD0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63672,7 +63672,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F4600" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F4600" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63684,7 +63684,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFD0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFD0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63696,7 +63696,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F4600" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F4600" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63708,7 +63708,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFD0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFD0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63892,7 +63892,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F5E00" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F5E00" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63904,7 +63904,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFE0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFE0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63916,7 +63916,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F5E00" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F5E00" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63928,7 +63928,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFE0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFE0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63940,7 +63940,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F5E00" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F5E00" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63952,7 +63952,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFE0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFE0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63964,7 +63964,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F5E00" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F5E00" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -63976,7 +63976,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFE0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFE0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64160,7 +64160,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F7700" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F7700" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64172,7 +64172,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFF0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFF0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64184,7 +64184,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F7700" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F7700" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64196,7 +64196,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFF0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFF0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64208,7 +64208,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F7700" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F7700" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64220,7 +64220,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFF0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFF0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64232,7 +64232,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF8F7700" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF8F7700" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64244,7 +64244,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFF0A3" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFFFF0A3" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64428,7 +64428,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF565837" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF565837" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64440,7 +64440,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDADCC7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDADCC7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64452,7 +64452,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF565837" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF565837" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64464,7 +64464,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDADCC7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDADCC7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64476,7 +64476,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF565837" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF565837" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64488,7 +64488,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDADCC7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDADCC7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64500,7 +64500,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF565837" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF565837" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64512,7 +64512,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFDADCC7" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFDADCC7" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64696,7 +64696,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF474747" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF474747" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64708,7 +64708,7 @@
         <Compare expression="y3_120_336_1">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFD1D1D1" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFD1D1D1" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64720,7 +64720,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF474747" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF474747" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64732,7 +64732,7 @@
         <Compare expression="y2_190_336_1">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFD1D1D1" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFD1D1D1" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64744,7 +64744,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF474747" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF474747" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64756,7 +64756,7 @@
         <Compare expression="y1_260_336_1">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFD1D1D1" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFD1D1D1" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64768,7 +64768,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FF474747" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF474747" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -64780,7 +64780,7 @@
         <Compare expression="y0_330_336_1">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="185.0" endAngle="355.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFD1D1D1" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FFD1D1D1" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>

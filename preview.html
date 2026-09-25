@@ -11,17 +11,17 @@
   <h2>Radix Watch Face</h2>
   <svg id="face" width="360" height="360" viewBox="0 0 450 450"></svg>
   <div style="margin-top:14px">
-    <label>palette <select id="palette"></select></label>
     <label>base <select id="base">
       <option value="binary">Binary</option>
       <option value="trinary">Trinary</option>
       <option value="quaternary">Quaternary</option>
       <option value="quinary">Quinary</option>
-      <option value="pentagon">Pentagon</option>
-      <option value="hexagon">Hexagon</option>
+      <option value="pentagon">Senary</option>
+      <option value="hexagon">Septenary</option>
       <option value="octal">Octal</option>
-      <option value="octagon">Octagon</option>
+      <option value="octagon">Nonary</option>
     </select></label>
+    <label>palette <select id="palette"></select></label>
     <label><input type="checkbox" id="theme"> light theme</label>
     <label><input type="checkbox" id="labels" checked> labels</label>
   </div>
@@ -416,7 +416,7 @@ function drawOctal(colors, outline, showLabels, now) {
 const TRI_RING_STYLES = {
   "[HOUR_0_23]": { thicknessFrac: 1.0, gap: 0 },    // solid pie (unchanged baseline)
   "[MINUTE]": { thicknessFrac: 0.45, gap: 0 },      // thin ring / donut
-  "[SECOND]": { thicknessFrac: 0.45, gap: 10 },     // segmented ring
+  "[SECOND]": { thicknessFrac: 0.28, gap: 10 },     // segmented ring, larger hole than Minute
 };
 function drawTrinary(colors, outline, showLabels, now) {
   // Own layout (TRINARY_LAYOUT) -- base 3 needs 3 places for H, 4 for M/S,

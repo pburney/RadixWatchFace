@@ -8,10 +8,13 @@ One layout spec -> two outputs (same convention as the sibling projects):
 
 First complete face: Quinary (base 5), ported from QuinaryWatchFace, now
 wired to the new palette system rather than a single fixed Okabe-Ito theme.
-Settings menu order (Paul's spec, 2026-09-24): PALETTE first, then BASE,
-then theme/labels. `<UserConfigurations>` declares them in exactly that
-order (declaration order = on-device editor order, independent of how the
-Scene structurally nests them for rendering).
+Settings menu order (Paul's spec, 2026-09-24; reordered same day): BASE
+first, then PALETTE, then theme/labels -- "swap the color schemes with the
+types so the most likely thing is for someone to experiment with different
+ways of telling time instead of the colors." `<UserConfigurations>`
+declares them in exactly that order (declaration order = on-device editor
+order, independent of how the Scene structurally nests them for
+rendering).
 
 Structural nesting in <Scene> (a separate concern from the above):
   BooleanConfiguration id="theme"    -- OUTER (2026-09-24: base moved inside
@@ -1023,7 +1026,7 @@ TRI_ANGLES = {f"P{i}": (i * 180, (i + 1) * 180) for i in range(2)}
 TRI_RING_STYLES = {
     "[HOUR_0_23]": dict(thickness_frac=1.0, gap=0),    # solid pie (unchanged baseline)
     "[MINUTE]": dict(thickness_frac=0.45, gap=0),      # thin ring / donut
-    "[SECOND]": dict(thickness_frac=0.45, gap=10),     # segmented ring
+    "[SECOND]": dict(thickness_frac=0.28, gap=10),     # segmented ring, larger hole than Minute
 }
 
 
@@ -1316,15 +1319,18 @@ def build_base_binary(theme: str, off_color: str) -> str:
 # WFF  (res/raw/watchface.xml)
 # ======================================================================
 def build_user_configurations() -> str:
-    # Declaration order = on-device editor order: palette, then base, then
-    # theme/labels (Paul's spec, 2026-09-24).
+    # Declaration order = on-device editor order: base, then palette, then
+    # theme/labels. 2026-09-24: reordered base BEFORE palette (was
+    # palette-first) -- Paul: "swap the color schemes with the types so the
+    # most likely thing is for someone to experiment with different ways
+    # of telling time instead of the colors." Purely a declaration-order
+    # change; the Scene's structural nesting (base inside each theme
+    # branch, palette inside each base) is unaffected -- see build_wff()'s
+    # own note on why declaration order and Scene nesting are independent.
     palette_list_options = "\n".join(
         f'      <ListOption id="{opt_id}" displayName="{res_name}"/>'
         for opt_id, res_name, _anchor in PALETTE_OPTIONS)
-    return f"""    <ListConfiguration id="palette" displayName="cfg_palette" defaultValue="colorblind">
-{palette_list_options}
-    </ListConfiguration>
-    <ListConfiguration id="base" displayName="cfg_base" defaultValue="binary">
+    return f"""    <ListConfiguration id="base" displayName="cfg_base" defaultValue="binary">
       <ListOption id="binary" displayName="opt_binary"/>
       <ListOption id="trinary" displayName="opt_trinary"/>
       <ListOption id="quaternary" displayName="opt_quaternary"/>
@@ -1333,6 +1339,9 @@ def build_user_configurations() -> str:
       <ListOption id="hexagon" displayName="opt_hexagon"/>
       <ListOption id="octal" displayName="opt_octal"/>
       <ListOption id="octagon" displayName="opt_octagon"/>
+    </ListConfiguration>
+    <ListConfiguration id="palette" displayName="cfg_palette" defaultValue="colorblind">
+{palette_list_options}
     </ListConfiguration>
     <BooleanConfiguration id="theme" displayName="cfg_theme" defaultValue="FALSE"/>
     <BooleanConfiguration id="labels" displayName="cfg_labels" defaultValue="TRUE"/>"""
@@ -1423,17 +1432,17 @@ _HTML_TMPL = r"""<!doctype html>
   <h2>Radix Watch Face</h2>
   <svg id="face" width="360" height="360" viewBox="0 0 __CANVAS__ __CANVAS__"></svg>
   <div style="margin-top:14px">
-    <label>palette <select id="palette"></select></label>
     <label>base <select id="base">
       <option value="binary">Binary</option>
       <option value="trinary">Trinary</option>
       <option value="quaternary">Quaternary</option>
       <option value="quinary">Quinary</option>
-      <option value="pentagon">Pentagon</option>
-      <option value="hexagon">Hexagon</option>
+      <option value="pentagon">Senary</option>
+      <option value="hexagon">Septenary</option>
       <option value="octal">Octal</option>
-      <option value="octagon">Octagon</option>
+      <option value="octagon">Nonary</option>
     </select></label>
+    <label>palette <select id="palette"></select></label>
     <label><input type="checkbox" id="theme"> light theme</label>
     <label><input type="checkbox" id="labels" checked> labels</label>
   </div>
@@ -1823,7 +1832,7 @@ function drawOctal(colors, outline, showLabels, now) {
 const TRI_RING_STYLES = {
   "[HOUR_0_23]": { thicknessFrac: 1.0, gap: 0 },    // solid pie (unchanged baseline)
   "[MINUTE]": { thicknessFrac: 0.45, gap: 0 },      // thin ring / donut
-  "[SECOND]": { thicknessFrac: 0.45, gap: 10 },     // segmented ring
+  "[SECOND]": { thicknessFrac: 0.28, gap: 10 },     // segmented ring, larger hole than Minute
 };
 function drawTrinary(colors, outline, showLabels, now) {
   // Own layout (TRINARY_LAYOUT) -- base 3 needs 3 places for H, 4 for M/S,
