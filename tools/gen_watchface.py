@@ -326,24 +326,65 @@ def wff_grid_groups(cx, cy, w, h, rows, cols, radius, digit_expr, colors, name_p
 # and exactly why Pentagon read as "too close together" (Hexagon had this
 # identical bug until its Hour row became a grid, which coincidentally
 # uses the correct h dimension). Fixed by using r=min(w,h)/2.
-PENT_POSITIONS = ["P0", "P1", "P2", "P3", "P4"]
-PENT_ANGLES = {f"P{i}": (i * 72, (i + 1) * 72) for i in range(5)}
+# 2026-09-24: Pentagon switched from the wedge-circle to TALLY MARKS, per
+# Paul's explicit ask -- base 6's digit range (0-5) maps perfectly onto the
+# classic tally system: 4 independent vertical bars for positions 0-3, then
+# a single diagonal slash across all 4 for position 4 (lit only when
+# digit=5, i.e. every other position is also lit). Confirmed via a static
+# SVG mockup (both this and a "WiFi bars" alternative) before writing any
+# WFF XML -- Paul picked tally marks. Sized to fit uniformly across every
+# row regardless of the underlying cell's own w/h (same "uniform size
+# regardless of row" principle as the circle-radius fix above): a plain
+# Rectangle's rotation isn't expression-driven here, just Group's own
+# static `angle`+`pivotX`/`pivotY` attributes (confirmed real via direct
+# XSD read of group/groupElement.xsd -- pivot is normalized [0,1] within
+# the Group's own box, angle in degrees). Verified computationally that
+# both the bars' and the rotated slash's farthest corners stay within a
+# 30.1px radius of the cell center -- safely inside the 36px bound the
+# Pentagon row-spacing fix above already proved doesn't collide with
+# neighboring rows (a rotated rectangle's farthest-corner distance from its
+# own pivot is invariant to the rotation angle, so this bound holds at any
+# angle, not just the one chosen below).
+PENT_TALLY_BAR_W = 6
+PENT_TALLY_BAR_H = 48
+PENT_TALLY_GAP = 4
+PENT_TALLY_N = 4
+_PENT_TALLY_TOTAL_W = PENT_TALLY_N * PENT_TALLY_BAR_W + (PENT_TALLY_N - 1) * PENT_TALLY_GAP
+PENT_TALLY_SLASH_LEN = round((_PENT_TALLY_TOTAL_W ** 2 + PENT_TALLY_BAR_H ** 2) ** 0.5)  # spans the block's diagonal
+PENT_TALLY_SLASH_ANGLE = -35  # degrees; either diagonal direction reads fine as a tally slash
 
 
 def pent_digit_expr(value_expr: str, place: int) -> str:
     return f"round(floor(({value_expr}) / {6 ** place}) % 6)"
 
 
+def _pent_tally_bar_x(k: int) -> float:
+    return -_PENT_TALLY_TOTAL_W / 2 + k * (PENT_TALLY_BAR_W + PENT_TALLY_GAP) + PENT_TALLY_BAR_W / 2
+
+
 def wff_pent_outlines(layout, outline_color):
+    stroke = f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/>'
     out = []
     for c in layout:
-        r = min(c["w"], c["h"]) / 2
-        x, y = round(c["x"] - r), round(c["y"] - r)
+        for k in range(PENT_TALLY_N):
+            bx = round(c["x"] + _pent_tally_bar_x(k) - PENT_TALLY_BAR_W / 2)
+            by = round(c["y"] - PENT_TALLY_BAR_H / 2)
+            out.append(
+                f'      <PartDraw x="{bx}" y="{by}" width="{PENT_TALLY_BAR_W}" height="{PENT_TALLY_BAR_H}">\n'
+                f'        <RoundRectangle x="0" y="0" width="{PENT_TALLY_BAR_W}" height="{PENT_TALLY_BAR_H}" '
+                f'cornerRadiusX="{PENT_TALLY_BAR_W / 2}" cornerRadiusY="{PENT_TALLY_BAR_W / 2}">{stroke}</RoundRectangle>\n'
+                f'      </PartDraw>')
+        sx = round(c["x"] - PENT_TALLY_SLASH_LEN / 2)
+        sy = round(c["y"] - PENT_TALLY_BAR_W / 2)
         out.append(
-            f'      <PartDraw x="{x}" y="{y}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
-            f'        <Ellipse x="0" y="0" width="{round(r * 2)}" height="{round(r * 2)}">'
-            f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/></Ellipse>\n'
-            f'      </PartDraw>')
+            f'      <Group name="pent_slash_outline_{round(c["x"])}_{round(c["y"])}" '
+            f'x="{sx}" y="{sy}" width="{PENT_TALLY_SLASH_LEN}" height="{PENT_TALLY_BAR_W}" '
+            f'pivotX="0.5" pivotY="0.5" angle="{PENT_TALLY_SLASH_ANGLE}">\n'
+            f'        <PartDraw x="0" y="0" width="{PENT_TALLY_SLASH_LEN}" height="{PENT_TALLY_BAR_W}">\n'
+            f'          <RoundRectangle x="0" y="0" width="{PENT_TALLY_SLASH_LEN}" height="{PENT_TALLY_BAR_W}" '
+            f'cornerRadiusX="{PENT_TALLY_BAR_W / 2}" cornerRadiusY="{PENT_TALLY_BAR_W / 2}">{stroke}</RoundRectangle>\n'
+            f'        </PartDraw>\n'
+            f'      </Group>')
     return "\n".join(out)
 
 
@@ -351,10 +392,9 @@ def wff_pent_groups(layout, colors):
     out = []
     for c in layout:
         digit_expr = pent_digit_expr(c["expr"], c["place"])
-        r = min(c["w"], c["h"]) / 2
-        bx, by = round(c["x"] - r), round(c["y"] - r)
-        for k, pos in enumerate(PENT_POSITIONS):
-            start, end = PENT_ANGLES[pos]
+        for k in range(PENT_TALLY_N):
+            bx = round(c["x"] + _pent_tally_bar_x(k) - PENT_TALLY_BAR_W / 2)
+            by = round(c["y"] - PENT_TALLY_BAR_H / 2)
             name = f"p{c['place']}_{round(c['x'])}_{round(c['y'])}_{k}"
             out.append(
                 f'      <Condition>\n'
@@ -362,14 +402,33 @@ def wff_pent_groups(layout, colors):
                 f'          <Expression name="{name}"><![CDATA[(({digit_expr}) > {k})]]></Expression>\n'
                 f'        </Expressions>\n'
                 f'        <Compare expression="{name}">\n'
-                f'          <PartDraw x="{bx}" y="{by}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
-                f'            <Arc centerX="{r}" centerY="{r}" width="{r}" height="{r}" '
-                f'startAngle="{start}" endAngle="{end}" direction="CLOCKWISE">\n'
-                f'              <WeightedStroke colors="{colors[k]}" thickness="{r}" cap="BUTT"/>\n'
-                f'            </Arc>\n'
+                f'          <PartDraw x="{bx}" y="{by}" width="{PENT_TALLY_BAR_W}" height="{PENT_TALLY_BAR_H}">\n'
+                f'            <RoundRectangle x="0" y="0" width="{PENT_TALLY_BAR_W}" height="{PENT_TALLY_BAR_H}" '
+                f'cornerRadiusX="{PENT_TALLY_BAR_W / 2}" cornerRadiusY="{PENT_TALLY_BAR_W / 2}">'
+                f'<Fill color="{colors[k]}"/></RoundRectangle>\n'
                 f'          </PartDraw>\n'
                 f'        </Compare>\n'
                 f'      </Condition>')
+        name5 = f"p{c['place']}_{round(c['x'])}_{round(c['y'])}_4"
+        sx = round(c["x"] - PENT_TALLY_SLASH_LEN / 2)
+        sy = round(c["y"] - PENT_TALLY_BAR_W / 2)
+        out.append(
+            f'      <Condition>\n'
+            f'        <Expressions>\n'
+            f'          <Expression name="{name5}"><![CDATA[(({digit_expr}) > 4)]]></Expression>\n'
+            f'        </Expressions>\n'
+            f'        <Compare expression="{name5}">\n'
+            f'          <Group name="pent_slash_{round(c["x"])}_{round(c["y"])}" '
+            f'x="{sx}" y="{sy}" width="{PENT_TALLY_SLASH_LEN}" height="{PENT_TALLY_BAR_W}" '
+            f'pivotX="0.5" pivotY="0.5" angle="{PENT_TALLY_SLASH_ANGLE}">\n'
+            f'            <PartDraw x="0" y="0" width="{PENT_TALLY_SLASH_LEN}" height="{PENT_TALLY_BAR_W}">\n'
+            f'              <RoundRectangle x="0" y="0" width="{PENT_TALLY_SLASH_LEN}" height="{PENT_TALLY_BAR_W}" '
+            f'cornerRadiusX="{PENT_TALLY_BAR_W / 2}" cornerRadiusY="{PENT_TALLY_BAR_W / 2}">'
+            f'<Fill color="{colors[4]}"/></RoundRectangle>\n'
+            f'            </PartDraw>\n'
+            f'          </Group>\n'
+            f'        </Compare>\n'
+            f'      </Condition>')
     return "\n".join(out)
 
 
@@ -669,31 +728,62 @@ def build_base_octagon(theme: str, outline_color: str) -> str:
     </ListOption>"""
 
 
-# ---- Octal (base 8) -- checked computationally, not assumed from the
-# "just pie pieces" intuition alone: base 8 needs exactly 2 places for H,
-# M, AND S (8^2=64>23 and 8^2=64>59), the IDENTICAL (2,2,2) pattern
-# Octagon already uses -- so Octal reuses octagon_layout() and its geometry
-# wholesale (OCT_QUAD/PITCH/LABEL_X/DECIMAL_X, wff_octagon_outlines(),
-# wff_labels(), wff_octagon_decimal_readout(), all unchanged), swapping
-# only the digit math (mod 8 instead of mod 9) and the wedge count (7
-# positions instead of 8). No new layout, no new fit-check needed --
-# the geometry was already proven to fit by Octagon itself.
-OCTAL_POSITIONS = [f"P{i}" for i in range(7)]
-OCTAL_ANGLES = {f"P{i}": (i * (360 / 7), (i + 1) * (360 / 7)) for i in range(7)}
+# ---- Octal (base 8) -- reuses octagon_layout()'s geometry (identical
+# (2,2,2) place pattern to Octagon, all rows square 72x72 cells, no
+# Hour/Minute-vs-Second mismatch the way Pentagon had). 2026-09-24: switched
+# from wedge-pie to WIFI BARS per Paul's ask, after tally marks worked out
+# well for Pentagon -- 7 independent vertical bars, tallest first (leftmost)
+# decreasing to shortest (rightmost), each lit independently like the other
+# count-encodings (no diagonal/rotation needed here, unlike Pentagon's tally
+# 5th mark). Verified computationally that the tallest bar's farthest corner
+# stays within a 28.3px radius of the cell center -- comfortably inside the
+# 36px bound Octagon's own wedge-pie already proved safe (7.7px margin,
+# same ballpark as Trinary's and Quaternary's accepted margins).
+OCTAL_WIFI_BAR_W = 4
+OCTAL_WIFI_GAP = 2
+OCTAL_WIFI_N = 7
+OCTAL_WIFI_MAX_H = 40
+OCTAL_WIFI_MIN_H = 14
+_OCTAL_WIFI_TOTAL_W = OCTAL_WIFI_N * OCTAL_WIFI_BAR_W + (OCTAL_WIFI_N - 1) * OCTAL_WIFI_GAP
+_OCTAL_WIFI_STEP = (OCTAL_WIFI_MAX_H - OCTAL_WIFI_MIN_H) / (OCTAL_WIFI_N - 1)
 
 
 def octal_digit_expr(value_expr: str, place: int) -> str:
     return f"round(floor(({value_expr}) / {8 ** place}) % 8)"
 
 
+def _octal_wifi_bar_geom(k: int):
+    h = OCTAL_WIFI_MAX_H - k * _OCTAL_WIFI_STEP
+    x_off = -_OCTAL_WIFI_TOTAL_W / 2 + k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) + OCTAL_WIFI_BAR_W / 2
+    return h, x_off
+
+
+def wff_octal_outlines(layout, outline_color):
+    stroke = f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/>'
+    out = []
+    for c in layout:
+        baseline_y = c["y"] + OCTAL_WIFI_MAX_H / 2
+        for k in range(OCTAL_WIFI_N):
+            h, x_off = _octal_wifi_bar_geom(k)
+            bx = round(c["x"] + x_off - OCTAL_WIFI_BAR_W / 2)
+            by = round(baseline_y - h)
+            out.append(
+                f'      <PartDraw x="{bx}" y="{by}" width="{OCTAL_WIFI_BAR_W}" height="{round(h)}">\n'
+                f'        <RoundRectangle x="0" y="0" width="{OCTAL_WIFI_BAR_W}" height="{round(h)}" '
+                f'cornerRadiusX="{OCTAL_WIFI_BAR_W / 2}" cornerRadiusY="{OCTAL_WIFI_BAR_W / 2}">{stroke}</RoundRectangle>\n'
+                f'      </PartDraw>')
+    return "\n".join(out)
+
+
 def wff_octal_groups(layout, colors):
     out = []
     for c in layout:
         digit_expr = octal_digit_expr(c["expr"], c["place"])
-        r = c["w"] / 2
-        bx, by = round(c["x"] - r), round(c["y"] - r)
-        for k, pos in enumerate(OCTAL_POSITIONS):
-            start, end = OCTAL_ANGLES[pos]
+        baseline_y = c["y"] + OCTAL_WIFI_MAX_H / 2
+        for k in range(OCTAL_WIFI_N):
+            h, x_off = _octal_wifi_bar_geom(k)
+            bx = round(c["x"] + x_off - OCTAL_WIFI_BAR_W / 2)
+            by = round(baseline_y - h)
             name = f"l{c['place']}_{round(c['x'])}_{round(c['y'])}_{k}"
             out.append(
                 f'      <Condition>\n'
@@ -701,11 +791,10 @@ def wff_octal_groups(layout, colors):
                 f'          <Expression name="{name}"><![CDATA[(({digit_expr}) > {k})]]></Expression>\n'
                 f'        </Expressions>\n'
                 f'        <Compare expression="{name}">\n'
-                f'          <PartDraw x="{bx}" y="{by}" width="{round(r * 2)}" height="{round(r * 2)}">\n'
-                f'            <Arc centerX="{r}" centerY="{r}" width="{r}" height="{r}" '
-                f'startAngle="{start:.4f}" endAngle="{end:.4f}" direction="CLOCKWISE">\n'
-                f'              <WeightedStroke colors="{colors[k]}" thickness="{r}" cap="BUTT"/>\n'
-                f'            </Arc>\n'
+                f'          <PartDraw x="{bx}" y="{by}" width="{OCTAL_WIFI_BAR_W}" height="{round(h)}">\n'
+                f'            <RoundRectangle x="0" y="0" width="{OCTAL_WIFI_BAR_W}" height="{round(h)}" '
+                f'cornerRadiusX="{OCTAL_WIFI_BAR_W / 2}" cornerRadiusY="{OCTAL_WIFI_BAR_W / 2}">'
+                f'<Fill color="{colors[k]}"/></RoundRectangle>\n'
                 f'          </PartDraw>\n'
                 f'        </Compare>\n'
                 f'      </Condition>')
@@ -728,7 +817,7 @@ def build_base_octal(theme: str, outline_color: str) -> str:
     return f"""    <ListOption id="octal">
       <Group name="octal_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
         <Group name="octal_outlines_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
-{wff_octagon_outlines(layout, outline_color)}
+{wff_octal_outlines(layout, outline_color)}
         </Group>
         <ListConfiguration id="palette">
 {palette_options}
@@ -1313,8 +1402,11 @@ const SUB_GAP = __SUB_GAP__, LABEL_W = __LABEL_W__, LABEL_H = __LABEL_H__;
 const POS_SIGN = {TR:[1,-1], TL:[-1,-1], BL:[-1,1], BR:[1,1]};
 const POS_ANGLES = {TR:[0,90], BR:[90,180], BL:[180,270], TL:[270,360]};
 const POSITIONS = ["TR","TL","BL","BR"];
-const PENT_POSITIONS = ["P0","P1","P2","P3","P4"];
-const PENT_ANGLES = Object.fromEntries(PENT_POSITIONS.map((p, i) => [p, [i * 72, (i + 1) * 72]]));
+const PENT_TALLY_BAR_W = 6, PENT_TALLY_BAR_H = 48, PENT_TALLY_GAP = 4, PENT_TALLY_N = 4;
+const PENT_TALLY_TOTAL_W = PENT_TALLY_N * PENT_TALLY_BAR_W + (PENT_TALLY_N - 1) * PENT_TALLY_GAP;
+const PENT_TALLY_SLASH_LEN = Math.round(Math.hypot(PENT_TALLY_TOTAL_W, PENT_TALLY_BAR_H));
+const PENT_TALLY_SLASH_ANGLE = -35;
+function pentTallyBarX(k) { return -PENT_TALLY_TOTAL_W / 2 + k * (PENT_TALLY_BAR_W + PENT_TALLY_GAP) + PENT_TALLY_BAR_W / 2; }
 const HEX_POSITIONS = ["P0","P1","P2","P3","P4","P5"];
 const HEX_ANGLES = Object.fromEntries(HEX_POSITIONS.map((p, i) => [p, [i * 60, (i + 1) * 60]]));
 const OCT_POSITIONS = Array.from({length: 8}, (_, i) => "P" + i);
@@ -1322,8 +1414,14 @@ const OCT_ANGLES = Object.fromEntries(OCT_POSITIONS.map((p, i) => [p, [i * 45, (
 const OCTAGON_LAYOUT = __OCTAGON_LAYOUT_JS__;
 const OCT_DECIMAL_X = __OCT_DECIMAL_X__;
 const OCT_DECIMAL_ROWS = __OCT_DECIMAL_ROWS_JS__;
-const OCTAL_POSITIONS = Array.from({length: 7}, (_, i) => "P" + i);
-const OCTAL_ANGLES = Object.fromEntries(OCTAL_POSITIONS.map((p, i) => [p, [i * (360 / 7), (i + 1) * (360 / 7)]]));
+const OCTAL_WIFI_BAR_W = 4, OCTAL_WIFI_GAP = 2, OCTAL_WIFI_N = 7, OCTAL_WIFI_MAX_H = 40, OCTAL_WIFI_MIN_H = 14;
+const OCTAL_WIFI_TOTAL_W = OCTAL_WIFI_N * OCTAL_WIFI_BAR_W + (OCTAL_WIFI_N - 1) * OCTAL_WIFI_GAP;
+const OCTAL_WIFI_STEP = (OCTAL_WIFI_MAX_H - OCTAL_WIFI_MIN_H) / (OCTAL_WIFI_N - 1);
+function octalWifiBarGeom(k) {
+  const h = OCTAL_WIFI_MAX_H - k * OCTAL_WIFI_STEP;
+  const xOff = -OCTAL_WIFI_TOTAL_W / 2 + k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) + OCTAL_WIFI_BAR_W / 2;
+  return [h, xOff];
+}
 const TRI_POSITIONS = ["P0","P1"];
 const TRI_ANGLES = Object.fromEntries(TRI_POSITIONS.map((p, i) => [p, [i * 180, (i + 1) * 180]]));
 const TRINARY_LAYOUT = __TRINARY_LAYOUT_JS__;
@@ -1524,17 +1622,34 @@ function drawQuinary(colors, outline, showLabels, now) {
 
 function drawPentagon(colors, outline, showLabels, now) {
   // Reuses QUINARY_LAYOUT verbatim -- base 6 has the same (2,3,3) place
-  // pattern as base 5 and 7, only digit math + wedge count (5) differ.
+  // pattern as base 5 and 7. Tally marks instead of wedges: base 6's digit
+  // range (0-5) maps onto the classic tally system -- 4 vertical bars for
+  // positions 0-3, a diagonal slash across all 4 for position 4 (lit only
+  // at digit=5). The slash is a plain rect rotated via SVG transform here,
+  // mirroring the real WFF Group's static pivotX/pivotY/angle attributes.
   let s = "";
   for (const c of QUINARY_LAYOUT) {
-    const r = Math.min(c.w, c.h) / 2;
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = pentDigit(c.src, c.place, now);
-    PENT_POSITIONS.forEach((pos, k) => {
-      if (digit <= k) return;
-      const [a0, a1] = PENT_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
-    });
+    for (let k = 0; k < PENT_TALLY_N; k++) {
+      const bx = c.x + pentTallyBarX(k) - PENT_TALLY_BAR_W / 2;
+      const by = c.y - PENT_TALLY_BAR_H / 2;
+      const on = digit > k;
+      const rx = PENT_TALLY_BAR_W / 2;
+      if (on) {
+        s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      } else {
+        s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      }
+    }
+    const slashOn = digit > 4;
+    const slashRx = PENT_TALLY_BAR_W / 2;
+    s += `<g transform="translate(${c.x},${c.y}) rotate(${PENT_TALLY_SLASH_ANGLE})">`;
+    if (slashOn) {
+      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="${colors[4]}"/>`;
+    } else {
+      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    }
+    s += `</g>`;
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
@@ -1628,18 +1743,25 @@ function drawOctagon(colors, outline, showLabels, now) {
 
 function drawOctal(colors, outline, showLabels, now) {
   // Reuses OCTAGON_LAYOUT verbatim -- base 8 has the same (2,2,2) place
-  // pattern as base 9, so the same geometry works; only the digit math and
-  // wedge count (7 instead of 8) differ.
+  // pattern as base 9, so the same geometry works. WiFi bars instead of
+  // wedge-pie: 7 independent vertical bars, tallest first (leftmost)
+  // decreasing to shortest (rightmost), no rotation needed (unlike
+  // Pentagon's tally 5th mark).
   let s = "";
   for (const c of OCTAGON_LAYOUT) {
-    const r = c.w / 2;
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = octalDigit(c.src, c.place, now);
-    OCTAL_POSITIONS.forEach((pos, k) => {
-      if (digit <= k) return;
-      const [a0, a1] = OCTAL_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
-    });
+    const baselineY = c.y + OCTAL_WIFI_MAX_H / 2;
+    for (let k = 0; k < OCTAL_WIFI_N; k++) {
+      const [h, xOff] = octalWifiBarGeom(k);
+      const bx = c.x + xOff - OCTAL_WIFI_BAR_W / 2;
+      const by = baselineY - h;
+      const rx = OCTAL_WIFI_BAR_W / 2;
+      if (digit > k) {
+        s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      } else {
+        s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      }
+    }
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }

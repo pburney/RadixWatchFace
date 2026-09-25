@@ -32,8 +32,11 @@ const SUB_GAP = 0, LABEL_W = 36, LABEL_H = 36;
 const POS_SIGN = {TR:[1,-1], TL:[-1,-1], BL:[-1,1], BR:[1,1]};
 const POS_ANGLES = {TR:[0,90], BR:[90,180], BL:[180,270], TL:[270,360]};
 const POSITIONS = ["TR","TL","BL","BR"];
-const PENT_POSITIONS = ["P0","P1","P2","P3","P4"];
-const PENT_ANGLES = Object.fromEntries(PENT_POSITIONS.map((p, i) => [p, [i * 72, (i + 1) * 72]]));
+const PENT_TALLY_BAR_W = 6, PENT_TALLY_BAR_H = 48, PENT_TALLY_GAP = 4, PENT_TALLY_N = 4;
+const PENT_TALLY_TOTAL_W = PENT_TALLY_N * PENT_TALLY_BAR_W + (PENT_TALLY_N - 1) * PENT_TALLY_GAP;
+const PENT_TALLY_SLASH_LEN = Math.round(Math.hypot(PENT_TALLY_TOTAL_W, PENT_TALLY_BAR_H));
+const PENT_TALLY_SLASH_ANGLE = -35;
+function pentTallyBarX(k) { return -PENT_TALLY_TOTAL_W / 2 + k * (PENT_TALLY_BAR_W + PENT_TALLY_GAP) + PENT_TALLY_BAR_W / 2; }
 const HEX_POSITIONS = ["P0","P1","P2","P3","P4","P5"];
 const HEX_ANGLES = Object.fromEntries(HEX_POSITIONS.map((p, i) => [p, [i * 60, (i + 1) * 60]]));
 const OCT_POSITIONS = Array.from({length: 8}, (_, i) => "P" + i);
@@ -41,8 +44,14 @@ const OCT_ANGLES = Object.fromEntries(OCT_POSITIONS.map((p, i) => [p, [i * 45, (
 const OCTAGON_LAYOUT = [{x:181.0,y:162.0,w:72.0,h:72.0,place:1,src:"[HOUR_0_23]",label:"H",label_x:117.0,label_y:162},{x:269.0,y:162.0,w:72.0,h:72.0,place:0,src:"[HOUR_0_23]",label:null,label_x:117.0,label_y:162},{x:181.0,y:249.0,w:72.0,h:72.0,place:1,src:"[MINUTE]",label:"M",label_x:117.0,label_y:249},{x:269.0,y:249.0,w:72.0,h:72.0,place:0,src:"[MINUTE]",label:null,label_x:117.0,label_y:249},{x:181.0,y:336.0,w:72.0,h:72.0,place:1,src:"[SECOND]",label:"S",label_x:117.0,label_y:336},{x:269.0,y:336.0,w:72.0,h:72.0,place:0,src:"[SECOND]",label:null,label_x:117.0,label_y:336}];
 const OCT_DECIMAL_X = 337.0;
 const OCT_DECIMAL_ROWS = [["[HOUR_0_23]",162],["[MINUTE]",249],["[SECOND]",336]];
-const OCTAL_POSITIONS = Array.from({length: 7}, (_, i) => "P" + i);
-const OCTAL_ANGLES = Object.fromEntries(OCTAL_POSITIONS.map((p, i) => [p, [i * (360 / 7), (i + 1) * (360 / 7)]]));
+const OCTAL_WIFI_BAR_W = 4, OCTAL_WIFI_GAP = 2, OCTAL_WIFI_N = 7, OCTAL_WIFI_MAX_H = 40, OCTAL_WIFI_MIN_H = 14;
+const OCTAL_WIFI_TOTAL_W = OCTAL_WIFI_N * OCTAL_WIFI_BAR_W + (OCTAL_WIFI_N - 1) * OCTAL_WIFI_GAP;
+const OCTAL_WIFI_STEP = (OCTAL_WIFI_MAX_H - OCTAL_WIFI_MIN_H) / (OCTAL_WIFI_N - 1);
+function octalWifiBarGeom(k) {
+  const h = OCTAL_WIFI_MAX_H - k * OCTAL_WIFI_STEP;
+  const xOff = -OCTAL_WIFI_TOTAL_W / 2 + k * (OCTAL_WIFI_BAR_W + OCTAL_WIFI_GAP) + OCTAL_WIFI_BAR_W / 2;
+  return [h, xOff];
+}
 const TRI_POSITIONS = ["P0","P1"];
 const TRI_ANGLES = Object.fromEntries(TRI_POSITIONS.map((p, i) => [p, [i * 180, (i + 1) * 180]]));
 const TRINARY_LAYOUT = [{x:155.0,y:162.0,w:64.0,place:2,src:"[HOUR_0_23]",label:"H",label_x:67.0,label_y:162},{x:225.0,y:162.0,w:64.0,place:1,src:"[HOUR_0_23]",label:null,label_x:67.0,label_y:162},{x:295.0,y:162.0,w:64.0,place:0,src:"[HOUR_0_23]",label:null,label_x:67.0,label_y:162},{x:120.0,y:249.0,w:64.0,place:3,src:"[MINUTE]",label:"M",label_x:67.0,label_y:249},{x:190.0,y:249.0,w:64.0,place:2,src:"[MINUTE]",label:null,label_x:67.0,label_y:249},{x:260.0,y:249.0,w:64.0,place:1,src:"[MINUTE]",label:null,label_x:67.0,label_y:249},{x:330.0,y:249.0,w:64.0,place:0,src:"[MINUTE]",label:null,label_x:67.0,label_y:249},{x:120.0,y:336.0,w:64.0,place:3,src:"[SECOND]",label:"S",label_x:67.0,label_y:336},{x:190.0,y:336.0,w:64.0,place:2,src:"[SECOND]",label:null,label_x:67.0,label_y:336},{x:260.0,y:336.0,w:64.0,place:1,src:"[SECOND]",label:null,label_x:67.0,label_y:336},{x:330.0,y:336.0,w:64.0,place:0,src:"[SECOND]",label:null,label_x:67.0,label_y:336}];
@@ -248,17 +257,34 @@ function drawQuinary(colors, outline, showLabels, now) {
 
 function drawPentagon(colors, outline, showLabels, now) {
   // Reuses QUINARY_LAYOUT verbatim -- base 6 has the same (2,3,3) place
-  // pattern as base 5 and 7, only digit math + wedge count (5) differ.
+  // pattern as base 5 and 7. Tally marks instead of wedges: base 6's digit
+  // range (0-5) maps onto the classic tally system -- 4 vertical bars for
+  // positions 0-3, a diagonal slash across all 4 for position 4 (lit only
+  // at digit=5). The slash is a plain rect rotated via SVG transform here,
+  // mirroring the real WFF Group's static pivotX/pivotY/angle attributes.
   let s = "";
   for (const c of QUINARY_LAYOUT) {
-    const r = Math.min(c.w, c.h) / 2;
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = pentDigit(c.src, c.place, now);
-    PENT_POSITIONS.forEach((pos, k) => {
-      if (digit <= k) return;
-      const [a0, a1] = PENT_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
-    });
+    for (let k = 0; k < PENT_TALLY_N; k++) {
+      const bx = c.x + pentTallyBarX(k) - PENT_TALLY_BAR_W / 2;
+      const by = c.y - PENT_TALLY_BAR_H / 2;
+      const on = digit > k;
+      const rx = PENT_TALLY_BAR_W / 2;
+      if (on) {
+        s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      } else {
+        s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      }
+    }
+    const slashOn = digit > 4;
+    const slashRx = PENT_TALLY_BAR_W / 2;
+    s += `<g transform="translate(${c.x},${c.y}) rotate(${PENT_TALLY_SLASH_ANGLE})">`;
+    if (slashOn) {
+      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="${colors[4]}"/>`;
+    } else {
+      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+    }
+    s += `</g>`;
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
@@ -352,18 +378,25 @@ function drawOctagon(colors, outline, showLabels, now) {
 
 function drawOctal(colors, outline, showLabels, now) {
   // Reuses OCTAGON_LAYOUT verbatim -- base 8 has the same (2,2,2) place
-  // pattern as base 9, so the same geometry works; only the digit math and
-  // wedge count (7 instead of 8) differ.
+  // pattern as base 9, so the same geometry works. WiFi bars instead of
+  // wedge-pie: 7 independent vertical bars, tallest first (leftmost)
+  // decreasing to shortest (rightmost), no rotation needed (unlike
+  // Pentagon's tally 5th mark).
   let s = "";
   for (const c of OCTAGON_LAYOUT) {
-    const r = c.w / 2;
-    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = octalDigit(c.src, c.place, now);
-    OCTAL_POSITIONS.forEach((pos, k) => {
-      if (digit <= k) return;
-      const [a0, a1] = OCTAL_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
-    });
+    const baselineY = c.y + OCTAL_WIFI_MAX_H / 2;
+    for (let k = 0; k < OCTAL_WIFI_N; k++) {
+      const [h, xOff] = octalWifiBarGeom(k);
+      const bx = c.x + xOff - OCTAL_WIFI_BAR_W / 2;
+      const by = baselineY - h;
+      const rx = OCTAL_WIFI_BAR_W / 2;
+      if (digit > k) {
+        s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      } else {
+        s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+      }
+    }
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
     }
