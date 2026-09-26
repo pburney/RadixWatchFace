@@ -518,9 +518,20 @@
     return out;
   }
   function colorblindPalette(n) { return OKABE_ITO.slice(0, n); }
-  function paletteFor(id, n) {
+  function paletteFor(id, n, theme) {
     if (id === "rainbow") return rainbowPalette(n);
-    if (id === "colorblind") return colorblindPalette(n);
+    if (id === "colorblind") {
+      const colors = colorblindPalette(n);
+      if (n > 1) {
+        // Position 0 (white) blends into the dashed group-outline stroke
+        // (near-white in dark theme), and is fully invisible against the
+        // white page background in light theme. Dark -> black, light ->
+        // neutral gray (same lightness target ensureContrast() uses).
+        const t = theme === undefined ? "dark" : theme;
+        return [(t === "dark" ? "#000000" : "#595959"), ...colors.slice(1)];
+      }
+      return colors;
+    }
     const anchor = ANCHORS.find((a) => a[0] === id);
     return monochromePalette(anchor[2], n);
   }
@@ -894,19 +905,19 @@
     if (base === "binary") {
       s += renderBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], labelColor, showLabels, now);
     } else if (base === "trinary") {
-      s += renderTrinary(paletteFor(paletteSel.value, 2), OUTLINE[key], labelColor, showLabels, now);
+      s += renderTrinary(paletteFor(paletteSel.value, 2, key), OUTLINE[key], labelColor, showLabels, now);
     } else if (base === "quaternary") {
-      s += renderQuaternary(paletteFor(paletteSel.value, 3), OUTLINE[key], labelColor, showLabels, now);
+      s += renderQuaternary(paletteFor(paletteSel.value, 3, key), OUTLINE[key], labelColor, showLabels, now);
     } else if (base === "pentagon") {
-      s += renderPentagon(paletteFor(paletteSel.value, 5), OUTLINE[key], labelColor, showLabels, now);
+      s += renderPentagon(paletteFor(paletteSel.value, 5, key), OUTLINE[key], labelColor, showLabels, now);
     } else if (base === "hexagon") {
-      s += renderHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], labelColor, showLabels, now);
+      s += renderHexagon(paletteFor(paletteSel.value, 6, key), OUTLINE[key], labelColor, showLabels, now);
     } else if (base === "octal") {
-      s += renderOctal(paletteFor(paletteSel.value, 7), OUTLINE[key], labelColor, showLabels, now);
+      s += renderOctal(paletteFor(paletteSel.value, 7, key), OUTLINE[key], labelColor, showLabels, now);
     } else if (base === "octagon") {
-      s += renderOctagon(paletteFor(paletteSel.value, 8), OUTLINE[key], labelColor, showLabels, now);
+      s += renderOctagon(paletteFor(paletteSel.value, 8, key), OUTLINE[key], labelColor, showLabels, now);
     } else {
-      s += renderQuinary(paletteFor(paletteSel.value, 4), OUTLINE[key], labelColor, showLabels, now);
+      s += renderQuinary(paletteFor(paletteSel.value, 4, key), OUTLINE[key], labelColor, showLabels, now);
     }
     face.innerHTML = s;
 

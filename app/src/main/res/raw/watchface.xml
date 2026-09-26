@@ -4691,7 +4691,7 @@
         <Compare expression="y2_155_162_0">
           <PartDraw x="123" y="130" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="32.00" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="32.00" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4715,7 +4715,7 @@
         <Compare expression="y1_225_162_0">
           <PartDraw x="193" y="130" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="32.00" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="32.00" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4739,7 +4739,7 @@
         <Compare expression="y0_295_162_0">
           <PartDraw x="263" y="130" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="32.00" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="32.00" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4763,7 +4763,7 @@
         <Compare expression="y3_120_249_0">
           <PartDraw x="88" y="217" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="14.40" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4787,7 +4787,7 @@
         <Compare expression="y2_190_249_0">
           <PartDraw x="158" y="217" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="14.40" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4811,7 +4811,7 @@
         <Compare expression="y1_260_249_0">
           <PartDraw x="228" y="217" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="14.40" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4835,7 +4835,7 @@
         <Compare expression="y0_330_249_0">
           <PartDraw x="298" y="217" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="14.40" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4859,7 +4859,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4883,7 +4883,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4907,7 +4907,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -4931,7 +4931,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9640,7 +9640,7 @@
         <Compare expression="t2_137_162_0">
           <PartDraw x="101" y="126" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9676,7 +9676,7 @@
         <Compare expression="t1_225_162_0">
           <PartDraw x="189" y="126" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9712,7 +9712,7 @@
         <Compare expression="t0_313_162_0">
           <PartDraw x="277" y="126" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9748,7 +9748,7 @@
         <Compare expression="t2_137_249_0">
           <PartDraw x="101" y="213" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9784,7 +9784,7 @@
         <Compare expression="t1_225_249_0">
           <PartDraw x="189" y="213" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9820,7 +9820,7 @@
         <Compare expression="t0_313_249_0">
           <PartDraw x="277" y="213" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9856,7 +9856,7 @@
         <Compare expression="t2_137_336_0">
           <PartDraw x="101" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9892,7 +9892,7 @@
         <Compare expression="t1_225_336_0">
           <PartDraw x="189" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -9928,7 +9928,7 @@
         <Compare expression="t0_313_336_0">
           <PartDraw x="277" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -15625,7 +15625,7 @@
         </Expressions>
         <Compare expression="q1_157_162_0">
           <PartDraw x="157" y="126" width="56" height="36">
-            <RoundRectangle x="0" y="0" width="56" height="36" cornerRadiusX="8" cornerRadiusY="8"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="28" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="48" y="28" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="56" height="36" cornerRadiusX="8" cornerRadiusY="8"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="0" y="0" width="8" height="8"><Fill color="#FF000000"/></Rectangle><Rectangle x="0" y="28" width="8" height="8"><Fill color="#FF000000"/></Rectangle><Rectangle x="48" y="28" width="8" height="8"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -15665,7 +15665,7 @@
         </Expressions>
         <Compare expression="q0_293_162_0">
           <PartDraw x="293" y="126" width="56" height="36">
-            <RoundRectangle x="0" y="0" width="56" height="36" cornerRadiusX="8" cornerRadiusY="8"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="28" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="48" y="28" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="56" height="36" cornerRadiusX="8" cornerRadiusY="8"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="0" y="0" width="8" height="8"><Fill color="#FF000000"/></Rectangle><Rectangle x="0" y="28" width="8" height="8"><Fill color="#FF000000"/></Rectangle><Rectangle x="48" y="28" width="8" height="8"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -15705,7 +15705,7 @@
         </Expressions>
         <Compare expression="q2_137_249_0">
           <PartDraw x="137" y="213" width="36" height="36">
-            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FF000000"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FF000000"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -15745,7 +15745,7 @@
         </Expressions>
         <Compare expression="q1_225_249_0">
           <PartDraw x="225" y="213" width="36" height="36">
-            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FF000000"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FF000000"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -15785,7 +15785,7 @@
         </Expressions>
         <Compare expression="q0_313_249_0">
           <PartDraw x="313" y="213" width="36" height="36">
-            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FF000000"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FF000000"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -15826,7 +15826,7 @@
         <Compare expression="q2_137_336_0">
           <PartDraw x="101" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="90" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -15874,7 +15874,7 @@
         <Compare expression="q1_225_336_0">
           <PartDraw x="189" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="90" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -15922,7 +15922,7 @@
         <Compare expression="q0_313_336_0">
           <PartDraw x="277" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="90" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -21997,7 +21997,7 @@
         </Expressions>
         <Compare expression="p1_157_162_0">
           <PartDraw x="139" y="138" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -22049,7 +22049,7 @@
         </Expressions>
         <Compare expression="p0_293_162_0">
           <PartDraw x="275" y="138" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -22101,7 +22101,7 @@
         </Expressions>
         <Compare expression="p2_137_249_0">
           <PartDraw x="119" y="225" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -22153,7 +22153,7 @@
         </Expressions>
         <Compare expression="p1_225_249_0">
           <PartDraw x="207" y="225" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -22205,7 +22205,7 @@
         </Expressions>
         <Compare expression="p0_313_249_0">
           <PartDraw x="295" y="225" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -22257,7 +22257,7 @@
         </Expressions>
         <Compare expression="p2_137_336_0">
           <PartDraw x="119" y="312" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -22309,7 +22309,7 @@
         </Expressions>
         <Compare expression="p1_225_336_0">
           <PartDraw x="207" y="312" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -22361,7 +22361,7 @@
         </Expressions>
         <Compare expression="p0_313_336_0">
           <PartDraw x="295" y="312" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -29719,7 +29719,7 @@
         </Expressions>
         <Compare expression="hxt1_157_162_0">
           <PartDraw x="101" y="126" width="37" height="36">
-            <RoundRectangle x="0" y="0" width="37" height="36" cornerRadiusX="6.0" cornerRadiusY="6.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="31.0" y="0.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="30.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="31.0" y="30.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="37" height="36" cornerRadiusX="6.0" cornerRadiusY="6.0"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="31.0" y="0.0" width="6.0" height="6.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="0.0" y="30.0" width="6.0" height="6.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="31.0" y="30.0" width="6.0" height="6.0"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -29779,7 +29779,7 @@
         </Expressions>
         <Compare expression="hxt0_293_162_0">
           <PartDraw x="237" y="126" width="37" height="36">
-            <RoundRectangle x="0" y="0" width="37" height="36" cornerRadiusX="6.0" cornerRadiusY="6.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="31.0" y="0.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="30.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="31.0" y="30.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="37" height="36" cornerRadiusX="6.0" cornerRadiusY="6.0"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="31.0" y="0.0" width="6.0" height="6.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="0.0" y="30.0" width="6.0" height="6.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="31.0" y="30.0" width="6.0" height="6.0"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -29839,7 +29839,7 @@
         </Expressions>
         <Compare expression="hxb2_137_249_0">
           <PartDraw x="101" y="213" width="36" height="24">
-            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -29899,7 +29899,7 @@
         </Expressions>
         <Compare expression="hxb1_225_249_0">
           <PartDraw x="189" y="213" width="36" height="24">
-            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -29959,7 +29959,7 @@
         </Expressions>
         <Compare expression="hxb0_313_249_0">
           <PartDraw x="277" y="213" width="36" height="24">
-            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -30020,7 +30020,7 @@
         <Compare expression="h2_137_336_0">
           <PartDraw x="101" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="60" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -30092,7 +30092,7 @@
         <Compare expression="h1_225_336_0">
           <PartDraw x="189" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="60" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -30164,7 +30164,7 @@
         <Compare expression="h0_313_336_0">
           <PartDraw x="277" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="60" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -39019,7 +39019,7 @@
         </Expressions>
         <Compare expression="l1_157_162_0">
           <PartDraw x="203" y="168" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -39089,7 +39089,7 @@
         </Expressions>
         <Compare expression="l0_293_162_0">
           <PartDraw x="339" y="168" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -39159,7 +39159,7 @@
         </Expressions>
         <Compare expression="l1_157_249_0">
           <PartDraw x="203" y="255" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -39229,7 +39229,7 @@
         </Expressions>
         <Compare expression="l0_293_249_0">
           <PartDraw x="339" y="255" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -39299,7 +39299,7 @@
         </Expressions>
         <Compare expression="l1_157_336_0">
           <PartDraw x="203" y="342" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -39369,7 +39369,7 @@
         </Expressions>
         <Compare expression="l0_293_336_0">
           <PartDraw x="339" y="342" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF000000"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -46799,7 +46799,7 @@
         </Expressions>
         <Compare expression="ogt1_181_162_0">
           <PartDraw x="145" y="126" width="18" height="36">
-            <RoundRectangle x="0" y="0" width="18" height="36" cornerRadiusX="4.0" cornerRadiusY="4.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="14.0" y="0.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="32.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="14.0" y="32.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="18" height="36" cornerRadiusX="4.0" cornerRadiusY="4.0"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="14.0" y="0.0" width="4.0" height="4.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="0.0" y="32.0" width="4.0" height="4.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="14.0" y="32.0" width="4.0" height="4.0"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -46879,7 +46879,7 @@
         </Expressions>
         <Compare expression="ogt0_269_162_0">
           <PartDraw x="233" y="126" width="18" height="36">
-            <RoundRectangle x="0" y="0" width="18" height="36" cornerRadiusX="4.0" cornerRadiusY="4.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="14.0" y="0.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="32.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="14.0" y="32.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="18" height="36" cornerRadiusX="4.0" cornerRadiusY="4.0"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="14.0" y="0.0" width="4.0" height="4.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="0.0" y="32.0" width="4.0" height="4.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="14.0" y="32.0" width="4.0" height="4.0"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -46959,7 +46959,7 @@
         </Expressions>
         <Compare expression="ogb1_181_249_0">
           <PartDraw x="145" y="213" width="36" height="18">
-            <RoundRectangle x="0" y="0" width="36" height="18" cornerRadiusX="9.0" cornerRadiusY="9.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="27.0" y="0.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="9.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="27.0" y="9.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="18" cornerRadiusX="9.0" cornerRadiusY="9.0"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="27.0" y="0.0" width="9.0" height="9.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="0.0" y="9.0" width="9.0" height="9.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="27.0" y="9.0" width="9.0" height="9.0"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -47039,7 +47039,7 @@
         </Expressions>
         <Compare expression="ogb0_269_249_0">
           <PartDraw x="233" y="213" width="36" height="18">
-            <RoundRectangle x="0" y="0" width="36" height="18" cornerRadiusX="9.0" cornerRadiusY="9.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="27.0" y="0.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="9.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="27.0" y="9.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="18" cornerRadiusX="9.0" cornerRadiusY="9.0"><Fill color="#FF000000"/></RoundRectangle><Rectangle x="27.0" y="0.0" width="9.0" height="9.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="0.0" y="9.0" width="9.0" height="9.0"><Fill color="#FF000000"/></Rectangle><Rectangle x="27.0" y="9.0" width="9.0" height="9.0"><Fill color="#FF000000"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -47120,7 +47120,7 @@
         <Compare expression="o1_181_336_0">
           <PartDraw x="145" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="45" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -47216,7 +47216,7 @@
         <Compare expression="o0_269_336_0">
           <PartDraw x="233" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="45" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF000000" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60240,7 +60240,7 @@
         <Compare expression="y2_155_162_0">
           <PartDraw x="123" y="130" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="32.00" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="32.00" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60264,7 +60264,7 @@
         <Compare expression="y1_225_162_0">
           <PartDraw x="193" y="130" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="32.00" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="32.00" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60288,7 +60288,7 @@
         <Compare expression="y0_295_162_0">
           <PartDraw x="263" y="130" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="32.00" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="32.00" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60312,7 +60312,7 @@
         <Compare expression="y3_120_249_0">
           <PartDraw x="88" y="217" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="14.40" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60336,7 +60336,7 @@
         <Compare expression="y2_190_249_0">
           <PartDraw x="158" y="217" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="14.40" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60360,7 +60360,7 @@
         <Compare expression="y1_260_249_0">
           <PartDraw x="228" y="217" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="14.40" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60384,7 +60384,7 @@
         <Compare expression="y0_330_249_0">
           <PartDraw x="298" y="217" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="0.0" endAngle="180.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="14.40" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="14.40" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60408,7 +60408,7 @@
         <Compare expression="y3_120_336_0">
           <PartDraw x="88" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60432,7 +60432,7 @@
         <Compare expression="y2_190_336_0">
           <PartDraw x="158" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60456,7 +60456,7 @@
         <Compare expression="y1_260_336_0">
           <PartDraw x="228" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -60480,7 +60480,7 @@
         <Compare expression="y0_330_336_0">
           <PartDraw x="298" y="304" width="64" height="64">
             <Arc centerX="32.0" centerY="32.0" width="32.0" height="32.0" startAngle="5.0" endAngle="175.0" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="8.96" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="8.96" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -65189,7 +65189,7 @@
         <Compare expression="t2_137_162_0">
           <PartDraw x="101" y="126" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -65225,7 +65225,7 @@
         <Compare expression="t1_225_162_0">
           <PartDraw x="189" y="126" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -65261,7 +65261,7 @@
         <Compare expression="t0_313_162_0">
           <PartDraw x="277" y="126" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -65297,7 +65297,7 @@
         <Compare expression="t2_137_249_0">
           <PartDraw x="101" y="213" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -65333,7 +65333,7 @@
         <Compare expression="t1_225_249_0">
           <PartDraw x="189" y="213" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -65369,7 +65369,7 @@
         <Compare expression="t0_313_249_0">
           <PartDraw x="277" y="213" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -65405,7 +65405,7 @@
         <Compare expression="t2_137_336_0">
           <PartDraw x="101" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -65441,7 +65441,7 @@
         <Compare expression="t1_225_336_0">
           <PartDraw x="189" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -65477,7 +65477,7 @@
         <Compare expression="t0_313_336_0">
           <PartDraw x="277" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="120" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -71174,7 +71174,7 @@
         </Expressions>
         <Compare expression="q1_157_162_0">
           <PartDraw x="157" y="126" width="56" height="36">
-            <RoundRectangle x="0" y="0" width="56" height="36" cornerRadiusX="8" cornerRadiusY="8"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="28" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="48" y="28" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="56" height="36" cornerRadiusX="8" cornerRadiusY="8"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="0" y="0" width="8" height="8"><Fill color="#FF595959"/></Rectangle><Rectangle x="0" y="28" width="8" height="8"><Fill color="#FF595959"/></Rectangle><Rectangle x="48" y="28" width="8" height="8"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -71214,7 +71214,7 @@
         </Expressions>
         <Compare expression="q0_293_162_0">
           <PartDraw x="293" y="126" width="56" height="36">
-            <RoundRectangle x="0" y="0" width="56" height="36" cornerRadiusX="8" cornerRadiusY="8"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="28" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="48" y="28" width="8" height="8"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="56" height="36" cornerRadiusX="8" cornerRadiusY="8"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="0" y="0" width="8" height="8"><Fill color="#FF595959"/></Rectangle><Rectangle x="0" y="28" width="8" height="8"><Fill color="#FF595959"/></Rectangle><Rectangle x="48" y="28" width="8" height="8"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -71254,7 +71254,7 @@
         </Expressions>
         <Compare expression="q2_137_249_0">
           <PartDraw x="137" y="213" width="36" height="36">
-            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FF595959"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FF595959"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -71294,7 +71294,7 @@
         </Expressions>
         <Compare expression="q1_225_249_0">
           <PartDraw x="225" y="213" width="36" height="36">
-            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FF595959"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FF595959"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -71334,7 +71334,7 @@
         </Expressions>
         <Compare expression="q0_313_249_0">
           <PartDraw x="313" y="213" width="36" height="36">
-            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="36" cornerRadiusX="24" cornerRadiusY="24"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="0" y="0" width="24" height="24"><Fill color="#FF595959"/></Rectangle><Rectangle x="0" y="12" width="24" height="24"><Fill color="#FF595959"/></Rectangle><Rectangle x="12" y="12" width="24" height="24"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -71375,7 +71375,7 @@
         <Compare expression="q2_137_336_0">
           <PartDraw x="101" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="90" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -71423,7 +71423,7 @@
         <Compare expression="q1_225_336_0">
           <PartDraw x="189" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="90" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -71471,7 +71471,7 @@
         <Compare expression="q0_313_336_0">
           <PartDraw x="277" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="90" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -77546,7 +77546,7 @@
         </Expressions>
         <Compare expression="p1_157_162_0">
           <PartDraw x="139" y="138" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -77598,7 +77598,7 @@
         </Expressions>
         <Compare expression="p0_293_162_0">
           <PartDraw x="275" y="138" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -77650,7 +77650,7 @@
         </Expressions>
         <Compare expression="p2_137_249_0">
           <PartDraw x="119" y="225" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -77702,7 +77702,7 @@
         </Expressions>
         <Compare expression="p1_225_249_0">
           <PartDraw x="207" y="225" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -77754,7 +77754,7 @@
         </Expressions>
         <Compare expression="p0_313_249_0">
           <PartDraw x="295" y="225" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -77806,7 +77806,7 @@
         </Expressions>
         <Compare expression="p2_137_336_0">
           <PartDraw x="119" y="312" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -77858,7 +77858,7 @@
         </Expressions>
         <Compare expression="p1_225_336_0">
           <PartDraw x="207" y="312" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -77910,7 +77910,7 @@
         </Expressions>
         <Compare expression="p0_313_336_0">
           <PartDraw x="295" y="312" width="6" height="48">
-            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="6" height="48" cornerRadiusX="3.0" cornerRadiusY="3.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -85268,7 +85268,7 @@
         </Expressions>
         <Compare expression="hxt1_157_162_0">
           <PartDraw x="101" y="126" width="37" height="36">
-            <RoundRectangle x="0" y="0" width="37" height="36" cornerRadiusX="6.0" cornerRadiusY="6.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="31.0" y="0.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="30.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="31.0" y="30.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="37" height="36" cornerRadiusX="6.0" cornerRadiusY="6.0"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="31.0" y="0.0" width="6.0" height="6.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="0.0" y="30.0" width="6.0" height="6.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="31.0" y="30.0" width="6.0" height="6.0"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -85328,7 +85328,7 @@
         </Expressions>
         <Compare expression="hxt0_293_162_0">
           <PartDraw x="237" y="126" width="37" height="36">
-            <RoundRectangle x="0" y="0" width="37" height="36" cornerRadiusX="6.0" cornerRadiusY="6.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="31.0" y="0.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="30.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="31.0" y="30.0" width="6.0" height="6.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="37" height="36" cornerRadiusX="6.0" cornerRadiusY="6.0"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="31.0" y="0.0" width="6.0" height="6.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="0.0" y="30.0" width="6.0" height="6.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="31.0" y="30.0" width="6.0" height="6.0"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -85388,7 +85388,7 @@
         </Expressions>
         <Compare expression="hxb2_137_249_0">
           <PartDraw x="101" y="213" width="36" height="24">
-            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -85448,7 +85448,7 @@
         </Expressions>
         <Compare expression="hxb1_225_249_0">
           <PartDraw x="189" y="213" width="36" height="24">
-            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -85508,7 +85508,7 @@
         </Expressions>
         <Compare expression="hxb0_313_249_0">
           <PartDraw x="277" y="213" width="36" height="24">
-            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="24" cornerRadiusX="12.0" cornerRadiusY="12.0"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="24.0" y="0.0" width="12.0" height="12.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="0.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="24.0" y="12.0" width="12.0" height="12.0"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -85569,7 +85569,7 @@
         <Compare expression="h2_137_336_0">
           <PartDraw x="101" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="60" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -85641,7 +85641,7 @@
         <Compare expression="h1_225_336_0">
           <PartDraw x="189" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="60" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -85713,7 +85713,7 @@
         <Compare expression="h0_313_336_0">
           <PartDraw x="277" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="60" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -94568,7 +94568,7 @@
         </Expressions>
         <Compare expression="l1_157_162_0">
           <PartDraw x="203" y="168" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -94638,7 +94638,7 @@
         </Expressions>
         <Compare expression="l0_293_162_0">
           <PartDraw x="339" y="168" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -94708,7 +94708,7 @@
         </Expressions>
         <Compare expression="l1_157_249_0">
           <PartDraw x="203" y="255" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -94778,7 +94778,7 @@
         </Expressions>
         <Compare expression="l0_293_249_0">
           <PartDraw x="339" y="255" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -94848,7 +94848,7 @@
         </Expressions>
         <Compare expression="l1_157_336_0">
           <PartDraw x="203" y="342" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -94918,7 +94918,7 @@
         </Expressions>
         <Compare expression="l0_293_336_0">
           <PartDraw x="339" y="342" width="10" height="14">
-            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FFFFFFFF"/></RoundRectangle>
+            <RoundRectangle x="0" y="0" width="10" height="14" cornerRadiusX="5.0" cornerRadiusY="5.0"><Fill color="#FF595959"/></RoundRectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -102348,7 +102348,7 @@
         </Expressions>
         <Compare expression="ogt1_181_162_0">
           <PartDraw x="145" y="126" width="18" height="36">
-            <RoundRectangle x="0" y="0" width="18" height="36" cornerRadiusX="4.0" cornerRadiusY="4.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="14.0" y="0.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="32.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="14.0" y="32.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="18" height="36" cornerRadiusX="4.0" cornerRadiusY="4.0"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="14.0" y="0.0" width="4.0" height="4.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="0.0" y="32.0" width="4.0" height="4.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="14.0" y="32.0" width="4.0" height="4.0"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -102428,7 +102428,7 @@
         </Expressions>
         <Compare expression="ogt0_269_162_0">
           <PartDraw x="233" y="126" width="18" height="36">
-            <RoundRectangle x="0" y="0" width="18" height="36" cornerRadiusX="4.0" cornerRadiusY="4.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="14.0" y="0.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="32.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="14.0" y="32.0" width="4.0" height="4.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="18" height="36" cornerRadiusX="4.0" cornerRadiusY="4.0"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="14.0" y="0.0" width="4.0" height="4.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="0.0" y="32.0" width="4.0" height="4.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="14.0" y="32.0" width="4.0" height="4.0"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -102508,7 +102508,7 @@
         </Expressions>
         <Compare expression="ogb1_181_249_0">
           <PartDraw x="145" y="213" width="36" height="18">
-            <RoundRectangle x="0" y="0" width="36" height="18" cornerRadiusX="9.0" cornerRadiusY="9.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="27.0" y="0.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="9.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="27.0" y="9.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="18" cornerRadiusX="9.0" cornerRadiusY="9.0"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="27.0" y="0.0" width="9.0" height="9.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="0.0" y="9.0" width="9.0" height="9.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="27.0" y="9.0" width="9.0" height="9.0"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -102588,7 +102588,7 @@
         </Expressions>
         <Compare expression="ogb0_269_249_0">
           <PartDraw x="233" y="213" width="36" height="18">
-            <RoundRectangle x="0" y="0" width="36" height="18" cornerRadiusX="9.0" cornerRadiusY="9.0"><Fill color="#FFFFFFFF"/></RoundRectangle><Rectangle x="27.0" y="0.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="0.0" y="9.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle><Rectangle x="27.0" y="9.0" width="9.0" height="9.0"><Fill color="#FFFFFFFF"/></Rectangle>
+            <RoundRectangle x="0" y="0" width="36" height="18" cornerRadiusX="9.0" cornerRadiusY="9.0"><Fill color="#FF595959"/></RoundRectangle><Rectangle x="27.0" y="0.0" width="9.0" height="9.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="0.0" y="9.0" width="9.0" height="9.0"><Fill color="#FF595959"/></Rectangle><Rectangle x="27.0" y="9.0" width="9.0" height="9.0"><Fill color="#FF595959"/></Rectangle>
           </PartDraw>
         </Compare>
       </Condition>
@@ -102669,7 +102669,7 @@
         <Compare expression="o1_181_336_0">
           <PartDraw x="145" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="45" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>
@@ -102765,7 +102765,7 @@
         <Compare expression="o0_269_336_0">
           <PartDraw x="233" y="300" width="72" height="72">
             <Arc centerX="36.0" centerY="36.0" width="36.0" height="36.0" startAngle="0" endAngle="45" direction="CLOCKWISE">
-              <WeightedStroke colors="#FFFFFFFF" thickness="36.0" cap="BUTT"/>
+              <WeightedStroke colors="#FF595959" thickness="36.0" cap="BUTT"/>
             </Arc>
           </PartDraw>
         </Compare>

@@ -410,7 +410,7 @@ def wff_pent_groups(layout, colors):
 
 
 def pentagon_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 5)
+    colors = palette_for(option_id, 5, theme)
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="pent_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
             f'{wff_pent_groups(layout, colors)}\n'
@@ -516,7 +516,7 @@ def wff_hex_groups(layout, colors):
 
 
 def hexagon_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 6)
+    colors = palette_for(option_id, 6, theme)
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="hex_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
             f'{wff_hex_groups(layout, colors)}\n'
@@ -670,7 +670,7 @@ def wff_octagon_groups(layout, colors, grid_rows=None):
 
 
 def octagon_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 8)
+    colors = palette_for(option_id, 8, theme)
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="oct_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
             f'{wff_octagon_groups(layout, colors, OCTAGON_GRID_ROWS)}\n'
@@ -850,7 +850,7 @@ def wff_octal_decimal_readout():
 
 
 def octal_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 7)
+    colors = palette_for(option_id, 7, theme)
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="octal_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
             f'{wff_octal_groups(layout, colors)}\n'
@@ -951,7 +951,7 @@ def wff_quat_groups(layout, colors):
 
 
 def quaternary_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 3)
+    colors = palette_for(option_id, 3, theme)
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="quat_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
             f'{wff_quat_groups(layout, colors)}\n'
@@ -1125,7 +1125,7 @@ def wff_tri_groups(layout, colors):
 
 
 def trinary_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 2)
+    colors = palette_for(option_id, 2, theme)
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="tri_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
             f'{wff_tri_groups(layout, colors)}\n'
@@ -1158,7 +1158,7 @@ def build_base_trinary(theme: str, outline_color: str) -> str:
 
 
 def quinary_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 4)
+    colors = palette_for(option_id, 4, theme)
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
             f'{wff_quads(layout, colors)}\n'
@@ -1541,9 +1541,22 @@ function rainbowPalette(n) {
   return out;
 }
 function colorblindPalette(n) { return OKABE_ITO.slice(0, n); }
-function paletteFor(id, n) {
+function paletteFor(id, n, theme) {
   if (id === "rainbow") return rainbowPalette(n);
-  if (id === "colorblind") return colorblindPalette(n);
+  if (id === "colorblind") {
+    const colors = colorblindPalette(n);
+    if (n > 1) {
+      // Mirrors palettes.py's palette_for(): position 0 (white) blends
+      // into the dashed group-outline stroke (near-white in dark theme),
+      // and is fully invisible against the white page background in light
+      // theme. Dark -> black (contrasts the near-white outline); light ->
+      // neutral gray (contrasts both the white background and the
+      // near-black outline; same lightness target ensureContrast() uses).
+      const t = theme === undefined ? "dark" : theme;
+      return [(t === "dark" ? "#000000" : "#595959"), ...colors.slice(1)];
+    }
+    return colors;
+  }
   const anchor = ANCHORS.find(a => a[0] === id);
   return monochromePalette(anchor[2], n);
 }
@@ -1929,19 +1942,19 @@ function draw() {
   if (base === "binary") {
     s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
   } else if (base === "trinary") {
-    s += drawTrinary(paletteFor(paletteSel.value, 2), OUTLINE[key], showLabels, now);
+    s += drawTrinary(paletteFor(paletteSel.value, 2, key), OUTLINE[key], showLabels, now);
   } else if (base === "quaternary") {
-    s += drawQuaternary(paletteFor(paletteSel.value, 3), OUTLINE[key], showLabels, now);
+    s += drawQuaternary(paletteFor(paletteSel.value, 3, key), OUTLINE[key], showLabels, now);
   } else if (base === "pentagon") {
-    s += drawPentagon(paletteFor(paletteSel.value, 5), OUTLINE[key], showLabels, now);
+    s += drawPentagon(paletteFor(paletteSel.value, 5, key), OUTLINE[key], showLabels, now);
   } else if (base === "hexagon") {
-    s += drawHexagon(paletteFor(paletteSel.value, 6), OUTLINE[key], showLabels, now);
+    s += drawHexagon(paletteFor(paletteSel.value, 6, key), OUTLINE[key], showLabels, now);
   } else if (base === "octal") {
-    s += drawOctal(paletteFor(paletteSel.value, 7), OUTLINE[key], showLabels, now);
+    s += drawOctal(paletteFor(paletteSel.value, 7, key), OUTLINE[key], showLabels, now);
   } else if (base === "octagon") {
-    s += drawOctagon(paletteFor(paletteSel.value, 8), OUTLINE[key], showLabels, now);
+    s += drawOctagon(paletteFor(paletteSel.value, 8, key), OUTLINE[key], showLabels, now);
   } else {
-    s += drawQuinary(paletteFor(paletteSel.value, 4), OUTLINE[key], showLabels, now);
+    s += drawQuinary(paletteFor(paletteSel.value, 4, key), OUTLINE[key], showLabels, now);
   }
   svg.innerHTML = s;
   document.getElementById("readout").textContent = now.toTimeString().slice(0, 8) + "  (" + base + ")";
