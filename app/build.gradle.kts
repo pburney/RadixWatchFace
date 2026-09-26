@@ -4,12 +4,21 @@ plugins {
 
 android {
     namespace = "com.burnilab.radixwatchface"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.burnilab.radixwatchface"
-        minSdk = 33          // Wear OS 4
-        targetSdk = 34
+        // Play's own upload check: "Your Watch Face Format XML includes
+        // the features: 'WeightedStroke under Arc, Default heart rate
+        // complication'. Based on this, you're required to update your
+        // manifest so that the APK or Android App Bundle specifies a
+        // min_sdk of at least 36." Real error from an actual submission,
+        // not documentation -- those two specific features (used
+        // throughout every wedge-split-circle base, and the heart rate
+        // complication slot) apparently require a newer WFF runtime than
+        // minSdk=33 declares. Bumped straight to 36, Play's stated floor.
+        minSdk = 36
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
