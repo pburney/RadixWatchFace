@@ -118,11 +118,44 @@ PALETTE_OPTIONS = (
 ANCHOR_ARGB = {aid: argb for aid, _name, argb in ANCHOR_COLORS}
 
 
-def palette_for(option_id: str, n: int) -> list[str]:
+def palette_for(option_id: str, n: int, theme: str = "dark") -> list[str]:
     if option_id == "rainbow":
         return rainbow_palette(n)
     if option_id == "colorblind":
-        return colorblind_palette(n)
+        colors = colorblind_palette(n)
+        if n > 1:
+            # Position 0 is pure white (OKABE_ITO[0]). In DARK theme it's
+            # fine against the page background itself, but every
+            # multi-color base also draws a dashed group-outline stroke
+            # that's ALSO near-white in dark theme (OUTLINE_DARK). Every
+            # OTHER color keeps those dashes visibly distinct on top of its
+            # fill (a nice "the guide stays faintly visible even when lit"
+            # detail); white-on-white nearly vanishes, so the lit cell's
+            # corners/edges read as smudged rather than crisp. Real bug,
+            # caught by Paul testing multiple bases on-device, not a
+            # screenshot artifact -- the module docstring already flagged
+            # this exact weak spot (ensure_contrast() below was written for
+            # single-color Binary only) without yet fixing it for the
+            # multi-color case. Forcing black gives the white dashes the
+            # same clean contrast every other color already gets for free.
+            #
+            # LIGHT theme has the mirror-image problem, worse: the page
+            # background itself (BG_LIGHT) is pure white, so position 0 is
+            # simply invisible, not just blended at the edges -- caught by
+            # checking this fix's own light-theme case before shipping,
+            # same discipline as everywhere else in this project. Black
+            # doesn't work here (OUTLINE_LIGHT is near-black, so black would
+            # just recreate the identical blend-with-the-outline problem in
+            # the other direction) -- a neutral gray, the same lightness
+            # target ensure_contrast() already uses for light theme (0.35),
+            # is visible against both the white background and the dark
+            # outline.
+            #
+            # n>1 guard keeps this from ever touching Binary's own n=1
+            # call, which goes through ensure_contrast() instead and has no
+            # outline to blend with either way.
+            colors = [("#FF000000" if theme == "dark" else "#FF595959")] + colors[1:]
+        return colors
     return monochrome_palette(ANCHOR_ARGB[option_id], n)
 
 
@@ -137,9 +170,11 @@ def ensure_contrast(argb: str, theme: str) -> str:
     preserving hue/saturation -- a saturated color keeps its hue at a
     different lightness; white/gray (s=0) simply becomes a mid-gray, which
     is exactly the legible "on" dot light theme needs. Only ever used for
-    single-color bases; Quinary's multi-color groups have the dashed
-    outline plus neighboring colors as legibility anchors, which is real
-    but visibly weaker protection -- not fixed here, watch for it."""
+    single-color bases; multi-color groups have the dashed outline plus
+    neighboring colors as legibility anchors -- except position 0's own
+    white-on-white blend with the outline itself in dark theme, which
+    turned out to be real (Paul caught it on-device across multiple bases)
+    and is now handled directly in palette_for(), not here."""
     r, g, b = _hex_to_rgb01(argb)
     h, l, s = colorsys.rgb_to_hls(r, g, b)
     if theme == "light" and l > 0.75:
