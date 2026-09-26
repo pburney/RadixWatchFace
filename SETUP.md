@@ -78,3 +78,18 @@ architecture:
   and the outline/label colors use a fixed neutral tint here rather than
   trying to reference the palette selection directly (same simplification
   QuinaryWatchFace already used for theme-driven complication tinting).
+- **Play rejects any watch face release bundle containing a dex file at
+  all** (confirmed via a real upload error, 2026-09; Play's own message
+  cites a 2025-01-27 policy date) — `android:hasCode="false"` in the
+  manifest does NOT stop the standard Android Gradle Plugin from packaging
+  a near-empty dex (auto-generated `R`/`BuildConfig` stub classes) even
+  when there's zero real source. `app/build.gradle.kts`'s `release`
+  build type needs `isMinifyEnabled = true` (with the default proguard
+  file) so R8 strips that stub down to nothing — confirmed by unzipping
+  the built `.aab` and checking for any `*.dex` entries, not just trusting
+  the build succeeded. Matches Google's own `sample-wf` reference project
+  in the `google/watchface` repo, which enables R8 for exactly this
+  reason. Binary/Quinary never reached an actual Play upload attempt
+  before Radix, so this was never caught until now — if either of those
+  repos' `build.gradle.kts` still has `isMinifyEnabled = false`, they'll
+  hit the identical error the first time they're actually uploaded.
