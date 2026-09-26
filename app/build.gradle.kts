@@ -19,7 +19,12 @@ android {
         // minSdk=33 declares. Bumped straight to 36, Play's stated floor.
         minSdk = 36
         targetSdk = 36
-        versionCode = 1
+        // Play permanently reserves every version code it has ever seen an
+        // upload for -- including the two rejected attempts (dex file,
+        // minSdk 36) that got version code 1 recorded before being
+        // rejected. "Version code 1 has already been used" on the next
+        // upload attempt confirmed this; bumped to 2.
+        versionCode = 2
         versionName = "1.0"
     }
 
