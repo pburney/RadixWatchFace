@@ -83,7 +83,7 @@ const baseSel = document.getElementById("base");
 // ---- palette generation, ported verbatim from tools/palettes.py ----
 const ANCHORS = [["green","Green","#33FF66"],["emerald","Emerald","#00C853"],["teal","Teal","#1DE9B6"],["cyan","Cyan","#33E1FF"],["blue","Blue","#33B5FF"],["indigo","Indigo","#5C6BC0"],["violet","Violet","#9B7BFF"],["purple","Purple","#C061FF"],["magenta","Magenta","#FF5CD2"],["pink","Pink","#FF6EA6"],["red","Red","#FF5A5A"],["orange","Orange","#FF9E42"],["amber","Amber","#FFC24B"],["yellow","Yellow","#FFE14D"],["olive","Olive","#8C8F5A"],["white","White","#F5F5F5"]];
 const OKABE_ITO = ["#FFFFFF","#56B4E9","#E69F00","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7"];
-const ROYGBIV_START_DEG = 0, ROYGBIV_END_DEG = 270;
+const ROYGBIV_START_DEG = 0, ROYGBIV_END_DEG = 320;
 function hexToHsl(hex) {
   let r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
   const max = Math.max(r,g,b), min = Math.min(r,g,b);
@@ -110,16 +110,51 @@ function monochromePalette(anchorHex, n) {
   for (let i = 0; i < n; i++) { const t = n>1 ? i/(n-1) : 0.5; out.push(hslToHex(h, s, lo+t*(hi-lo))); }
   return out;
 }
+// Mirrors palettes.py's _HUE_ZONES/_hue_for_t: compresses the yellow-green
+// -> green -> cyan-green band (60-180 deg) so fewer evenly-spaced samples
+// land in it -- that band reads as "just green" to the eye even with
+// perfectly even degree spacing.
+const HUE_ZONES = [[0, 60, 1.0], [60, 180, 0.15], [180, null, 1.0]];
+function hueForT(t) {
+  const zones = HUE_ZONES.map(([s, e, w]) => [s, e === null ? ROYGBIV_END_DEG : Math.min(e, ROYGBIV_END_DEG), w])
+    .filter(([s]) => s < ROYGBIV_END_DEG);
+  const totalWeight = zones.reduce((sum, [s, e, w]) => sum + (e - s) * w, 0);
+  const target = t * totalWeight;
+  let acc = 0;
+  for (let i = 0; i < zones.length; i++) {
+    const [s, e, w] = zones[i];
+    const spanWeight = (e - s) * w;
+    if (target <= acc + spanWeight || i === zones.length - 1) {
+      const frac = spanWeight ? (target - acc) / spanWeight : 0;
+      return s + frac * (e - s);
+    }
+    acc += spanWeight;
+  }
+  return ROYGBIV_END_DEG;
+}
 function rainbowPalette(n) {
   const out = [];
   for (let i = 0; i < n; i++) {
     const t = n>1 ? i/(n-1) : 0.5;
-    const hue = (ROYGBIV_START_DEG + t*(ROYGBIV_END_DEG-ROYGBIV_START_DEG)) / 360;
+    const hue = hueForT(t) / 360;
     out.push(hslToHex(hue, 0.85, 0.55));
   }
   return out;
 }
 function colorblindPalette(n) { return OKABE_ITO.slice(0, n); }
+// Mirrors gen_watchface.py's rainbow_groups_by_place(): "rainbow" splits one
+// spectrum sweep across a base's distinct place values instead of repeating
+// the same n-position colors in every digit-place cell -- `colors` becomes a
+// nested array indexed by place (colorsForPlace picks the right slice), vs.
+// every other palette's plain flat array (same for every cell).
+function rainbowColorsByPlace(layout, nPositions) {
+  const nPlaces = Math.max(...layout.map(c => c.place)) + 1;
+  const mega = rainbowPalette(nPositions * nPlaces);
+  const byPlace = [];
+  for (let p = 0; p < nPlaces; p++) byPlace.push(mega.slice(p * nPositions, (p + 1) * nPositions));
+  return byPlace;
+}
+function colorsForPlace(colors, place) { return Array.isArray(colors[0]) ? colors[place] : colors; }
 function paletteFor(id, n, theme) {
   if (id === "rainbow") return rainbowPalette(n);
   if (id === "colorblind") {
@@ -229,12 +264,13 @@ function drawQuinary(colors, outline, showLabels, now) {
   for (const c of QUINARY_LAYOUT) {
     s += outlineShape(c, outline);
     const digit = quinaryDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     if (c.shape === "pie") {
       const r = c.w / 2;
       POSITIONS.forEach((pos, k) => {
         if (digit <= k) return;
         const [a0, a1] = POS_ANGLES[pos];
-        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${cellColors[k]}"/>`;
       });
     } else {
       const cellW = (c.w - SUB_GAP) / 2, cellH = (c.h - SUB_GAP) / 2;
@@ -252,11 +288,11 @@ function drawQuinary(colors, outline, showLabels, now) {
         const [sx, sy] = POS_SIGN[pos];
         const offX = sx * (cellW / 2 + SUB_GAP / 2), offY = sy * (cellH / 2 + SUB_GAP / 2);
         const bx = c.x + offX - cellW / 2, by = c.y + offY - cellH / 2;
-        s += `<rect x="${bx}" y="${by}" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${colors[k]}"/>`;
+        s += `<rect x="${bx}" y="${by}" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${cellColors[k]}"/>`;
         if (r > 0) {
           for (const [corner, [cx, cy]] of Object.entries(CORNER_XY)) {
             if (corner === pos) continue;
-            s += `<rect x="${bx + cx}" y="${by + cy}" width="${r}" height="${r}" fill="${colors[k]}"/>`;
+            s += `<rect x="${bx + cx}" y="${by + cy}" width="${r}" height="${r}" fill="${cellColors[k]}"/>`;
           }
         }
       });
@@ -288,17 +324,18 @@ function drawPentagon(colors, outline, showLabels, now) {
   let s = "";
   for (const c of QUINARY_LAYOUT) {
     const digit = pentDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     for (let k = 0; k < PENT_TALLY_N; k++) {
       if (digit <= k) continue;
       const bx = c.x + pentTallyBarX(k) - PENT_TALLY_BAR_W / 2;
       const by = c.y - PENT_TALLY_BAR_H / 2;
       const rx = PENT_TALLY_BAR_W / 2;
-      s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${cellColors[k]}"/>`;
     }
     if (digit > 4) {
       const slashRx = PENT_TALLY_BAR_W / 2;
       s += `<g transform="translate(${c.x},${c.y}) rotate(${PENT_TALLY_SLASH_ANGLE})">`;
-      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="${colors[4]}"/>`;
+      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="${cellColors[4]}"/>`;
       s += `</g>`;
     }
     if (showLabels && c.label) {
@@ -326,17 +363,18 @@ function drawHexagon(colors, outline, showLabels, now) {
   let s = "";
   for (const c of QUINARY_LAYOUT) {
     const digit = hexDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     const gridCfg = HEX_GRID_ROWS[c.src];
     if (gridCfg) {
       s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
-      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, cellColors);
     } else {
       const r = c.w / 2;
       s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
       HEX_POSITIONS.forEach((pos, k) => {
         if (digit <= k) return;
         const [a0, a1] = HEX_ANGLES[pos];
-        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${cellColors[k]}"/>`;
       });
     }
     if (showLabels && c.label) {
@@ -366,17 +404,18 @@ function drawOctagon(colors, outline, showLabels, now) {
   let s = "";
   for (const c of OCTAGON_LAYOUT) {
     const digit = octDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     const gridCfg = OCTAGON_GRID_ROWS[c.src];
     if (gridCfg) {
       s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
-      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, cellColors);
     } else {
       const r = c.w / 2;
       s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
       OCT_POSITIONS.forEach((pos, k) => {
         if (digit <= k) return;
         const [a0, a1] = OCT_ANGLES[pos];
-        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${cellColors[k]}"/>`;
       });
     }
     if (showLabels && c.label) {
@@ -404,6 +443,7 @@ function drawOctal(colors, outline, showLabels, now) {
   let s = "";
   for (const c of OCTAL_LAYOUT) {
     const digit = octalDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     const baselineY = c.y + OCTAL_WIFI_MAX_H / 2;
     for (let k = 0; k < OCTAL_WIFI_N; k++) {
       if (digit <= k) continue;
@@ -411,7 +451,7 @@ function drawOctal(colors, outline, showLabels, now) {
       const bx = c.x + xOff - OCTAL_WIFI_BAR_W / 2;
       const by = baselineY - h;
       const rx = OCTAL_WIFI_BAR_W / 2;
-      s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="${cellColors[k]}"/>`;
     }
     if (showLabels && c.label) {
       s += `<text x="${OCTAL_LABEL_X}" y="${c.y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
@@ -442,6 +482,7 @@ function drawTrinary(colors, outline, showLabels, now) {
     const r = c.w / 2;
     s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = triDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     const style = TRI_RING_STYLES[c.src];
     TRI_POSITIONS.forEach((pos, k) => {
       if (digit <= k) return;
@@ -450,7 +491,7 @@ function drawTrinary(colors, outline, showLabels, now) {
       const path = style.thicknessFrac >= 1.0
         ? wedgePath(c.x, c.y, r, a0, a1)
         : ringWedgePath(c.x, c.y, r, r * (1 - style.thicknessFrac), a0, a1);
-      s += `<path d="${path}" fill="${colors[k]}"/>`;
+      s += `<path d="${path}" fill="${cellColors[k]}"/>`;
     });
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
@@ -475,10 +516,11 @@ function drawQuaternary(colors, outline, showLabels, now) {
     const r = c.w / 2;
     s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = quatDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     QUAT_POSITIONS.forEach((pos, k) => {
       if (digit <= k) return;
       const [a0, a1] = QUAT_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${cellColors[k]}"/>`;
     });
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
@@ -494,11 +536,16 @@ function drawQuaternary(colors, outline, showLabels, now) {
 }
 
 function drawBinary(color, offColor, showLabels, now) {
+  // color is either a single hex string (every lit LED the same color --
+  // every palette option except rainbow) or an array indexed by bit
+  // significance k (rainbow's per-position colors -- mirrors Python's
+  // wff_binary_cells()/build_base_binary()).
+  const colorFor = Array.isArray(color) ? (k => color[k]) : (() => color);
   let s = "";
   for (const c of BINARY_LAYOUT) {
     s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${offColor}"/>`;
     if (binaryBit(c.src, c.k, now)) {
-      s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${color}"/>`;
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${colorFor(c.k)}"/>`;
     }
     if (showLabels && c.label) {
       s += `<text x="${c.x - BINARY_GX}" y="${c.y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
@@ -516,6 +563,14 @@ function drawBinary(color, offColor, showLabels, now) {
   return s;
 }
 
+function colorsFor(nPositions, layout, key) {
+  // Mirrors the Python dispatch: "rainbow" spreads one spectrum sweep
+  // across the base's distinct place values (rainbowColorsByPlace),
+  // every other palette reuses the same flat n-color array in every cell.
+  return paletteSel.value === "rainbow"
+    ? rainbowColorsByPlace(layout, nPositions)
+    : paletteFor(paletteSel.value, nPositions, key);
+}
 function draw() {
   const now = new Date();
   const light = document.getElementById("theme").checked;
@@ -524,21 +579,24 @@ function draw() {
   const base = baseSel.value;
   let s = `<rect x="0" y="0" width="450" height="450" fill="${BG[key]}"/>`;
   if (base === "binary") {
-    s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
+    const binaryColor = paletteSel.value === "rainbow"
+      ? paletteFor("rainbow", Math.max(...BINARY_LAYOUT.map(c => c.k)) + 1).map(c => ensureContrast(c, key))
+      : ensureContrast(paletteFor(paletteSel.value, 1)[0], key);
+    s += drawBinary(binaryColor, OFF[key], showLabels, now);
   } else if (base === "trinary") {
-    s += drawTrinary(paletteFor(paletteSel.value, 2, key), OUTLINE[key], showLabels, now);
+    s += drawTrinary(colorsFor(2, TRINARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "quaternary") {
-    s += drawQuaternary(paletteFor(paletteSel.value, 3, key), OUTLINE[key], showLabels, now);
+    s += drawQuaternary(colorsFor(3, QUATERNARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "pentagon") {
-    s += drawPentagon(paletteFor(paletteSel.value, 5, key), OUTLINE[key], showLabels, now);
+    s += drawPentagon(colorsFor(5, QUINARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "hexagon") {
-    s += drawHexagon(paletteFor(paletteSel.value, 6, key), OUTLINE[key], showLabels, now);
+    s += drawHexagon(colorsFor(6, QUINARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "octal") {
-    s += drawOctal(paletteFor(paletteSel.value, 7, key), OUTLINE[key], showLabels, now);
+    s += drawOctal(colorsFor(7, OCTAL_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "octagon") {
-    s += drawOctagon(paletteFor(paletteSel.value, 8, key), OUTLINE[key], showLabels, now);
+    s += drawOctagon(colorsFor(8, OCTAGON_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else {
-    s += drawQuinary(paletteFor(paletteSel.value, 4, key), OUTLINE[key], showLabels, now);
+    s += drawQuinary(colorsFor(4, QUINARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   }
   svg.innerHTML = s;
   document.getElementById("readout").textContent = now.toTimeString().slice(0, 8) + "  (" + base + ")";

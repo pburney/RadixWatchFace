@@ -57,13 +57,19 @@ OKABE_ITO = [
     "#FFCC79A7",  # reddish purple
 ]
 
-# ROYGBIV runs red (0 deg) to violet (~270 deg) and deliberately does NOT
-# wrap the rest of the way around the wheel back to red -- that remaining
-# arc is magenta/pink, which isn't a spectral color (it's what's "missing"
-# when you bend a physical rainbow into a closed wheel), so wrapping through
-# it would break the red-to-violet spectrum order Paul asked for.
+# ROYGBIV runs red (0 deg) through violet and on into magenta/purple,
+# stopping short of wrapping all the way back to red. Originally capped at
+# 270 (violet) on the reasoning that magenta/pink isn't a spectral color --
+# but with many positions packed into one sweep (e.g. octagon's mega
+# palette = 8 places x 8 positions = 64 colors), a 270-degree arc crowds
+# several near-identical greens together around the 120-degree mark. Paul
+# asked to widen the back half of the sweep into purple/magenta instead
+# (2026-10-10) -- stretching the same hue count across more total degrees
+# spreads every gap wider, greens included, and gives the far end (the
+# highest-place/leftmost cells) its own distinct magenta rather than
+# clustering near violet.
 ROYGBIV_START_DEG = 0     # red
-ROYGBIV_END_DEG = 270     # violet
+ROYGBIV_END_DEG = 320     # magenta
 
 
 def _hex_to_rgb01(h):
@@ -90,13 +96,55 @@ def monochrome_palette(anchor_argb: str, n: int) -> list[str]:
     return out
 
 
+# The eye poorly discriminates consecutive hues in the yellow-green ->
+# green -> cyan-green band (roughly 80-170 degrees) -- a huge stretch of
+# the wheel reads as "just green" even though it's as many degrees wide as
+# the whole red/orange/yellow run on one side. A plain linear degree sweep
+# spaces every sample evenly BY DEGREE, so any contiguous chunk of the
+# sweep that happens to land in that band (large n_positions over few
+# places, e.g. Nonary's 8-color ones-place chunk) ends up with several
+# visually-bunched colors even though the math is perfectly even. Shrink
+# that band's share of the sweep (weight < 1.0) so fewer samples land in
+# it and more land in the well-discriminated bands on either side --
+# confirmed needed 2026-10-10 after Paul caught 3-4 near-identical greens
+# packed into Nonary's ones place.
+_HUE_ZONES = (
+    # (start_deg, end_deg_or_None, weight) -- None resolves to
+    # ROYGBIV_END_DEG so widening/narrowing the overall sweep doesn't
+    # require touching this table. First pass (80-170, weight 0.3) still
+    # let 3 adjacent samples land in the green band for a 16-color mega
+    # palette; widened + compressed further (60-180, weight 0.15) gets
+    # that down to 1 (verified 2026-10-10 against Nonary's 8x2 mega
+    # palette).
+    (0, 60, 1.0),
+    (60, 180, 0.15),
+    (180, None, 1.0),
+)
+
+
+def _hue_for_t(t: float) -> float:
+    zones = [(s, ROYGBIV_END_DEG if e is None else min(e, ROYGBIV_END_DEG), w)
+              for s, e, w in _HUE_ZONES if s < ROYGBIV_END_DEG]
+    total_weight = sum((e - s) * w for s, e, w in zones)
+    target = t * total_weight
+    acc = 0.0
+    for s, e, w in zones:
+        span_weight = (e - s) * w
+        if target <= acc + span_weight or (s, e, w) == zones[-1]:
+            frac = (target - acc) / span_weight if span_weight else 0.0
+            return s + frac * (e - s)
+        acc += span_weight
+    return ROYGBIV_END_DEG
+
+
 def rainbow_palette(n: int) -> list[str]:
-    """ROYGBIV order, red to violet -- a linear hue sweep across a fixed
-    170-degree arc, not a full 360-degree wrap (see ROYGBIV_END_DEG)."""
+    """ROYGBIV order, red to magenta -- a hue sweep across a fixed arc
+    (see ROYGBIV_END_DEG), warped by _hue_for_t to avoid over-sampling the
+    green band (see _HUE_ZONES)."""
     out = []
     for i in range(n):
         t = i / (n - 1) if n > 1 else 0.5
-        hue = (ROYGBIV_START_DEG + t * (ROYGBIV_END_DEG - ROYGBIV_START_DEG)) / 360
+        hue = _hue_for_t(t) / 360
         out.append(_rgb01_to_argb_hex(colorsys.hls_to_rgb(hue, 0.55, 0.85)))
     return out
 

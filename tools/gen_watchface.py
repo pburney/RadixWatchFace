@@ -313,6 +313,32 @@ def wff_grid_groups(cx, cy, w, h, rows, cols, radius, digit_expr, colors, name_p
     return "\n".join(out)
 
 
+# ---- Rainbow-specific color spread, shared by every multi-position base
+# (n>=2; Binary's n=1 case has its own version right next to its own
+# render code). Every OTHER palette option reuses the same n_positions
+# colors in every digit-place cell -- that's the classic look and stays
+# unchanged. "Rainbow" is the one exception (2026-10-10, Paul: "split up
+# the rainbow colors to be better represented" -- for Quaternary, the
+# first pie red/orange/yellow, the next green/blue/purple, rather than
+# every pie repeating the same 3 colors): each distinct place value gets
+# its own slice of ONE rainbow sweep sized to the base's full place count,
+# so the complete spectrum appears across a row instead of being
+# compressed into n_positions colors and repeated. Places that recur
+# across rows (Hour's place-0 cell, Minute's place-0 cell) share a slice,
+# same reuse-across-rows convention Binary's per-bit rainbow already uses.
+def rainbow_groups_by_place(layout, n_positions, groups_fn, *extra_args):
+    n_places = max(c["place"] for c in layout) + 1
+    mega = palette_for("rainbow", n_positions * n_places)
+    out = []
+    for place in range(n_places):
+        cells = [c for c in layout if c["place"] == place]
+        if not cells:
+            continue
+        chunk = mega[place * n_positions:(place + 1) * n_positions]
+        out.append(groups_fn(cells, chunk, *extra_args))
+    return "\n".join(out)
+
+
 # ---- Pentagon (base 6) -- checked computationally like every other base:
 # 6^1=6<=23<36=6^2 and 6^2=36<=59<216=6^3, giving the SAME (2,3,3) place
 # pattern as Quinary/Hexagon (5 and 7 give identical place counts for the
@@ -410,10 +436,11 @@ def wff_pent_groups(layout, colors):
 
 
 def pentagon_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 5, theme)
+    body = (rainbow_groups_by_place(layout, 5, wff_pent_groups) if option_id == "rainbow"
+            else wff_pent_groups(layout, palette_for(option_id, 5, theme)))
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="pent_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
-            f'{wff_pent_groups(layout, colors)}\n'
+            f'{body}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
@@ -516,10 +543,11 @@ def wff_hex_groups(layout, colors):
 
 
 def hexagon_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 6, theme)
+    body = (rainbow_groups_by_place(layout, 6, wff_hex_groups) if option_id == "rainbow"
+            else wff_hex_groups(layout, palette_for(option_id, 6, theme)))
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="hex_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
-            f'{wff_hex_groups(layout, colors)}\n'
+            f'{body}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
@@ -670,10 +698,11 @@ def wff_octagon_groups(layout, colors, grid_rows=None):
 
 
 def octagon_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 8, theme)
+    body = (rainbow_groups_by_place(layout, 8, wff_octagon_groups, OCTAGON_GRID_ROWS) if option_id == "rainbow"
+            else wff_octagon_groups(layout, palette_for(option_id, 8, theme), OCTAGON_GRID_ROWS))
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="oct_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
-            f'{wff_octagon_groups(layout, colors, OCTAGON_GRID_ROWS)}\n'
+            f'{body}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
@@ -850,10 +879,11 @@ def wff_octal_decimal_readout():
 
 
 def octal_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 7, theme)
+    body = (rainbow_groups_by_place(layout, 7, wff_octal_groups) if option_id == "rainbow"
+            else wff_octal_groups(layout, palette_for(option_id, 7, theme)))
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="octal_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
-            f'{wff_octal_groups(layout, colors)}\n'
+            f'{body}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
@@ -951,10 +981,11 @@ def wff_quat_groups(layout, colors):
 
 
 def quaternary_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 3, theme)
+    body = (rainbow_groups_by_place(layout, 3, wff_quat_groups) if option_id == "rainbow"
+            else wff_quat_groups(layout, palette_for(option_id, 3, theme)))
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="quat_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
-            f'{wff_quat_groups(layout, colors)}\n'
+            f'{body}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
@@ -1125,10 +1156,11 @@ def wff_tri_groups(layout, colors):
 
 
 def trinary_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 2, theme)
+    body = (rainbow_groups_by_place(layout, 2, wff_tri_groups) if option_id == "rainbow"
+            else wff_tri_groups(layout, palette_for(option_id, 2, theme)))
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="tri_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
-            f'{wff_tri_groups(layout, colors)}\n'
+            f'{body}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
@@ -1158,10 +1190,11 @@ def build_base_trinary(theme: str, outline_color: str) -> str:
 
 
 def quinary_palette_list_option(option_id: str, layout, theme: str) -> str:
-    colors = palette_for(option_id, 4, theme)
+    body = (rainbow_groups_by_place(layout, 4, wff_quads) if option_id == "rainbow"
+            else wff_quads(layout, palette_for(option_id, 4, theme)))
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
-            f'{wff_quads(layout, colors)}\n'
+            f'{body}\n'
             f'          </Group>\n'
             f'        </ListOption>')
 
@@ -1200,10 +1233,13 @@ def build_base_quinary(theme: str, outline_color: str) -> str:
 # secondary mode of base-2 itself, not another numeral base, so folding it
 # in here would be scope creep on top of the base picker this app already
 # adds). Binary keeps its classic "every lit LED is the same one color"
-# look rather than adopting per-position palette colors like Quinary's
-# quads -- it requests just ONE color from whichever palette is selected
-# (palette_for(id, 1)), so it still participates in the same 18-option
-# picker without breaking its own established visual identity. ----
+# look for every palette option -- it requests just ONE color from
+# whichever palette is selected (palette_for(id, 1)) -- EXCEPT "rainbow"
+# (2026-10-10, Paul: wants 2^0 = Red, 2^1 = Orange, etc.), which instead
+# colors each bit position by its own significance: palette_for("rainbow",
+# nbits) gives the same ROYGBIV sweep the multi-color bases use, indexed
+# directly by bit k so the LSB anchors red and higher bits climb toward
+# violet. Every other palette option is unaffected. ----
 LED_R = 15
 GX, GY = 46, 52
 OFF_DARK, OFF_LIGHT = "#FF1C1C1C", "#FFDEDEDE"
@@ -1226,6 +1262,11 @@ def binary_layout():
 
 
 def wff_binary_cells(layout, color, off_color):
+    """color is either a single ARGB hex string (every lit LED the same
+    color -- every palette option except rainbow) or a list indexed by bit
+    significance k (rainbow's per-position colors, see build_base_binary)."""
+    color_for = color if callable(color) else (
+        (lambda k: color[k]) if isinstance(color, list) else (lambda k: color))
     d, lit = [], []
     for c in layout:
         x, y = round(c["x"] - LED_R), round(c["y"] - LED_R)
@@ -1242,7 +1283,7 @@ def wff_binary_cells(layout, color, off_color):
             f'        </Expressions>\n'
             f'        <Compare expression="{name}">\n'
             f'          <PartDraw x="{x}" y="{y}" width="{w}" height="{w}">\n'
-            f'            <Ellipse x="0" y="0" width="{w}" height="{w}"><Fill color="{color}"/></Ellipse>\n'
+            f'            <Ellipse x="0" y="0" width="{w}" height="{w}"><Fill color="{color_for(c["k"])}"/></Ellipse>\n'
             f'          </PartDraw>\n'
             f'        </Compare>\n'
             f'      </Condition>')
@@ -1286,7 +1327,11 @@ def wff_binary_decimal_readout():
 
 
 def binary_palette_list_option(option_id: str, layout, theme: str, off_color: str) -> str:
-    color = ensure_contrast(palette_for(option_id, 1)[0], theme)
+    if option_id == "rainbow":
+        nbits = max(c["k"] for c in layout) + 1
+        color = [ensure_contrast(c, theme) for c in palette_for("rainbow", nbits)]
+    else:
+        color = ensure_contrast(palette_for(option_id, 1)[0], theme)
     return (f'        <ListOption id="{option_id}">\n'
             f'          <Group name="binary_palette_{option_id}_{theme}" x="0" y="0" width="{CANVAS}" height="{CANVAS}">\n'
             f'{wff_binary_cells(layout, color, off_color)}\n'
@@ -1531,16 +1576,51 @@ function monochromePalette(anchorHex, n) {
   for (let i = 0; i < n; i++) { const t = n>1 ? i/(n-1) : 0.5; out.push(hslToHex(h, s, lo+t*(hi-lo))); }
   return out;
 }
+// Mirrors palettes.py's _HUE_ZONES/_hue_for_t: compresses the yellow-green
+// -> green -> cyan-green band (60-180 deg) so fewer evenly-spaced samples
+// land in it -- that band reads as "just green" to the eye even with
+// perfectly even degree spacing.
+const HUE_ZONES = [[0, 60, 1.0], [60, 180, 0.15], [180, null, 1.0]];
+function hueForT(t) {
+  const zones = HUE_ZONES.map(([s, e, w]) => [s, e === null ? ROYGBIV_END_DEG : Math.min(e, ROYGBIV_END_DEG), w])
+    .filter(([s]) => s < ROYGBIV_END_DEG);
+  const totalWeight = zones.reduce((sum, [s, e, w]) => sum + (e - s) * w, 0);
+  const target = t * totalWeight;
+  let acc = 0;
+  for (let i = 0; i < zones.length; i++) {
+    const [s, e, w] = zones[i];
+    const spanWeight = (e - s) * w;
+    if (target <= acc + spanWeight || i === zones.length - 1) {
+      const frac = spanWeight ? (target - acc) / spanWeight : 0;
+      return s + frac * (e - s);
+    }
+    acc += spanWeight;
+  }
+  return ROYGBIV_END_DEG;
+}
 function rainbowPalette(n) {
   const out = [];
   for (let i = 0; i < n; i++) {
     const t = n>1 ? i/(n-1) : 0.5;
-    const hue = (ROYGBIV_START_DEG + t*(ROYGBIV_END_DEG-ROYGBIV_START_DEG)) / 360;
+    const hue = hueForT(t) / 360;
     out.push(hslToHex(hue, 0.85, 0.55));
   }
   return out;
 }
 function colorblindPalette(n) { return OKABE_ITO.slice(0, n); }
+// Mirrors gen_watchface.py's rainbow_groups_by_place(): "rainbow" splits one
+// spectrum sweep across a base's distinct place values instead of repeating
+// the same n-position colors in every digit-place cell -- `colors` becomes a
+// nested array indexed by place (colorsForPlace picks the right slice), vs.
+// every other palette's plain flat array (same for every cell).
+function rainbowColorsByPlace(layout, nPositions) {
+  const nPlaces = Math.max(...layout.map(c => c.place)) + 1;
+  const mega = rainbowPalette(nPositions * nPlaces);
+  const byPlace = [];
+  for (let p = 0; p < nPlaces; p++) byPlace.push(mega.slice(p * nPositions, (p + 1) * nPositions));
+  return byPlace;
+}
+function colorsForPlace(colors, place) { return Array.isArray(colors[0]) ? colors[place] : colors; }
 function paletteFor(id, n, theme) {
   if (id === "rainbow") return rainbowPalette(n);
   if (id === "colorblind") {
@@ -1645,12 +1725,13 @@ function drawQuinary(colors, outline, showLabels, now) {
   for (const c of QUINARY_LAYOUT) {
     s += outlineShape(c, outline);
     const digit = quinaryDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     if (c.shape === "pie") {
       const r = c.w / 2;
       POSITIONS.forEach((pos, k) => {
         if (digit <= k) return;
         const [a0, a1] = POS_ANGLES[pos];
-        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${cellColors[k]}"/>`;
       });
     } else {
       const cellW = (c.w - SUB_GAP) / 2, cellH = (c.h - SUB_GAP) / 2;
@@ -1668,11 +1749,11 @@ function drawQuinary(colors, outline, showLabels, now) {
         const [sx, sy] = POS_SIGN[pos];
         const offX = sx * (cellW / 2 + SUB_GAP / 2), offY = sy * (cellH / 2 + SUB_GAP / 2);
         const bx = c.x + offX - cellW / 2, by = c.y + offY - cellH / 2;
-        s += `<rect x="${bx}" y="${by}" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${colors[k]}"/>`;
+        s += `<rect x="${bx}" y="${by}" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${cellColors[k]}"/>`;
         if (r > 0) {
           for (const [corner, [cx, cy]] of Object.entries(CORNER_XY)) {
             if (corner === pos) continue;
-            s += `<rect x="${bx + cx}" y="${by + cy}" width="${r}" height="${r}" fill="${colors[k]}"/>`;
+            s += `<rect x="${bx + cx}" y="${by + cy}" width="${r}" height="${r}" fill="${cellColors[k]}"/>`;
           }
         }
       });
@@ -1704,17 +1785,18 @@ function drawPentagon(colors, outline, showLabels, now) {
   let s = "";
   for (const c of QUINARY_LAYOUT) {
     const digit = pentDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     for (let k = 0; k < PENT_TALLY_N; k++) {
       if (digit <= k) continue;
       const bx = c.x + pentTallyBarX(k) - PENT_TALLY_BAR_W / 2;
       const by = c.y - PENT_TALLY_BAR_H / 2;
       const rx = PENT_TALLY_BAR_W / 2;
-      s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      s += `<rect x="${bx}" y="${by}" width="${PENT_TALLY_BAR_W}" height="${PENT_TALLY_BAR_H}" rx="${rx}" ry="${rx}" fill="${cellColors[k]}"/>`;
     }
     if (digit > 4) {
       const slashRx = PENT_TALLY_BAR_W / 2;
       s += `<g transform="translate(${c.x},${c.y}) rotate(${PENT_TALLY_SLASH_ANGLE})">`;
-      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="${colors[4]}"/>`;
+      s += `<rect x="${-PENT_TALLY_SLASH_LEN / 2}" y="${-PENT_TALLY_BAR_W / 2}" width="${PENT_TALLY_SLASH_LEN}" height="${PENT_TALLY_BAR_W}" rx="${slashRx}" ry="${slashRx}" fill="${cellColors[4]}"/>`;
       s += `</g>`;
     }
     if (showLabels && c.label) {
@@ -1742,17 +1824,18 @@ function drawHexagon(colors, outline, showLabels, now) {
   let s = "";
   for (const c of QUINARY_LAYOUT) {
     const digit = hexDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     const gridCfg = HEX_GRID_ROWS[c.src];
     if (gridCfg) {
       s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
-      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, cellColors);
     } else {
       const r = c.w / 2;
       s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
       HEX_POSITIONS.forEach((pos, k) => {
         if (digit <= k) return;
         const [a0, a1] = HEX_ANGLES[pos];
-        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${cellColors[k]}"/>`;
       });
     }
     if (showLabels && c.label) {
@@ -1782,17 +1865,18 @@ function drawOctagon(colors, outline, showLabels, now) {
   let s = "";
   for (const c of OCTAGON_LAYOUT) {
     const digit = octDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     const gridCfg = OCTAGON_GRID_ROWS[c.src];
     if (gridCfg) {
       s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
-      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, colors);
+      s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, cellColors);
     } else {
       const r = c.w / 2;
       s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
       OCT_POSITIONS.forEach((pos, k) => {
         if (digit <= k) return;
         const [a0, a1] = OCT_ANGLES[pos];
-        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+        s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${cellColors[k]}"/>`;
       });
     }
     if (showLabels && c.label) {
@@ -1820,6 +1904,7 @@ function drawOctal(colors, outline, showLabels, now) {
   let s = "";
   for (const c of OCTAL_LAYOUT) {
     const digit = octalDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     const baselineY = c.y + OCTAL_WIFI_MAX_H / 2;
     for (let k = 0; k < OCTAL_WIFI_N; k++) {
       if (digit <= k) continue;
@@ -1827,7 +1912,7 @@ function drawOctal(colors, outline, showLabels, now) {
       const bx = c.x + xOff - OCTAL_WIFI_BAR_W / 2;
       const by = baselineY - h;
       const rx = OCTAL_WIFI_BAR_W / 2;
-      s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="${colors[k]}"/>`;
+      s += `<rect x="${bx}" y="${by}" width="${OCTAL_WIFI_BAR_W}" height="${h}" rx="${rx}" ry="${rx}" fill="${cellColors[k]}"/>`;
     }
     if (showLabels && c.label) {
       s += `<text x="${OCTAL_LABEL_X}" y="${c.y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
@@ -1858,6 +1943,7 @@ function drawTrinary(colors, outline, showLabels, now) {
     const r = c.w / 2;
     s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = triDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     const style = TRI_RING_STYLES[c.src];
     TRI_POSITIONS.forEach((pos, k) => {
       if (digit <= k) return;
@@ -1866,7 +1952,7 @@ function drawTrinary(colors, outline, showLabels, now) {
       const path = style.thicknessFrac >= 1.0
         ? wedgePath(c.x, c.y, r, a0, a1)
         : ringWedgePath(c.x, c.y, r, r * (1 - style.thicknessFrac), a0, a1);
-      s += `<path d="${path}" fill="${colors[k]}"/>`;
+      s += `<path d="${path}" fill="${cellColors[k]}"/>`;
     });
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
@@ -1891,10 +1977,11 @@ function drawQuaternary(colors, outline, showLabels, now) {
     const r = c.w / 2;
     s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
     const digit = quatDigit(c.src, c.place, now);
+    const cellColors = colorsForPlace(colors, c.place);
     QUAT_POSITIONS.forEach((pos, k) => {
       if (digit <= k) return;
       const [a0, a1] = QUAT_ANGLES[pos];
-      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${colors[k]}"/>`;
+      s += `<path d="${wedgePath(c.x, c.y, r, a0, a1)}" fill="${cellColors[k]}"/>`;
     });
     if (showLabels && c.label) {
       s += `<text x="${c.label_x}" y="${c.label_y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
@@ -1910,11 +1997,16 @@ function drawQuaternary(colors, outline, showLabels, now) {
 }
 
 function drawBinary(color, offColor, showLabels, now) {
+  // color is either a single hex string (every lit LED the same color --
+  // every palette option except rainbow) or an array indexed by bit
+  // significance k (rainbow's per-position colors -- mirrors Python's
+  // wff_binary_cells()/build_base_binary()).
+  const colorFor = Array.isArray(color) ? (k => color[k]) : (() => color);
   let s = "";
   for (const c of BINARY_LAYOUT) {
     s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${offColor}"/>`;
     if (binaryBit(c.src, c.k, now)) {
-      s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${color}"/>`;
+      s += `<circle cx="${c.x}" cy="${c.y}" r="${LED_R}" fill="${colorFor(c.k)}"/>`;
     }
     if (showLabels && c.label) {
       s += `<text x="${c.x - BINARY_GX}" y="${c.y + 8}" fill="${LABEL_COLOR}" font-size="26" text-anchor="middle" font-family="system-ui">${c.label.toUpperCase()}</text>`;
@@ -1932,6 +2024,14 @@ function drawBinary(color, offColor, showLabels, now) {
   return s;
 }
 
+function colorsFor(nPositions, layout, key) {
+  // Mirrors the Python dispatch: "rainbow" spreads one spectrum sweep
+  // across the base's distinct place values (rainbowColorsByPlace),
+  // every other palette reuses the same flat n-color array in every cell.
+  return paletteSel.value === "rainbow"
+    ? rainbowColorsByPlace(layout, nPositions)
+    : paletteFor(paletteSel.value, nPositions, key);
+}
 function draw() {
   const now = new Date();
   const light = document.getElementById("theme").checked;
@@ -1940,21 +2040,24 @@ function draw() {
   const base = baseSel.value;
   let s = `<rect x="0" y="0" width="__CANVAS__" height="__CANVAS__" fill="${BG[key]}"/>`;
   if (base === "binary") {
-    s += drawBinary(ensureContrast(paletteFor(paletteSel.value, 1)[0], key), OFF[key], showLabels, now);
+    const binaryColor = paletteSel.value === "rainbow"
+      ? paletteFor("rainbow", Math.max(...BINARY_LAYOUT.map(c => c.k)) + 1).map(c => ensureContrast(c, key))
+      : ensureContrast(paletteFor(paletteSel.value, 1)[0], key);
+    s += drawBinary(binaryColor, OFF[key], showLabels, now);
   } else if (base === "trinary") {
-    s += drawTrinary(paletteFor(paletteSel.value, 2, key), OUTLINE[key], showLabels, now);
+    s += drawTrinary(colorsFor(2, TRINARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "quaternary") {
-    s += drawQuaternary(paletteFor(paletteSel.value, 3, key), OUTLINE[key], showLabels, now);
+    s += drawQuaternary(colorsFor(3, QUATERNARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "pentagon") {
-    s += drawPentagon(paletteFor(paletteSel.value, 5, key), OUTLINE[key], showLabels, now);
+    s += drawPentagon(colorsFor(5, QUINARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "hexagon") {
-    s += drawHexagon(paletteFor(paletteSel.value, 6, key), OUTLINE[key], showLabels, now);
+    s += drawHexagon(colorsFor(6, QUINARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "octal") {
-    s += drawOctal(paletteFor(paletteSel.value, 7, key), OUTLINE[key], showLabels, now);
+    s += drawOctal(colorsFor(7, OCTAL_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else if (base === "octagon") {
-    s += drawOctagon(paletteFor(paletteSel.value, 8, key), OUTLINE[key], showLabels, now);
+    s += drawOctagon(colorsFor(8, OCTAGON_LAYOUT, key), OUTLINE[key], showLabels, now);
   } else {
-    s += drawQuinary(paletteFor(paletteSel.value, 4, key), OUTLINE[key], showLabels, now);
+    s += drawQuinary(colorsFor(4, QUINARY_LAYOUT, key), OUTLINE[key], showLabels, now);
   }
   svg.innerHTML = s;
   document.getElementById("readout").textContent = now.toTimeString().slice(0, 8) + "  (" + base + ")";
