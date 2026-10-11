@@ -229,27 +229,55 @@ function gridGroupSvg(cx, cy, w, h, rows, cols, radius, digit, colors) {
     if (digit <= k) continue;
     const row = Math.floor(k / cols), col = k % cols;
     const bx = bx0 + col * cellW, by = by0 + row * cellH;
-    const r = Math.min(radius, cellW / 2, cellH / 2);
     const color = colors[k];
-    const keep = {
-      TL: row === 0 && col === 0,
-      TR: row === 0 && col === cols - 1,
-      BL: row === rows - 1 && col === 0,
-      BR: row === rows - 1 && col === cols - 1,
-    };
+    const corner = row === 0 && col === 0 ? "TL"
+      : row === 0 && col === cols - 1 ? "TR"
+      : row === rows - 1 && col === 0 ? "BL"
+      : row === rows - 1 && col === cols - 1 ? "BR"
+      : null;
     s += `<g transform="translate(${bx},${by})">`;
-    s += `<rect x="0" y="0" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${color}"/>`;
-    const corners = { TL: [0, 0], TR: [cellW - r, 0], BL: [0, cellH - r], BR: [cellW - r, cellH - r] };
-    for (const [name, [ox, oy]] of Object.entries(corners)) {
-      if (!keep[name]) s += `<rect x="${ox}" y="${oy}" width="${r}" height="${r}" fill="${color}"/>`;
+    const n = corner ? Math.min(radius, cellW / 2, cellH) : 0;
+    if (corner === null || n <= 0) {
+      // No outer corner on this cell -- plain rectangle (interior grid rows).
+      s += `<rect x="0" y="0" width="${cellW}" height="${cellH}" fill="${color}"/>`;
+    } else {
+      // True quarter-circle corner, radius n -- a plain rect's rx/ry
+      // silently clamps to half of whichever dimension it's applied
+      // against, so asking for ry = full cell height collapses back to
+      // half on real render. Mirrors gen_watchface.py's wff_grid_groups():
+      // draw the kept corner as an explicit filled wedge (same wedgePath()
+      // used for the "pie" quad shape) instead of a rounded rect, and fill
+      // everything outside that n x n corner square as plain rectangles.
+      const isTop = corner === "TL" || corner === "TR", isLeft = corner === "TL" || corner === "BL";
+      const ctrX = isLeft ? n : cellW - n, ctrY = isTop ? n : cellH - n;
+      const [a0, a1] = POS_ANGLES[corner];
+      const rects = [
+        [isLeft ? n : 0, 0, cellW - n, cellH],
+        [isLeft ? 0 : cellW - n, isTop ? n : 0, n, cellH - n],
+      ];
+      for (const [px, py, pw, ph] of rects) {
+        if (pw > 0 && ph > 0) s += `<rect x="${px}" y="${py}" width="${pw}" height="${ph}" fill="${color}"/>`;
+      }
+      s += `<path d="${wedgePath(ctrX, ctrY, n, a0, a1)}" fill="${color}"/>`;
     }
     s += `</g>`;
   }
   return s;
 }
-function gridOutlineSvg(cx, cy, w, h, outline) {
-  const x = cx - w / 2, y = cy - h / 2, r = Math.min(w, h) * 0.1;
-  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" ry="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+function gridOutlineSvg(cx, cy, w, h, outline, rows, cols, radius) {
+  const x = cx - w / 2, y = cy - h / 2;
+  // Mirrors wff_grid_outline(): default to a small cosmetic radius, but
+  // when a grid config's own corner radius is passed, both axes share the
+  // same n = min(cellW/2, cellH) gridGroupSvg() uses for its own per-cell
+  // wedge -- a true circle, matching the fill exactly rather than an
+  // ellipse that only coincidentally lined up for a square-ish cell.
+  let rx, ry;
+  if (rows && cols && radius != null) {
+    rx = ry = Math.min(radius, w / cols / 2, h / rows);
+  } else {
+    rx = ry = Math.min(w, h) * 0.1;
+  }
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" ry="${ry}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
 }
 function outlineShape(c, outline) {
   const stroke = `fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
@@ -366,7 +394,7 @@ function drawHexagon(colors, outline, showLabels, now) {
     const cellColors = colorsForPlace(colors, c.place);
     const gridCfg = HEX_GRID_ROWS[c.src];
     if (gridCfg) {
-      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline, gridCfg.rows, gridCfg.cols, gridCfg.radius);
       s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, cellColors);
     } else {
       const r = c.w / 2;
@@ -407,7 +435,7 @@ function drawOctagon(colors, outline, showLabels, now) {
     const cellColors = colorsForPlace(colors, c.place);
     const gridCfg = OCTAGON_GRID_ROWS[c.src];
     if (gridCfg) {
-      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline, gridCfg.rows, gridCfg.cols, gridCfg.radius);
       s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, cellColors);
     } else {
       const r = c.w / 2;
