@@ -266,12 +266,24 @@ def wff_decimal_readout():
 # 4 literal grid corners) for any rows x cols -- verified by hand-tracing
 # 2x2/2x3/3x2/2x4 before trusting it, then confirmed visually via an SVG
 # mockup Paul reviewed before this was ported into real WFF XML.
-def wff_grid_outline(cx, cy, w, h, rows, cols, outline_color):
+def wff_grid_outline(cx, cy, w, h, rows, cols, outline_color, radius=None):
     x, y = round(cx - w / 2), round(cy - h / 2)
-    r = min(w / cols, h / rows) * 0.25
+    if radius is None:
+        rx = ry = min(w / cols, h / rows) * 0.25
+    else:
+        # True circular corner, same n = min(cellW/2, cellH) as
+        # wff_grid_groups()'s own per-cell Arc wedge -- a shared rx/ry here
+        # (rather than independent per-axis values) keeps the dashed guide
+        # a genuine circle matching the fill exactly rather than an ellipse
+        # that only coincidentally matched it for a square-ish cell. Safe
+        # against this element's own OWN clamp too: n is always <= half of
+        # whichever of w/cols, h/rows is larger, and applied here against
+        # the FULL w x h box (not a single cell), so it never approaches
+        # that box's own half-dimension the way a per-cell radius did.
+        rx = ry = min(radius, w / cols / 2, h / rows)
     return (f'      <PartDraw x="{x}" y="{y}" width="{round(w)}" height="{round(h)}">\n'
             f'        <RoundRectangle x="0" y="0" width="{round(w)}" height="{round(h)}" '
-            f'cornerRadiusX="{r:.1f}" cornerRadiusY="{r:.1f}">'
+            f'cornerRadiusX="{rx:.1f}" cornerRadiusY="{ry:.1f}">'
             f'<Stroke color="{outline_color}" thickness="1.5" dashIntervals="3 5" cap="ROUND"/></RoundRectangle>\n'
             f'      </PartDraw>')
 
@@ -284,20 +296,50 @@ def wff_grid_groups(cx, cy, w, h, rows, cols, radius, digit_expr, colors, name_p
         row, col = divmod(k, cols)
         bx, by = round(bx0 + col * cell_w), round(by0 + row * cell_h)
         cw, ch = round(cell_w), round(cell_h)
-        r = min(radius, cw / 2, ch / 2)
         color = colors[k]
-        keep_rounded = {
-            "TL": row == 0 and col == 0,
-            "TR": row == 0 and col == cols - 1,
-            "BL": row == rows - 1 and col == 0,
-            "BR": row == rows - 1 and col == cols - 1,
-        }
-        corner_xy = {"TL": (0, 0), "TR": (cw - r, 0), "BL": (0, ch - r), "BR": (cw - r, ch - r)}
-        squares = "".join(
-            f'<Rectangle x="{sx:.1f}" y="{sy:.1f}" width="{r:.1f}" height="{r:.1f}"><Fill color="{color}"/></Rectangle>'
-            for corner, (sx, sy) in corner_xy.items() if not keep_rounded[corner])
-        shape_el = (f'<RoundRectangle x="0" y="0" width="{cw}" height="{ch}" '
-                    f'cornerRadiusX="{r:.1f}" cornerRadiusY="{r:.1f}"><Fill color="{color}"/></RoundRectangle>{squares}')
+        corner = ("TL" if row == 0 and col == 0 else
+                   "TR" if row == 0 and col == cols - 1 else
+                   "BL" if row == rows - 1 and col == 0 else
+                   "BR" if row == rows - 1 and col == cols - 1 else None)
+        n = min(radius, cw / 2, ch) if corner else 0
+        if corner is None or n <= 0:
+            # No outer corner on this cell -- a plain rectangle (Nonary's
+            # two interior minute-grid rows, "full rectangles" per Paul's
+            # ask 2026-10-10).
+            shape_el = f'<Rectangle x="0" y="0" width="{cw}" height="{ch}"><Fill color="{color}"/></Rectangle>'
+        else:
+            # True quarter-circle corner, radius n = min(cw/2, ch): a plain
+            # RoundRectangle's cornerRadius silently clamps to half of
+            # whatever dimension it's applied against (standard rect-corner-
+            # rounding rule), so asking it for ry = ch (a FULL cell height,
+            # per Paul's "reach down to the bottom of the cell" ask
+            # 2026-10-10) quietly collapsed back to ch/2 on real render --
+            # "Close..." was Paul catching exactly that on-device. Drawing
+            # the kept corner as an explicit filled Arc pie wedge sidesteps
+            # the clamp entirely -- same idiom wff_quads() already uses for
+            # the "pie" quad shape: Arc width/height = n sets the arc's own
+            # radius to n/2, and a WeightedStroke of thickness n is centered
+            # on that n/2 radius, so it covers solid from 0 out to n. The
+            # wedge is centered n in from the kept tip on both axes, so it
+            # reaches exactly to this cell's horizontal middle (meeting the
+            # neighboring column's own wedge at the shared boundary) and
+            # exactly to the cell's far edge vertically (no flat remnant).
+            # Everything outside that n x n corner square is plain
+            # rectangle fill -- two of them, covering the rest of the cell
+            # as an L-shape (one or both degenerate to zero area and are
+            # skipped when n equals a full dimension, e.g. this grid's n=ch).
+            is_top, is_left = corner in ("TL", "TR"), corner in ("TL", "BL")
+            ctr_x = n if is_left else cw - n
+            ctr_y = n if is_top else ch - n
+            start, end = POS_ANGLES[corner]
+            rect_a = (n if is_left else 0, 0, cw - n, ch)
+            rect_b = (0 if is_left else cw - n, n if is_top else 0, n, ch - n)
+            rects = "".join(
+                f'<Rectangle x="{rx_:.1f}" y="{ry_:.1f}" width="{rw:.1f}" height="{rh:.1f}"><Fill color="{color}"/></Rectangle>'
+                for rx_, ry_, rw, rh in (rect_a, rect_b) if rw > 0 and rh > 0)
+            shape_el = (f'{rects}<Arc centerX="{ctr_x:.1f}" centerY="{ctr_y:.1f}" width="{n:.1f}" height="{n:.1f}" '
+                        f'startAngle="{start}" endAngle="{end}" direction="CLOCKWISE">'
+                        f'<WeightedStroke colors="{color}" thickness="{n:.1f}" cap="BUTT"/></Arc>')
         name = f"{name_prefix}_{k}"
         out.append(
             f'      <Condition>\n'
@@ -498,7 +540,8 @@ def wff_hex_outlines(layout, outline_color):
     for c in layout:
         cfg = HEX_GRID_ROWS.get(c["expr"])
         if cfg:
-            out.append(wff_grid_outline(c["x"], c["y"], c["w"], c["h"], cfg["rows"], cfg["cols"], outline_color))
+            out.append(wff_grid_outline(c["x"], c["y"], c["w"], c["h"], cfg["rows"], cfg["cols"], outline_color,
+                                         radius=cfg.get("radius")))
             continue
         r = c["w"] / 2
         x, y = round(c["x"] - r), round(c["y"] - r)
@@ -608,8 +651,8 @@ OCT_ANGLES = {f"P{i}": (i * 45, (i + 1) * 45) for i in range(8)}
 # calls to these same functions are unaffected -- an accidental shared
 # mutable default here would silently break Octal's outline/content match.
 OCTAGON_GRID_ROWS = {
-    "[HOUR_0_23]": dict(rows=2, cols=4, radius=4, prefix="ogt"),   # chunky tile
-    "[MINUTE]": dict(rows=4, cols=2, radius=999, prefix="ogb"),    # blob
+    "[HOUR_0_23]": dict(rows=2, cols=4, radius=4, prefix="ogt"),     # chunky tile
+    "[MINUTE]": dict(rows=4, cols=2, radius=999, prefix="ogb"),      # oval container, see below
 }
 
 
@@ -652,7 +695,8 @@ def wff_octagon_outlines(layout, outline_color, grid_rows=None):
     for c in layout:
         cfg = grid_rows.get(c["expr"])
         if cfg:
-            out.append(wff_grid_outline(c["x"], c["y"], c["w"], c["h"], cfg["rows"], cfg["cols"], outline_color))
+            out.append(wff_grid_outline(c["x"], c["y"], c["w"], c["h"], cfg["rows"], cfg["cols"], outline_color,
+                                         radius=cfg.get("radius")))
             continue
         r = c["w"] / 2
         x, y = round(c["x"] - r), round(c["y"] - r)
@@ -1690,27 +1734,55 @@ function gridGroupSvg(cx, cy, w, h, rows, cols, radius, digit, colors) {
     if (digit <= k) continue;
     const row = Math.floor(k / cols), col = k % cols;
     const bx = bx0 + col * cellW, by = by0 + row * cellH;
-    const r = Math.min(radius, cellW / 2, cellH / 2);
     const color = colors[k];
-    const keep = {
-      TL: row === 0 && col === 0,
-      TR: row === 0 && col === cols - 1,
-      BL: row === rows - 1 && col === 0,
-      BR: row === rows - 1 && col === cols - 1,
-    };
+    const corner = row === 0 && col === 0 ? "TL"
+      : row === 0 && col === cols - 1 ? "TR"
+      : row === rows - 1 && col === 0 ? "BL"
+      : row === rows - 1 && col === cols - 1 ? "BR"
+      : null;
     s += `<g transform="translate(${bx},${by})">`;
-    s += `<rect x="0" y="0" width="${cellW}" height="${cellH}" rx="${r}" ry="${r}" fill="${color}"/>`;
-    const corners = { TL: [0, 0], TR: [cellW - r, 0], BL: [0, cellH - r], BR: [cellW - r, cellH - r] };
-    for (const [name, [ox, oy]] of Object.entries(corners)) {
-      if (!keep[name]) s += `<rect x="${ox}" y="${oy}" width="${r}" height="${r}" fill="${color}"/>`;
+    const n = corner ? Math.min(radius, cellW / 2, cellH) : 0;
+    if (corner === null || n <= 0) {
+      // No outer corner on this cell -- plain rectangle (interior grid rows).
+      s += `<rect x="0" y="0" width="${cellW}" height="${cellH}" fill="${color}"/>`;
+    } else {
+      // True quarter-circle corner, radius n -- a plain rect's rx/ry
+      // silently clamps to half of whichever dimension it's applied
+      // against, so asking for ry = full cell height collapses back to
+      // half on real render. Mirrors gen_watchface.py's wff_grid_groups():
+      // draw the kept corner as an explicit filled wedge (same wedgePath()
+      // used for the "pie" quad shape) instead of a rounded rect, and fill
+      // everything outside that n x n corner square as plain rectangles.
+      const isTop = corner === "TL" || corner === "TR", isLeft = corner === "TL" || corner === "BL";
+      const ctrX = isLeft ? n : cellW - n, ctrY = isTop ? n : cellH - n;
+      const [a0, a1] = POS_ANGLES[corner];
+      const rects = [
+        [isLeft ? n : 0, 0, cellW - n, cellH],
+        [isLeft ? 0 : cellW - n, isTop ? n : 0, n, cellH - n],
+      ];
+      for (const [px, py, pw, ph] of rects) {
+        if (pw > 0 && ph > 0) s += `<rect x="${px}" y="${py}" width="${pw}" height="${ph}" fill="${color}"/>`;
+      }
+      s += `<path d="${wedgePath(ctrX, ctrY, n, a0, a1)}" fill="${color}"/>`;
     }
     s += `</g>`;
   }
   return s;
 }
-function gridOutlineSvg(cx, cy, w, h, outline) {
-  const x = cx - w / 2, y = cy - h / 2, r = Math.min(w, h) * 0.1;
-  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" ry="${r}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
+function gridOutlineSvg(cx, cy, w, h, outline, rows, cols, radius) {
+  const x = cx - w / 2, y = cy - h / 2;
+  // Mirrors wff_grid_outline(): default to a small cosmetic radius, but
+  // when a grid config's own corner radius is passed, both axes share the
+  // same n = min(cellW/2, cellH) gridGroupSvg() uses for its own per-cell
+  // wedge -- a true circle, matching the fill exactly rather than an
+  // ellipse that only coincidentally lined up for a square-ish cell.
+  let rx, ry;
+  if (rows && cols && radius != null) {
+    rx = ry = Math.min(radius, w / cols / 2, h / rows);
+  } else {
+    rx = ry = Math.min(w, h) * 0.1;
+  }
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" ry="${ry}" fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/>`;
 }
 function outlineShape(c, outline) {
   const stroke = `fill="none" stroke="${outline}" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"`;
@@ -1827,7 +1899,7 @@ function drawHexagon(colors, outline, showLabels, now) {
     const cellColors = colorsForPlace(colors, c.place);
     const gridCfg = HEX_GRID_ROWS[c.src];
     if (gridCfg) {
-      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline, gridCfg.rows, gridCfg.cols, gridCfg.radius);
       s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, cellColors);
     } else {
       const r = c.w / 2;
@@ -1868,7 +1940,7 @@ function drawOctagon(colors, outline, showLabels, now) {
     const cellColors = colorsForPlace(colors, c.place);
     const gridCfg = OCTAGON_GRID_ROWS[c.src];
     if (gridCfg) {
-      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline);
+      s += gridOutlineSvg(c.x, c.y, c.w, c.h, outline, gridCfg.rows, gridCfg.cols, gridCfg.radius);
       s += gridGroupSvg(c.x, c.y, c.w, c.h, gridCfg.rows, gridCfg.cols, gridCfg.radius, digit, cellColors);
     } else {
       const r = c.w / 2;
